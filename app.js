@@ -176,14 +176,16 @@ app.get('/system-backup', (req, res) => {
         const dbUser = process.env.DB_USER;
         const dbPass = process.env.DB_PASS;
         const dbName = process.env.DB_NAME;
-        // const dbHost = process.env.DB_HOST || 'localhost'; 
+
+        console.log(`[BACKUP] Starting MySQL backup for database: ${dbName}`);
+        console.log(`[BACKUP] User: ${dbUser}, Timestamp: ${new Date().toISOString()}`);
 
         // 5. Spawn mysqldump process
+        // Note: --column-statistics=0 removed (not supported on older MySQL versions in cPanel)
         const mysqldump = spawn('mysqldump', [
-            '--no-tablespaces',      // Fixes cPanel permission error
-            '--column-statistics=0', // Fixes version mismatch error
+            '--no-tablespaces',  // Fixes cPanel permission error
             '-u', dbUser,
-            `-p${dbPass}`,           // No space after -p
+            `-p${dbPass}`,       // No space after -p
             dbName
         ]);
 
@@ -195,12 +197,26 @@ app.get('/system-backup', (req, res) => {
         gzip.stdout.pipe(res);
 
         mysqldump.stderr.on('data', (data) => {
-            console.error(`Backup Error: ${data}`);
+            const errorMsg = data.toString();
+            // Filter out the password warning (not a real error)
+            if (!errorMsg.includes('Using a password on the command line')) {
+                console.error(`[BACKUP ERROR] ${errorMsg}`);
+            }
         });
 
         mysqldump.on('close', (code) => {
-            if (code !== 0) {
-                console.error(`mysqldump exited with code ${code}`);
+            if (code === 0) {
+                console.log(`[BACKUP] mysqldump completed successfully`);
+            } else {
+                console.error(`[BACKUP ERROR] mysqldump exited with code ${code}`);
+            }
+        });
+
+        gzip.on('close', (code) => {
+            if (code === 0) {
+                console.log(`[BACKUP] Backup stream complete`);
+            } else {
+                console.error(`[BACKUP ERROR] gzip exited with code ${code}`);
             }
         });
     }
@@ -291,6 +307,9 @@ app.post('/system-restore', upload.single('backup'), async (req, res) => {
             const dbName = process.env.DB_NAME;
             const dbHost = process.env.DB_HOST || 'localhost';
 
+            console.log(`[RESTORE] Starting MySQL restore for database: ${dbName}`);
+            console.log(`[RESTORE] User: ${dbUser}, Host: ${dbHost}, Timestamp: ${new Date().toISOString()}`);
+
             // Create restore command: zcat file.gz | mysql
             const gunzip = spawn('zcat', [uploadedFile]);
             const mysql = spawn('mysql', [
@@ -305,7 +324,16 @@ app.post('/system-restore', upload.single('backup'), async (req, res) => {
 
             let stderrOutput = '';
             mysql.stderr.on('data', (data) => {
-                stderrOutput += data.toString();
+                const msg = data.toString();
+                stderrOutput += msg;
+                // Filter out password warning
+                if (!msg.includes('Using a password on the command line')) {
+                    console.error(`[RESTORE ERROR] ${msg}`);
+                }
+            });
+
+            gunzip.stderr.on('data', (data) => {
+                console.error(`[RESTORE ERROR] zcat: ${data.toString()}`);
             });
 
             await new Promise((resolve, reject) => {
@@ -314,16 +342,24 @@ app.post('/system-restore', upload.single('backup'), async (req, res) => {
                     fs.unlinkSync(uploadedFile);
 
                     if (code !== 0) {
+                        console.error(`[RESTORE ERROR] mysql exited with code ${code}`);
                         reject(new Error(stderrOutput || `mysql exited with code ${code}`));
                     } else {
+                        console.log(`[RESTORE] mysql import completed successfully`);
                         resolve();
                     }
                 });
-                mysql.on('error', reject);
-                gunzip.on('error', reject);
+                mysql.on('error', (err) => {
+                    console.error(`[RESTORE ERROR] mysql spawn error: ${err.message}`);
+                    reject(err);
+                });
+                gunzip.on('error', (err) => {
+                    console.error(`[RESTORE ERROR] zcat error: ${err.message}`);
+                    reject(err);
+                });
             });
 
-            console.log(`MySQL restore complete: ${dbName}`);
+            console.log(`[RESTORE] MySQL restore complete: ${dbName}`);
             return res.json({
                 success: true,
                 message: `MySQL database '${dbName}' restored successfully`
@@ -331,7 +367,7 @@ app.post('/system-restore', upload.single('backup'), async (req, res) => {
         }
 
     } catch (error) {
-        console.error(`Restore Error: ${error.message}`);
+        console.error(`[RESTORE ERROR] ${error.message}`);
 
         // Clean up uploaded file
         if (fs.existsSync(uploadedFile)) {
