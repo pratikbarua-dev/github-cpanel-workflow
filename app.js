@@ -3,6 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
 const dotenv = require('dotenv');
+const { spawn } = require('child_process');
 
 const i18n = require('i18n');
 const cookieParser = require('cookie-parser');
@@ -119,6 +120,52 @@ if (process.env.NODE_ENV !== 'production') {
 // Routes
 app.use('/', require('./src/routes/publicRoutes'));
 app.use('/admin', require('./src/routes/adminRoutes'));
+
+// --- SYSTEM BACKUP BRIDGE ROUTE ---
+app.get('/system-backup', (req, res) => {
+    // 1. Get Secret from Env
+    const secretKey = process.env.BACKUP_SECRET_KEY;
+
+    if (!secretKey) {
+        console.error("Error: BACKUP_SECRET_KEY missing in .env");
+        return res.status(500).send("Configuration Error");
+    }
+
+    // 2. Verify Key
+    if (req.query.key !== secretKey) {
+        return res.status(403).send("Access Denied");
+    }
+
+    // 3. Set Headers for Download
+    res.setHeader('Content-Type', 'application/gzip');
+    res.setHeader('Content-Disposition', 'attachment; filename="backup.sql.gz"');
+
+    // 4. Get DB Credentials from Env
+    const dbUser = process.env.DB_USER;
+    const dbPass = process.env.DB_PASS;
+    const dbName = process.env.DB_NAME;
+    // const dbHost = process.env.DB_HOST || 'localhost'; 
+
+    // 5. Spawn mysqldump process
+    const mysqldump = spawn('mysqldump', [
+        '--no-tablespaces',      // Fixes cPanel permission error
+        '--column-statistics=0', // Fixes version mismatch error
+        '-u', dbUser,
+        `-p${dbPass}`,           // No space after -p
+        dbName
+    ]);
+
+    // 6. Spawn gzip process
+    const gzip = spawn('gzip');
+
+    // 7. Pipe data: mysqldump -> gzip -> Browser/Script
+    mysqldump.stdout.pipe(gzip.stdin);
+    gzip.stdout.pipe(res);
+
+    mysqldump.stderr.on('data', (data) => {
+        console.error(`Backup Error: ${data}`);
+    });
+});
 
 // ========================================
 // Database Connection (Graceful Handling)

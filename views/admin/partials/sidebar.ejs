@@ -10,7 +10,8 @@
                 class="w-8 h-8 rounded-lg shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform object-cover">
             <span
                 class="font-bold text-lg text-brand-500 tracking-tight group-hover:text-brand-400 transition-colors">MoRPH
-                Admin</span>
+                <%= user && user.role==='moderator' ? 'Moderator' : 'Admin' %>
+            </span>
         </a>
         <button id="closeSidebar" class="md:hidden ml-auto text-slate-400 hover:text-white transition"><i
                 class="fas fa-times"></i></button>
@@ -105,7 +106,7 @@
             </div>
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-white truncate">
-                    <%= user ? user.username : 'Admin User' %>
+                    <%= user ? (user.name || user.email) : 'Admin User' %>
                 </p>
                 <a href="/admin/logout"
                     class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">

@@ -1090,12 +1090,16 @@ exports.getNotifications = async (req, res) => {
 
         // Add comments
         recentComments.forEach(comment => {
+            let link = '#';
+            if (comment.postId) link = `/admin/comments/post/${comment.postId}`;
+            else if (comment.projectId) link = `/admin/comments/project/${comment.projectId}`;
+
             notifications.push({
                 id: comment.id,
                 type: 'comment',
                 title: 'New comment',
                 subtitle: comment.author_name || 'Guest',
-                link: '#', // Could link to the post/project if we had the association data
+                link: link,
                 createdAt: comment.createdAt
             });
         });

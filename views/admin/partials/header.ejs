@@ -11,6 +11,7 @@
     <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/jpeg" href="/images/logo.jpg">
 
     <!-- TinyMCE -->
     <script src="https://cdn.tiny.cloud/1/jw3r8mrkejtc080xhfbysyr7d2nzumb5hu1ss4c1ut12pjd1/tinymce/6/tinymce.min.js"
@@ -114,8 +115,12 @@
                             <button id="profileBtn"
                                 class="flex items-center gap-3 focus:outline-none hover:bg-slate-50 p-1 pr-2 rounded-lg transition">
                                 <div class="text-right hidden sm:block">
-                                    <p class="text-sm font-semibold text-slate-700">Admin User</p>
-                                    <p class="text-xs text-slate-500">Administrator</p>
+                                    <p class="text-sm font-semibold text-slate-700">
+                                        <%= user ? (user.name || user.email) : 'Admin User' %>
+                                    </p>
+                                    <p class="text-xs text-slate-500 capitalize">
+                                        <%= user ? user.role : 'Administrator' %>
+                                    </p>
                                 </div>
                                 <div
                                     class="w-9 h-9 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold border border-brand-200">
@@ -127,8 +132,12 @@
                             <div id="profileMenu"
                                 class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 z-50 py-1">
                                 <div class="px-4 py-3 border-b border-slate-50 mb-1">
-                                    <p class="text-sm font-medium text-slate-800">Admin User</p>
-                                    <p class="text-xs text-slate-500">admin@morph.com</p>
+                                    <p class="text-sm font-medium text-slate-800">
+                                        <%= user ? (user.name || 'User' ) : 'Admin User' %>
+                                    </p>
+                                    <p class="text-xs text-slate-500">
+                                        <%= user ? user.email : 'admin@morph.com' %>
+                                    </p>
                                 </div>
                                 <a href="/admin/settings"
                                     class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition"><i
