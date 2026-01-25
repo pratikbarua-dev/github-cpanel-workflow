@@ -21,6 +21,7 @@
                             class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 group reveal">
                             <div class="relative h-48 overflow-hidden">
                                 <img src="<%= project.image_url %>"
+                                    alt="<%= locale==='bn' && project.title_bn ? project.title_bn : project.title %>"
                                     class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                                 <div
                                     class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary">
