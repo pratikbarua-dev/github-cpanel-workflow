@@ -1,0 +1,80 @@
+<%- include('../partials/header', { title: title , path: '/comments' }) %>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+        <!-- Header -->
+        <div class="max-w-4xl mx-auto mb-8">
+            <a href="/admin/comments"
+                class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 transition-colors mb-4 group">
+                <div
+                    class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center group-hover:bg-slate-300 transition-colors">
+                    <i class="fas fa-arrow-left text-xs"></i>
+                </div>
+                Back to Threads
+            </a>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight leading-snug">
+                <%= title %>
+            </h1>
+        </div>
+
+        <!-- Comments Feed -->
+        <div class="max-w-4xl mx-auto space-y-6">
+            <% if (comments.length> 0) { %>
+                <% comments.forEach(function(comment) { %>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition hover:shadow-md">
+                        <div class="flex gap-4">
+                            <!-- Avatar Placeholder -->
+                            <div class="flex-shrink-0">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-100 to-brand-200 flex items-center justify-center text-brand-600 font-bold border border-brand-100 italic">
+                                    <%= (comment.author_name || 'G' ).charAt(0).toUpperCase() %>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 class="text-sm font-bold text-slate-900">
+                                            <%= comment.author_name || 'Guest' %>
+                                        </h3>
+                                        <p class="text-xs text-slate-500">
+                                            <%= new Date(comment.createdAt).toLocaleString('en-US', {
+                                                dateStyle: 'medium' , timeStyle: 'short' }) %>
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border <%= comment.status === 'approved' ? 'bg-green-50 text-green-700 border-green-200' : (comment.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200') %>">
+                                            <%= comment.status.charAt(0).toUpperCase() + comment.status.slice(1) %>
+                                        </span>
+                                        <form action="/admin/comments/<%= comment.id %>/delete" method="POST"
+                                            onsubmit="return confirm('Are you sure? This cannot be undone.');">
+                                            <button type="submit"
+                                                class="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-all ml-2"
+                                                title="Delete Comment">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">
+                                    <%= comment.content %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                        <% } else { %>
+                            <div class="text-center py-16 bg-white rounded-xl border border-dashed border-slate-300">
+                                <div
+                                    class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+                                    <i class="far fa-comment-dots text-xl"></i>
+                                </div>
+                                <p class="text-slate-500 font-medium">No comments found in this thread.</p>
+                            </div>
+                            <% } %>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>

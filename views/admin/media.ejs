@@ -1,0 +1,114 @@
+<%- include('../partials/header', { title: 'Media Library' , path: '/media' }) %>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Media Library</h1>
+                    <p class="text-sm text-gray-500 mt-1">Manage all your uploaded images</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="/admin/dashboard"
+                        class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition shadow-sm font-medium">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <button onclick="document.getElementById('uploadClick').click()"
+                        class="bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-teal-700 transition shadow-sm font-medium">
+                        <i class="fas fa-cloud-upload-alt"></i> Upload Image
+                    </button>
+                    <!-- Hidden Form -->
+                    <form action="/admin/media" method="POST" enctype="multipart/form-data" class="hidden">
+                        <input type="file" name="image" id="uploadClick" onchange="this.form.submit()" accept="image/*">
+                    </form>
+                </div>
+            </div>
+
+            <% if (locals.error) { %>
+                <div class="bg-red-50 text-red-600 px-4 py-3 rounded-lg border border-red-100 mb-6 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <%= error %>
+                </div>
+                <% } %>
+
+                    <% if (locals.success) { %>
+                        <div
+                            class="bg-green-50 text-green-600 px-4 py-3 rounded-lg border border-green-100 mb-6 flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <%= success %>
+                        </div>
+                        <% } %>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                <% if (locals.images && images.length> 0) { %>
+                                    <% images.forEach(img=> { %>
+                                        <div
+                                            class="group relative bg-white border border-gray-200 rounded-xl overflow-hidden aspect-square shadow-sm hover:shadow-lg transition-all duration-300">
+                                            <!-- Image -->
+                                            <img src="/uploads/<%= img %>"
+                                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+                                            <!-- Overlay -->
+                                            <div
+                                                class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-3 p-4 backdrop-blur-[1px]">
+
+                                                <button onclick="copyUrl('/uploads/<%= img %>')"
+                                                    class="bg-white/10 hover:bg-white text-white hover:text-gray-900 border border-white/20 hover:border-white px-4 py-2 rounded-lg text-sm font-semibold transition-all w-full flex items-center justify-center gap-2 backdrop-blur-md">
+                                                    <i class="fas fa-link"></i> Copy URL
+                                                </button>
+
+                                                <form action="/admin/media/<%= img %>/delete" method="POST"
+                                                    class="w-full"
+                                                    onsubmit="return confirm('Delete this image permanently?');">
+                                                    <button type="submit"
+                                                        class="bg-red-500/80 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full flex items-center justify-center gap-2">
+                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            <!-- Footer Info -->
+                                            <div
+                                                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-8 pb-3 px-3 text-white text-xs truncate">
+                                                <span class="font-medium opacity-90">
+                                                    <%= img %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <div
+                                                    class="col-span-full py-16 text-center bg-gray-50 border border-gray-100 rounded-xl border-dashed">
+                                                    <div class="text-gray-300 text-6xl mb-4"><i
+                                                            class="fas fa-images"></i></div>
+                                                    <h3 class="text-xl font-medium text-gray-600">No images found</h3>
+                                                    <p class="text-gray-400 mt-2">Upload images to see them here.</p>
+                                                </div>
+                                                <% } %>
+                            </div>
+        </div>
+    </main>
+
+    <script>
+        function copyUrl(url) {
+            // Full URL
+            const fullUrl = window.location.origin + url;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                // Toast notification (simple alert for now, effectively communicates success)
+                const btn = document.activeElement;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.classList.add('bg-green-500', 'text-white', 'border-transparent');
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-green-500', 'text-white', 'border-transparent');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy URL');
+            });
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

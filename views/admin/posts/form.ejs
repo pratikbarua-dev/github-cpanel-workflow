@@ -1,0 +1,404 @@
+<%- include('../partials/header', { title: post.id ? 'Edit Post' : 'New Post' , path: '/posts' }) %>
+
+    <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+
+    <!-- Image Resize Styles -->
+    <style>
+        .ql-editor img {
+            cursor: nwse-resize;
+            max-width: 100%;
+        }
+
+        .ql-editor img.resizing {
+            outline: 2px dashed #0ea5e9;
+        }
+
+        #editor-container {
+            min-height: 400px;
+            height: auto !important;
+        }
+
+        #editor-container .ql-editor {
+            min-height: 350px;
+            overflow-y: visible;
+        }
+    </style>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-5xl mx-auto">
+            <!-- Top Navbar/Actions -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <a href="/admin/posts"
+                        class="text-gray-500 hover:text-teal-600 text-sm flex items-center gap-1 mb-1">
+                        <i class="fas fa-arrow-left"></i> Back to Posts
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        <%= post.id ? 'Edit Post' : 'Add New Post' %>
+                    </h1>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="savePost('draft')"
+                        class="bg-gray-100 text-gray-700 hover:bg-gray-200 px-5 py-2.5 rounded-lg font-medium transition">
+                        Save Draft
+                    </button>
+                    <button type="button" onclick="savePost('archived')"
+                        class="bg-yellow-500 text-white hover:bg-yellow-600 px-5 py-2.5 rounded-lg font-medium transition shadow-sm">
+                        Archive
+                    </button>
+                    <button type="button" onclick="savePost('published')"
+                        class="bg-teal-600 text-white hover:bg-teal-700 px-6 py-2.5 rounded-lg font-bold shadow-sm transition transform active:scale-95">
+                        Publish
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                <form id="postForm" class="space-y-6">
+
+                    <!-- Title Input -->
+                    <div>
+                        <input type="text" id="title" name="title" value="<%= post.title || '' %>"
+                            placeholder="Enter post title here..." required
+                            class="w-full text-3xl font-bold text-gray-800 placeholder-gray-300 border-none focus:ring-0 focus:outline-none px-0 py-2">
+                        <hr class="border-gray-100">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="md:col-span-2 space-y-6">
+                            <!-- Quill Editor -->
+                            <div>
+                                <label
+                                    class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Content</label>
+                                <div id="editor-container" class="bg-white border border-gray-200 rounded-lg">
+                                    <%- post.content || '' %>
+                                </div>
+                                <!-- Hidden field to store original content for image style restoration -->
+                                <textarea id="original-content"
+                                    style="display:none;"><%- post.content || '' %></textarea>
+                            </div>
+
+                            <!-- Excerpt -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Excerpt (Optional)</label>
+                                <textarea id="excerpt" rows="3"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition"><%= post.excerpt || '' %></textarea>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Settings Panel -->
+                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                                <h3 class="font-bold text-gray-800 mb-4">Post Settings</h3>
+
+                                <!-- Type -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Type</label>
+                                    <select id="type"
+                                        class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
+                                        <option value="News" <%=post.type==='News' ? 'selected' : '' %>>News</option>
+                                        <option value="Event" <%=post.type==='Event' ? 'selected' : '' %>>Event</option>
+                                        <option value="Article" <%=post.type==='Article' ? 'selected' : '' %>>Article
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Date -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Date</label>
+                                    <input type="date" id="date" value="<%= post.date || '' %>"
+                                        class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
+                                </div>
+
+                                <!-- Slug -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-600 mb-1">Slug (URL)</label>
+                                    <input type="text" id="slug" value="<%= post.slug || '' %>"
+                                        placeholder="Auto-generated"
+                                        class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none text-sm text-gray-500">
+                                </div>
+
+                                <!-- Heading Image -->
+                                <div class="pt-3 border-t border-gray-200">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        <i class="fas fa-image mr-1 text-teal-600"></i> Heading Image
+                                    </label>
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="block text-xs text-gray-500 mb-1">Image URL</label>
+                                            <input type="text" id="heading_image_url"
+                                                value="<%= post.heading_image || '' %>"
+                                                placeholder="https://example.com/image.jpg"
+                                                onchange="previewHeadingImage()"
+                                                class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-500 mb-1">Or Upload</label>
+                                            <input type="file" id="heading_image_file" accept="image/*"
+                                                onchange="handleImageUpload(this)"
+                                                class="w-full px-2 py-1 border border-gray-200 rounded-lg bg-white text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-teal-50 file:text-teal-700 file:font-medium hover:file:bg-teal-100">
+                                        </div>
+                                    </div>
+                                    <div id="heading_image_preview" class="mt-2 hidden">
+                                        <p class="text-xs text-gray-500 mb-1">Preview:</p>
+                                        <img id="preview_img" src="" alt="Preview"
+                                            class="w-full max-h-32 object-cover rounded-lg border border-gray-200">
+                                    </div>
+                                </div>
+
+                                <!-- Info Alert -->
+                                <div id="notification" class="hidden p-4 rounded-lg bg-blue-50 text-blue-700 text-sm">
+                                    Saving...
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script>
+        // Custom Image Blot to preserve style attributes (for image resizing)
+        var BlockEmbed = Quill.import('blots/block/embed');
+
+        class ResizableImage extends BlockEmbed {
+            static create(value) {
+                let node = super.create();
+                if (typeof value === 'object') {
+                    node.setAttribute('src', value.src);
+                    if (value.width) node.style.width = value.width;
+                    if (value.height) node.style.height = value.height;
+                    if (value.style) node.setAttribute('style', value.style);
+                } else {
+                    node.setAttribute('src', value);
+                }
+                return node;
+            }
+
+            static value(node) {
+                return {
+                    src: node.getAttribute('src'),
+                    width: node.style.width,
+                    height: node.style.height,
+                    style: node.getAttribute('style')
+                };
+            }
+
+            static formats(node) {
+                let format = {};
+                if (node.hasAttribute('style')) {
+                    format.style = node.getAttribute('style');
+                }
+                if (node.style.width) {
+                    format.width = node.style.width;
+                }
+                return format;
+            }
+
+            format(name, value) {
+                if (name === 'style' || name === 'width') {
+                    if (value) {
+                        this.domNode.setAttribute('style', value);
+                    } else {
+                        this.domNode.removeAttribute('style');
+                    }
+                } else {
+                    super.format(name, value);
+                }
+            }
+        }
+
+        ResizableImage.blotName = 'image';
+        ResizableImage.tagName = 'IMG';
+
+        Quill.register(ResizableImage, true);
+
+        // Initialize Quill
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Restore image styles from original content after Quill initializes
+        (function restoreImageStyles() {
+            const originalContent = document.getElementById('original-content').value;
+            if (!originalContent) return;
+
+            // Parse original content to extract image styles
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(originalContent, 'text/html');
+            const originalImages = doc.querySelectorAll('img');
+            const editorImages = document.querySelectorAll('#editor-container .ql-editor img');
+
+            originalImages.forEach((origImg, index) => {
+                if (editorImages[index] && origImg.getAttribute('style')) {
+                    editorImages[index].setAttribute('style', origImg.getAttribute('style'));
+                }
+            });
+        })();
+
+        // Image resize functionality
+        (function () {
+            const editorContainer = document.querySelector('#editor-container .ql-editor');
+            let currentImg = null;
+            let startX, startWidth;
+
+            editorContainer.addEventListener('mousedown', function (e) {
+                if (e.target.tagName === 'IMG') {
+                    currentImg = e.target;
+                    startX = e.clientX;
+                    startWidth = currentImg.offsetWidth;
+                    currentImg.classList.add('resizing');
+                    e.preventDefault();
+
+                    const onMouseMove = function (e) {
+                        if (currentImg) {
+                            const diff = e.clientX - startX;
+                            const newWidth = Math.max(50, startWidth + diff);
+                            currentImg.style.width = newWidth + 'px';
+                            currentImg.style.height = 'auto';
+                        }
+                    };
+
+                    const onMouseUp = function () {
+                        if (currentImg) {
+                            currentImg.classList.remove('resizing');
+                            currentImg = null;
+                        }
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                }
+            });
+        })();
+
+        // Image preview from URL
+        function previewHeadingImage() {
+            const url = document.getElementById('heading_image_url').value;
+            const previewContainer = document.getElementById('heading_image_preview');
+            const previewImg = document.getElementById('preview_img');
+
+            if (url) {
+                previewImg.src = url;
+                previewContainer.classList.remove('hidden');
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        }
+
+        // Handle file upload and convert to base64
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64 = e.target.result;
+                    document.getElementById('heading_image_url').value = base64;
+                    document.getElementById('preview_img').src = base64;
+                    document.getElementById('heading_image_preview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Initialize preview on load if there's an existing image
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingUrl = document.getElementById('heading_image_url').value;
+            if (existingUrl) {
+                previewHeadingImage();
+            }
+        });
+
+        async function publishPost(status) {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            notification.classList.add('bg-blue-100', 'text-blue-700');
+            notification.textContent = 'Saving...';
+            notification.classList.remove('hidden');
+
+            const title = document.getElementById('title').value;
+            const type = document.getElementById('type').value;
+            const date = document.getElementById('date').value;
+            const slug = document.getElementById('slug').value;
+            const excerpt = document.getElementById('excerpt').value;
+            const heading_image = document.getElementById('heading_image_url').value;
+            const content = quill.root.innerHTML;
+
+            if (!title.trim()) {
+                notification.textContent = "Title is required!";
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+                return;
+            }
+
+            const data = {
+                title,
+                type,
+                date,
+                slug,
+                excerpt,
+                heading_image,
+                content,
+                status: status
+            };
+
+            // Determine URL (Create vs Update)
+            const postId = '<%= post.id %>';
+            const url = postId ? `/admin/posts/${postId}/api` : '/admin/posts/api/create';
+            const method = 'POST'; // We'll use POST for both for now, or PUT if updated
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    notification.textContent = 'Post saved successfully! Redirecting...';
+                    notification.classList.replace('bg-blue-100', 'bg-green-100');
+                    notification.classList.replace('text-blue-700', 'text-green-700');
+                    setTimeout(() => {
+                        window.location.href = '/admin/posts';
+                    }, 1000);
+                } else {
+                    throw new Error(result.error);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                notification.textContent = 'Error saving post: ' + error.message;
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+            }
+        }
+
+        // Bind function to window scope for onclick
+        window.savePost = publishPost;
+
+    </script>
+
+    <%- include('../partials/footer') %>

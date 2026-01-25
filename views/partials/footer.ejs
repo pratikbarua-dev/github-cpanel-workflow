@@ -1,0 +1,90 @@
+</main>
+
+<footer class="reveal bg-footer text-white pt-16 pb-6 mt-auto">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:lg:grid-cols-4 gap-12 mb-12">
+        <div class="col-span-1">
+            <div class="flex items-center gap-3 mb-4">
+                <img src="/images/logo.jpg" alt="MoRPH" class="h-12 w-auto bg-white rounded p-1">
+                <span class="text-2xl font-bold text-red-500">MoRPH</span>
+            </div>
+            <p class="text-gray-300 text-sm leading-relaxed">
+                Registration No: P-53086/2024.<br>
+                <%= __('footer.tagline') %>
+            </p>
+        </div>
+        <div class="col-span-1">
+            <h4 class="font-bold mb-4 text-lg">
+                <%= __('footer.organization') %>
+            </h4>
+            <ul class="space-y-2 text-sm text-gray-300">
+                <li><a href="/about" class="hover:text-white transition">
+                        <%= __('header.who_we_are') %>
+                    </a></li>
+                <li><a href="/team" class="hover:text-white transition">
+                        <%= __('header.team') %>
+                    </a></li>
+                <li><a href="/contact" class="hover:text-white transition">
+                        <%= __('header.contact') %>
+                    </a></li>
+            </ul>
+        </div>
+        <div class="col-span-1">
+            <h4 class="font-bold mb-4 text-lg">
+                <%= __('footer.our_work') %>
+            </h4>
+            <ul class="space-y-2 text-sm text-gray-300">
+                <li><a href="/projects" class="hover:text-white transition">
+                        <%= __('header.projects') %>
+                    </a></li>
+                <li><a href="/publications" class="hover:text-white transition">
+                        <%= __('header.publications') %>
+                    </a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold mb-4 text-lg">
+                <%= __('footer.connect') %>
+            </h4>
+            <div class="flex flex-col gap-3">
+                <a href="https://www.facebook.com/Morph.Bangladesh" target="_blank" rel="noopener noreferrer"
+                    class="flex items-center gap-3 group">
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <span class="text-sm text-gray-300 group-hover:text-white transition">Follow on Facebook</span>
+                </a>
+                <a href="mailto:contact@morphbangladesh.org" class="flex items-center gap-3 group">
+                    <div
+                        class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <span
+                        class="text-sm text-gray-300 group-hover:text-white transition">contact@morphbangladesh.org</span>
+                </a>
+            </div>
+            <div class="mt-6 pt-4 border-t border-white/10">
+                <p class="text-sm text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i>Tangail, Bangladesh</p>
+            </div>
+        </div>
+    </div>
+    <div
+        class="border-t border-white/10 pt-6 px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+        <p>&copy; 2026 MoRPH. <%= __('footer.rights') %>
+        </p>
+        <div class="flex items-center gap-2">
+            <span class="text-xs uppercase tracking-wider opacity-70">Built By</span>
+            <a href="https://footer.baruaprathik06.workers.dev/" target="_blank" rel="noopener noreferrer"
+                class="flex items-center gap-0 bg-white/5 pl-1 pr-3 py-1 rounded-full border border-white/10 hover:bg-white/10 transition cursor-pointer">
+                <img src="/images/opticode-logo.png" alt="Opticode" class="h-8 w-auto">
+                <span class="font-semibold text-white tracking-wide text-xs">Opticode</span>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/script.js"></script>
+</body>
+
+</html>

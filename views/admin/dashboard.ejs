@@ -1,0 +1,436 @@
+<%- include('partials/header', { title: 'Dashboard' , path: '/dashboard' }) %>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-8">
+
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-slate-800">Overview</h1>
+            <p class="text-slate-500 text-sm mt-1">Here is what's happening with your website today.</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Projects Card -->
+            <a href="/admin/projects"
+                class="bg-white p-5 rounded-xl shadow-sm border border-slate-300 relative overflow-hidden group hover:shadow-md hover:border-brand-400 transition-all">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Total Projects</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">
+                            <%= projectCount %>
+                        </h3>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                </div>
+                <div class="flex items-center text-xs text-green-600 font-medium">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    <span>Active Portfolio</span>
+                </div>
+            </a>
+
+            <!-- Posts Card -->
+            <a href="/admin/posts"
+                class="bg-white p-5 rounded-xl shadow-sm border border-slate-300 relative overflow-hidden group hover:shadow-md hover:border-emerald-400 transition-all">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Total Posts</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">
+                            <%= postCount %>
+                        </h3>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                </div>
+                <div class="flex items-center text-xs text-slate-400 font-medium">
+                    <span>Published Content</span>
+                </div>
+            </a>
+
+            <!-- Forms Card (New - Total Definitions) -->
+            <a href="/admin/forms"
+                class="bg-white p-5 rounded-xl shadow-sm border border-slate-300 relative overflow-hidden group hover:shadow-md hover:border-orange-400 transition-all">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Custom Forms</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">
+                            <%= locals.formCount || 0 %>
+                        </h3>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <div class="flex items-center text-xs text-slate-400 font-medium">
+                    <span>Active Form Definitions</span>
+                </div>
+            </a>
+
+            <!-- Messages Card (Submissions) -->
+            <a href="/admin/forms"
+                class="bg-white p-5 rounded-xl shadow-sm border border-slate-300 relative overflow-hidden group hover:shadow-md hover:border-purple-400 transition-all">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider">Submissions</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">
+                            <%= submissions.length %>
+                        </h3>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+                <div
+                    class="flex items-center text-xs <%= submissions.length > 0 ? 'text-purple-600' : 'text-slate-400' %> font-medium">
+                    <% if(submissions.length> 0) { %>
+                        <span class="animate-pulse mr-1">●</span> New Responses
+                        <% } else { %>
+                            <span>All caught up</span>
+                            <% } %>
+                </div>
+            </a>
+        </div>
+
+        <!-- Entry Animation Styles -->
+        <style>
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-fade-in-up {
+                animation: fadeInUp 0.5s ease-out forwards;
+                opacity: 0;
+            }
+
+            .delay-100 {
+                animation-delay: 0.1s;
+            }
+
+            .delay-200 {
+                animation-delay: 0.2s;
+            }
+
+            .delay-300 {
+                animation-delay: 0.3s;
+            }
+        </style>
+
+        <!-- Analytics & Quick Actions Grid -->
+        <% if (locals.chartData) { %>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 animate-fade-in-up delay-200">
+                <!-- Line Chart (Main) -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-300">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-slate-800">Submissions Trend</h3>
+                        <div class="flex items-center gap-2">
+                            <% if (submissions.length> 0) { %>
+                                <select
+                                    class="bg-slate-50 border-none text-xs text-slate-500 rounded-md py-1 px-2 focus:ring-0 cursor-pointer hover:bg-slate-100">
+                                    <option>Last 30 Days</option>
+                                    <option>Last 7 Days</option>
+                                </select>
+                                <% } %>
+                        </div>
+                    </div>
+                    <div class="h-80 relative">
+                        <% const sData=JSON.parse(chartData.data); const totalS=sData.reduce((a, b)=> a + b, 0);
+                            %>
+
+                            <% if (totalS===0) { %>
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center bg-white rounded-lg border-2 border-dashed border-slate-200">
+                                    <div
+                                        class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                                        <i class="fas fa-chart-line text-2xl text-slate-400"></i>
+                                    </div>
+                                    <p class="text-slate-600 font-medium mb-1">No submissions yet</p>
+                                    <p class="text-slate-400 text-sm text-center max-w-xs">Form submissions from the
+                                        last 30 days will appear here as a trend chart.</p>
+                                </div>
+                                <% } else { %>
+                                    <canvas id="submissionsChart"></canvas>
+                                    <% } %>
+                    </div>
+                </div>
+
+                <!-- Right Column: Quick Action & Doughnut -->
+                <div class="space-y-6">
+                    <!-- Quick Action Card (Compact) -->
+                    <div class="bg-gradient-to-br from-brand-600 to-indigo-700 p-5 rounded-xl shadow-md text-white">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-base">Quick Actions</h3>
+                            <i class="fas fa-bolt text-brand-200"></i>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <a href="/admin/posts/new"
+                                class="bg-white/10 hover:bg-white/20 backdrop-blur-sm p-3 rounded-lg text-center transition group">
+                                <i
+                                    class="fas fa-plus block text-lg mb-1 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-xs font-semibold">Post</span>
+                            </a>
+                            <a href="/admin/projects/new"
+                                class="bg-white/10 hover:bg-white/20 backdrop-blur-sm p-3 rounded-lg text-center transition group">
+                                <i
+                                    class="fas fa-project-diagram block text-lg mb-1 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-xs font-semibold">Project</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Doughnut Chart -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-300 flex flex-col">
+                        <h3 class="font-bold text-slate-800 mb-4 text-sm">Content Mix</h3>
+                        <div class="h-48 relative mb-4">
+                            <canvas id="contentChart"></canvas>
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="text-center">
+                                    <span class="block text-2xl font-bold text-slate-800">
+                                        <%= projectCount + postCount + publicationCount %>
+                                    </span>
+                                    <span class="block text-[10px] text-slate-400 uppercase tracking-wide">Total
+                                        Items</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="space-y-3 mt-auto">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="flex items-center text-slate-600">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 mr-2"></span> Projects
+                                </span>
+                                <span class="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">
+                                    <%= projectCount %>
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="flex items-center text-slate-600">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-2"></span> Posts
+                                </span>
+                                <span class="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">
+                                    <%= postCount %>
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="flex items-center text-slate-600">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500 mr-2"></span> Publications
+                                </span>
+                                <span class="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">
+                                    <%= publicationCount %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Common styling
+                    Chart.defaults.font.family = "'Inter', sans-serif";
+                    Chart.defaults.color = '#64748b';
+                    Chart.defaults.scale.grid.color = '#e2e8f0';
+
+                    // Only init line chart if canvas exists (it might be hidden by empty state)
+                    const canvasSub = document.getElementById('submissionsChart');
+                    if (canvasSub) {
+                        const ctxSub = canvasSub.getContext('2d');
+
+                        // Gradient for line chart
+                        let gradient = ctxSub.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)'); // Brand blue
+                        gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+                        new Chart(ctxSub, {
+                            type: 'line',
+                            data: {
+                                labels: <%-chartData.labels %>,
+                                datasets: [{
+                                    label: 'Submissions',
+                                    data: <%-chartData.data %>,
+                                    borderColor: '#3b82f6', // Brand blue
+                                    borderWidth: 2,
+                                    pointBackgroundColor: '#ffffff',
+                                    pointBorderColor: '#3b82f6',
+                                    pointBorderWidth: 2,
+                                    pointRadius: 4,
+                                    pointHoverRadius: 6,
+                                    tension: 0.4, // Smoother curve
+                                    fill: true,
+                                    backgroundColor: gradient
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        backgroundColor: '#1e293b',
+                                        padding: 12,
+                                        titleFont: { size: 13, weight: 600 },
+                                        bodyFont: { size: 12 },
+                                        cornerRadius: 8,
+                                        displayColors: false
+                                    }
+                                },
+                                scales: {
+                                    y: { beginAtZero: true, border: { display: false } },
+                                    x: { grid: { display: false }, border: { display: false } }
+                                }
+                            }
+                        });
+                    }
+
+                    const ctxContent = document.getElementById('contentChart').getContext('2d');
+                    new Chart(ctxContent, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Projects', 'Posts', 'Publications'],
+                            datasets: [{
+                                data: <%-chartData.breakdown %>,
+                                backgroundColor: ['#3b82f6', '#10b981', '#a855f7'],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '75%',
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                });
+            </script>
+            <% } %>
+
+                <!-- Recent Submissions Table -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-300 overflow-hidden">
+                    <div
+                        class="p-6 border-b border-slate-300 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <h2 class="font-bold text-slate-800 text-lg">Recent Form Submissions</h2>
+                        <a href="/admin/forms" class="text-sm text-brand-600 hover:text-brand-700 font-medium">View All
+                            <i class="fas fa-arrow-right ml-1 text-xs"></i></a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Name</th>
+                                    <th class="px-6 py-4">Subject</th>
+                                    <th class="px-6 py-4">Type</th>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 border-l border-transparent"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-300">
+                                <% if (submissions.length> 0) { %>
+                                    <% submissions.forEach(function(sub) { %>
+                                        <tr class="hover:bg-slate-50/80 transition-colors group">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center">
+                                                    <div
+                                                        class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold text-xs mr-3">
+                                                        <%= sub.name.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <span class="font-semibold text-slate-800 text-sm">
+                                                        <%= sub.name %>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-600">
+                                                <%= sub.subject %>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-500">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-1 rounded bg-slate-100 text-slate-600 text-xs font-medium">
+                                                    <%= sub.type %>
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-500">
+                                                <%= sub.createdAt.toLocaleDateString() %>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <% let statusColor='bg-yellow-100 text-yellow-700' ;
+                                                    if(sub.status==='read' ) statusColor='bg-green-100 text-green-700' ;
+                                                    if(sub.status==='archived' ) statusColor='bg-gray-100 text-gray-700'
+                                                    ; %>
+                                                    <span
+                                                        class="px-2.5 py-1 text-xs font-semibold rounded-full <%= statusColor %> capitalize">
+                                                        <%= sub.status %>
+                                                    </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-right">
+                                                <div
+                                                    class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <a href="/admin/submissions/<%= sub.id %>?type=<%= sub.isCustom ? 'custom' : 'legacy' %>"
+                                                        class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition"
+                                                        title="View Response">
+                                                        <i class="far fa-eye"></i>
+                                                    </a>
+                                                    <form
+                                                        action="/admin/submissions/<%= sub.id %>/delete?type=<%= sub.isCustom ? 'custom' : 'legacy' %>"
+                                                        method="POST" class="inline"
+                                                        onsubmit="return confirm('Are you sure?')">
+                                                        <button type="submit"
+                                                            class="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition"
+                                                            title="Delete">
+                                                            <i class="far fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="6" class="px-6 py-12 text-center">
+                                                        <div
+                                                            class="flex flex-col items-center justify-center text-slate-400">
+                                                            <div
+                                                                class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                                                <i class="far fa-folder-open text-2xl"></i>
+                                                            </div>
+                                                            <p class="text-sm font-medium">No submissions found</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <% if (submissions.length> 0) { %>
+                        <div class="px-6 py-4 border-t border-slate-300 bg-slate-50/50 flex justify-center">
+                            <!-- Pagination placeholder -->
+                            <nav class="flex gap-1" aria-label="Pagination">
+                                <button
+                                    class="px-3 py-1 text-xs rounded-md bg-white border border-slate-300 text-slate-500 hover:bg-slate-50 disabled:opacity-50"
+                                    disabled>Previous</button>
+                                <button
+                                    class="px-3 py-1 text-xs rounded-md bg-white border border-slate-300 text-slate-500 hover:bg-slate-50 disabled:opacity-50"
+                                    disabled>Next</button>
+                            </nav>
+                        </div>
+                        <% } %>
+                </div>
+    </main>
+
+    <%- include('partials/footer') %>

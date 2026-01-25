@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Areas - MoRPH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0e8c96',
+                        'primary-light': '#20b2aa',
+                        secondary: '#2c3e50',
+                        footer: '#0b5063',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .nav-link {
+                @apply relative text-secondary font-medium transition-colors duration-300 hover:text-primary pb-1;
+            }
+            .nav-link::after {
+                content: '';
+                @apply absolute w-0 h-[2px] bottom-0 left-0 bg-primary transition-all duration-300 ease-in-out;
+            }
+            .nav-link:hover::after, .nav-link.active::after {
+                @apply w-full;
+            }
+            .nav-link.active {
+                @apply text-primary;
+            }
+            .btn-primary {
+                @apply relative overflow-hidden bg-gradient-to-r from-primary to-primary-light text-white px-6 py-2.5 rounded-full font-semibold shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-sans text-gray-800 bg-gray-50 antialiased">
+
+    <header class="bg-white sticky top-0 z-50 shadow-sm py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 text-2xl font-bold text-primary group">
+                <img src="./images/logo.jpg" alt="MoRPH Logo" class="h-12 w-auto object-contain hidden md:block">
+                <i class=" md:hidden transition-transform group-hover:rotate-12"></i>
+                MoRPH
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="nav-link">Home</a>
+
+                <!-- About Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        About <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="about.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">Who
+                            We Are</a>
+                        <a href="team.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">Our
+                            Team</a>
+                        <a href="partnerships.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Partnerships</a>
+                    </div>
+                </div>
+
+                <!-- Research Dropdown -->
+                <div class="relative group">
+                    <button
+                        class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none text-primary">
+                        Research <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="focus-areas.html"
+                            class="block px-5 py-3 text-primary bg-teal-50 font-medium first:rounded-t-xl transition-colors">Focus
+                            Areas</a>
+                        <a href="projects.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">Projects</a>
+                        <a href="publications.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Publications</a>
+                    </div>
+                </div>
+
+                <!-- Insights Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        Insights <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="news.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">News
+                            & Analysis</a>
+                        <a href="events.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Events</a>
+                    </div>
+                </div>
+
+                <a href="get-involved.html" class="nav-link">Get Involved</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="hidden md:block">
+                <a href="partner-with-us.html" class="btn-primary group">
+                    <span class="relative z-10">Partner with Us</span>
+                    <div
+                        class="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 group-hover:scale-100 group-hover:bg-white/10">
+                    </div>
+                </a>
+            </div>
+
+            <button class="md:hidden text-2xl text-secondary">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12 max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-5xl font-bold text-secondary mb-4">Our Core Focus Areas</h1>
+                <p class="text-lg text-gray-600">Addressing critical global and local challenges through
+                    interdisciplinary research and community engagement.</p>
+            </div>
+
+            <div class="flex w-full h-40 md:h-48 rounded-2xl overflow-hidden shadow-lg mt-8">
+                <div class="w-1/4 h-full overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=400&q=80"
+                        alt="Nature"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+                <div class="w-1/4 h-full overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80"
+                        alt="Tech"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+                <div class="w-1/4 h-full overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80"
+                        alt="People"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+                <div class="w-1/4 h-full overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80"
+                        alt="Data"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pb-24 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">Public Health</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Community health solutions.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">Migration & Refugees</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Policy and support systems.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">Environment & Climate</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Resilience and sustainability.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">Language & Linguistics</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Preserving linguistic diversity.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">Bangladesh Studies</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">History, culture, and society.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">ICT & Innovation</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Technology for social good.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">Education & Skills</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Empowering through knowledge.</p>
+                </div>
+
+                <div
+                    class="bg-white p-8 rounded-xl shadow-sm border border-transparent transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:border-teal-100 group">
+                    <div
+                        class="text-4xl text-primary mb-5 group-hover:scale-110 transition-transform duration-300 inline-block">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-2">Policy & Governance</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Evidence-based policy.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-white py-6 border-t border-gray-100">
+        <div class="container mx-auto px-4 text-right">
+            <p class="text-gray-500 text-sm">Contact info invitation<br><strong
+                    class="text-secondary">morph.1280739@gmail.com</strong></p>
+        </div>
+    </section>
+
+    <footer class="bg-footer text-white pt-16 pb-6">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center gap-2 text-2xl font-bold mb-4">
+                    <i class="fas fa-layer-group"></i> MoRPH
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    Registration No: P-53086/2024.<br>Grassroots research for a sustainable future.
+                </p>
+            </div>
+            <div class="col-span-1 md:col-span-1">
+                <h4 class="font-bold mb-4 text-lg">Organization</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="about.html" class="hover:text-white transition">Who We Are</a></li>
+                    <li><a href="team.html" class="hover:text-white transition">Our Team</a></li>
+                    <li><a href="partnerships.html" class="hover:text-white transition">Partnerships</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-span-1 md:col-span-1">
+                <h4 class="font-bold mb-4 text-lg">Our Work</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="focus-areas.html" class="hover:text-white transition">Focus Areas</a></li>
+                    <li><a href="projects.html" class="hover:text-white transition">Projects</a></li>
+                    <li><a href="publications.html" class="hover:text-white transition">Publications</a></li>
+                    <li><a href="news.html" class="hover:text-white transition">News & Insights</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-lg">Connect</h4>
+                <div class="flex gap-4 text-xl mb-2">
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-twitter"></i></a>
+                </div>
+                <p class="text-sm text-gray-300">MoRPH_BD</p>
+                <div class="mt-4">
+                    <h4 class="font-bold mb-2 text-lg">Contact Us</h4>
+                    <p class="text-sm text-gray-300 mb-1">morph.1280739@gmail.com</p>
+                    <p class="text-sm text-gray-300">Sylhet, Bangladesh</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10 pt-6 text-center text-sm text-gray-400">
+            <p>&copy; 2026 MoRPH. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

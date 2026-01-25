@@ -1,0 +1,64 @@
+<%- include('partials/header', { title: 'Events - MoRPH' }) %>
+
+    <main class="flex-1 bg-gray-50">
+        <!-- Hero -->
+        <div class="bg-teal-900 text-white py-16">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl font-bold mb-4">Events</h1>
+                <p class="text-teal-100 max-w-2xl mx-auto">Upcoming workshops, seminars, and community gatherings.
+                </p>
+            </div>
+        </div>
+
+        <!-- Posts Grid -->
+        <div class="container mx-auto px-4 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% if (posts.length> 0) { %>
+                    <% posts.forEach(function(post) { %>
+                        <a href="/news/<%= post.slug %>" class="block group">
+                            <article
+                                class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full">
+                                <div class="relative h-56 overflow-hidden">
+                                    <img src="<%= post.image_url %>" alt="<%= post.title %>"
+                                        class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                                    <div
+                                        class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-teal-700">
+                                        <%= post.type %>
+                                    </div>
+                                </div>
+                                <div class="p-6 flex-1 flex flex-col">
+                                    <div class="text-sm text-gray-400 mb-2 font-medium">
+                                        <%= post.date %>
+                                    </div>
+                                    <h2
+                                        class="text-xl font-bold text-gray-800 mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                                        <%= post.title %>
+                                    </h2>
+                                    <% if (post.excerpt) { %>
+                                        <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
+                                            <%= post.excerpt %>
+                                        </p>
+                                        <% } else { %>
+                                            <div class="flex-1"></div>
+                                            <% } %>
+                                                <span
+                                                    class="inline-flex items-center text-teal-600 font-semibold text-sm mt-auto group-hover:gap-2 transition-all">
+                                                    View Details <i
+                                                        class="fas fa-arrow-right ml-2 transition-transform"></i>
+                                                </span>
+                                </div>
+                            </article>
+                        </a>
+                        <% }); %>
+                            <% } else { %>
+                                <div class="col-span-3 text-center py-20">
+                                    <div class="text-6xl text-gray-200 mb-4"><i class="far fa-calendar-alt"></i></div>
+                                    <h3 class="text-2xl font-bold text-gray-400">No upcoming events</h3>
+                                    <p class="text-gray-400 mt-2">Check back later for new event announcements.</p>
+                                </div>
+                                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>

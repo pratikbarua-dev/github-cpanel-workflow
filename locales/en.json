@@ -1,0 +1,35 @@
+{
+    "header": {
+        "home": "Home",
+        "about": "About",
+        "who_we_are": "Who We Are",
+        "team": "Our Team",
+        "partnerships": "Partnerships",
+        "research": "Research",
+        "focus_areas": "Focus Areas",
+        "projects": "Projects",
+        "publications": "Publications",
+        "insights": "Insights",
+        "news": "News & Analysis",
+        "events": "Events",
+        "get_involved": "Get Involved",
+        "contact": "Contact",
+        "partner_with_us": "Partner with Us",
+        "search_placeholder": "Search..."
+    },
+    "footer": {
+        "tagline": "Grassroots research for a sustainable future.",
+        "organization": "Organization",
+        "our_work": "Our Work",
+        "connect": "Connect",
+        "contact_us": "Contact Us",
+        "rights": "All Rights Reserved."
+    },
+    "home": {
+        "hero_title": "Advancing Research, Innovation & Solutions",
+        "hero_subtitle": "A grassroots think tank bridging public health, environment, migration, and ICT for sustainable development.",
+        "latest_projects": "Latest Projects",
+        "see_all": "See all",
+        "view_details": "View Details"
+    }
+}

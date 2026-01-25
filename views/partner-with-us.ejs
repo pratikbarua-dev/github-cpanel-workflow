@@ -1,0 +1,138 @@
+<%- include('partials/header') %>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 bg-gradient-to-br from-teal-50/50 via-white to-white relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-1/2 h-full bg-teal-50/20 blur-3xl rounded-full -translate-y-1/2 translate-x-1/4">
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-secondary mb-6">
+                Partner with <span class="text-primary">MoRPH</span>
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Collaborate with us to advance research and drive sustainable solutions in Bangladesh and beyond.
+            </p>
+        </div>
+    </section>
+
+    <!-- Engagement Cards -->
+    <section class="py-16 md:py-24 bg-white relative">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto -mt-32">
+
+                <!-- Card 1: Collaborate -->
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 transform hover:-translate-y-1 border border-gray-50 flex flex-col items-center text-center group">
+                    <div class="w-20 h-20 mb-6 relative">
+                        <div
+                            class="absolute inset-0 bg-teal-50 rounded-full scale-0 group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <i class="fas fa-handshake text-4xl text-primary relative z-10 leading-[5rem]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-3 group-hover:text-primary transition-colors">
+                        Collaborate on Research</h3>
+                    <p class="text-gray-600 text-sm mb-8 leading-relaxed">
+                        Partner with us on applied research, policy analysis, and community interventions. We
+                        collaborate with universities, NGOs, and UN agencies to drive evidence-based solutions.
+                    </p>
+                    <a href="/contact?subject=Research Collaboration"
+                        class="mt-auto btn-primary w-full py-3 rounded-lg text-sm font-semibold shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30">
+                        Learn More
+                    </a>
+                </div>
+
+                <!-- Card 2: Support -->
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 transform hover:-translate-y-1 border border-gray-50 flex flex-col items-center text-center group">
+                    <div class="w-20 h-20 mb-6 relative">
+                        <div
+                            class="absolute inset-0 bg-teal-50 rounded-full scale-0 group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <i class="fas fa-hand-holding-heart text-4xl text-primary relative z-10 leading-[5rem]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-3 group-hover:text-primary transition-colors">Support
+                        Our Mission</h3>
+                    <p class="text-gray-600 text-sm mb-8 leading-relaxed">
+                        Funding and resources for our initiatives and community work.
+                    </p>
+                    <a href="/get-involved"
+                        class="mt-auto btn-primary w-full py-3 rounded-lg text-sm font-semibold shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30">
+                        Donate Now
+                    </a>
+                </div>
+
+                <!-- Card 3: Network -->
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-300 transform hover:-translate-y-1 border border-gray-50 flex flex-col items-center text-center group">
+                    <div class="w-20 h-20 mb-6 relative">
+                        <div
+                            class="absolute inset-0 bg-teal-50 rounded-full scale-0 group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <i class="fas fa-project-diagram text-4xl text-primary relative z-10 leading-[5rem]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-secondary mb-3 group-hover:text-primary transition-colors">Join
+                        Our Network</h3>
+                    <p class="text-gray-600 text-sm mb-8 leading-relaxed">
+                        Become a member, volunteer, or academic partner.
+                    </p>
+                    <a href="/apply"
+                        class="mt-auto btn-primary w-full py-3 rounded-lg text-sm font-semibold shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30">
+                        Apply
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners & Funders -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold text-secondary mb-12">Our Partners & Funders</h2>
+
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+                <% const partners=[ { name: "Mawlana Bhashani Science and Technology University" ,
+                    img: "/images/partners/mbstu.png" , isText: false }, { name: "Daffodil International University" ,
+                    img: "/images/partners/diu.png" , isText: false }, {
+                    name: "Grassroots Forum for Migration Governance" ,
+                    text: "Grassroots Forum for Migration Governance" , isText: true }, {
+                    name: "Global Forum on Migration and Development" ,
+                    img: "https://placehold.co/300x150/white/2c3e50?text=GFMD" , isText: false, isPlaceholder: true }, {
+                    name: "Bangladesh Civil Society for Migrants" , img: "/images/partners/bcsm.png" , isText: false },
+                    { name: "Migrants Forum in Asia" , img: "/images/partners/mfa.png" , isText: false }, {
+                    name: "Government of Bangladesh" , img: "/images/partners/govt_bd.png" , isText: false }, {
+                    name: "IOM" , img: "/images/partners/iom.png" , isText: false }, { name: "UNHCR" ,
+                    img: "/images/partners/unhcr.png" , isText: false }, { name: "WHO" , img: "/images/partners/who.png"
+                    , isText: false }, { name: "WFP" , img: "/images/partners/wfp.png" , isText: false } ]; %>
+
+                    <% partners.forEach(partner=> { %>
+                        <div
+                            class="w-40 h-32 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition group">
+                            <% if (partner.isText) { %>
+                                <span class="text-primary font-bold text-center text-sm leading-tight">
+                                    <%= partner.text %>
+                                </span>
+                                <% } else { %>
+                                    <img src="<%= partner.img %>" alt="<%= partner.name %>"
+                                        class="max-h-full max-w-full object-contain <%= partner.isPlaceholder ? 'grayscale opacity-70' : 'grayscale group-hover:grayscale-0 transition-all duration-300 opacity-80 group-hover:opacity-100' %>">
+                                    <% } %>
+                        </div>
+                        <% }); %>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contact Info Footer -->
+    <div class="bg-white py-4 border-t border-gray-100">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm text-gray-500">
+                Contact info invitation <br>
+                <a href="mailto:morph.1280739@gmail.com"
+                    class="text-primary font-medium hover:underline">morph.1280739@gmail.com</a>
+            </p>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>

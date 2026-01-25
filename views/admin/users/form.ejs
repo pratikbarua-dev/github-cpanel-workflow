@@ -1,0 +1,78 @@
+<%- include('../partials/header', { title: 'New User' , path: '/users' }) %>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="mb-6">
+            <a href="/admin/users" class="text-gray-500 hover:text-gray-700 mb-2 inline-block">&larr; Back to Users</a>
+            <h1 class="text-2xl font-bold text-gray-800">Add New User / Moderator</h1>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl">
+            <form action="/admin/users" method="POST">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+                    <input type="email" name="email" required
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-teal-500">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" name="password" required
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-teal-500">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Role</label>
+                    <select name="role"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-teal-500">
+                        <option value="moderator">Moderator (Restricted)</option>
+                        <option value="admin">Administrator (Full Access)</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Administrators bypass all permission checks.</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-3">Permissions (For Moderators)</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label
+                            class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="permissions" value="manage_projects"
+                                class="h-4 w-4 text-teal-600">
+                            <span class="text-gray-700">Manage Projects</span>
+                        </label>
+                        <label
+                            class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="permissions" value="manage_posts"
+                                class="h-4 w-4 text-teal-600">
+                            <span class="text-gray-700">Manage News & Posts</span>
+                        </label>
+                        <label
+                            class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="permissions" value="manage_publications"
+                                class="h-4 w-4 text-teal-600">
+                            <span class="text-gray-700">Manage Publications</span>
+                        </label>
+                        <label
+                            class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="permissions" value="manage_team" class="h-4 w-4 text-teal-600">
+                            <span class="text-gray-700">Manage Team Members</span>
+                        </label>
+                        <label
+                            class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" name="permissions" value="manage_forms"
+                                class="h-4 w-4 text-teal-600">
+                            <span class="text-gray-700">Manage Custom Forms</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit"
+                        class="bg-teal-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-teal-700 transition">
+                        Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>

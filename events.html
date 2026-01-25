@@ -1,0 +1,478 @@
+<%- include('../../partials/header', { title: 'Form Builder' , path: '/forms' }) %>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 200ms;
+        }
+
+        /* Hide scrollbar for clean look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <div class="flex flex-col h-[calc(100vh-64px)] bg-slate-50 overflow-hidden">
+
+        <!-- Toolbar -->
+        <header
+            class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center shrink-0 z-20 shadow-sm">
+            <div class="flex items-center gap-4">
+                <a href="/admin/forms" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </a>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <div class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-1.5 rounded-lg text-white">
+                        <i data-lucide="hammer" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-slate-800 text-sm leading-tight">
+                            <%= form.title %>
+                        </h1>
+                        <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Builder Mode</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <a href="/forms/<%= form.slug %>" target="_blank"
+                    class="text-slate-500 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors hover:bg-blue-50">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                    Preview
+                </a>
+                <button onclick="saveFields()" type="button"
+                    class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all shadow-md hover:shadow-lg active:scale-95">
+                    <i data-lucide="save" class="w-4 h-4"></i>
+                    Save Form
+                </button>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden relative">
+
+            <!-- SIDEBAR: Controls -->
+            <aside
+                class="w-20 lg:w-72 bg-white border-r border-slate-200 flex flex-col z-10 shadow-sm transition-all duration-300">
+                <div class="p-4 border-b border-slate-100">
+                    <h2 class="hidden lg:block text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Add
+                        Elements</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <button onclick="addField('text')" type="button"
+                            class="flex flex-col items-center justify-center p-3 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-all gap-2 group">
+                            <i data-lucide="type" class="w-5 h-5 opacity-70 group-hover:opacity-100"></i>
+                            <span class="hidden lg:inline text-xs font-medium">Input</span>
+                        </button>
+                        <button onclick="addField('email')" type="button"
+                            class="flex flex-col items-center justify-center p-3 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-all gap-2 group">
+                            <i data-lucide="mail" class="w-5 h-5 opacity-70 group-hover:opacity-100"></i>
+                            <span class="hidden lg:inline text-xs font-medium">Email</span>
+                        </button>
+                        <button onclick="addField('textarea')" type="button"
+                            class="flex flex-col items-center justify-center p-3 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-all gap-2 group">
+                            <i data-lucide="align-left" class="w-5 h-5 opacity-70 group-hover:opacity-100"></i>
+                            <span class="hidden lg:inline text-xs font-medium">Textarea</span>
+                        </button>
+                        <button onclick="addField('number')" type="button"
+                            class="flex flex-col items-center justify-center p-3 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-all gap-2 group">
+                            <i data-lucide="hash" class="w-5 h-5 opacity-70 group-hover:opacity-100"></i>
+                            <span class="hidden lg:inline text-xs font-medium">Number</span>
+                        </button>
+                        <button onclick="addField('select')" type="button"
+                            class="flex flex-col items-center justify-center p-3 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-all gap-2 group">
+                            <i data-lucide="list" class="w-5 h-5 opacity-70 group-hover:opacity-100"></i>
+                            <span class="hidden lg:inline text-xs font-medium">Dropdown</span>
+                        </button>
+                        <button onclick="addField('checkbox')" type="button"
+                            class="flex flex-col items-center justify-center p-3 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 text-slate-600 hover:text-blue-600 transition-all gap-2 group">
+                            <i data-lucide="check-square" class="w-5 h-5 opacity-70 group-hover:opacity-100"></i>
+                            <span class="hidden lg:inline text-xs font-medium">Checkbox</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-5 hidden lg:block">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Edit Properties</h2>
+                    <div id="properties-panel">
+                        <div
+                            class="text-sm text-slate-500 text-center italic mt-10 bg-slate-50 p-6 rounded-lg border border-slate-100">
+                            <i data-lucide="mouse-pointer-2" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                            Select a field on the right to edit details.
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN: Canvas / Preview -->
+            <main
+                class="flex-1 overflow-y-auto bg-slate-50/50 p-8 flex justify-center relative bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px]">
+                <div class="w-full max-w-2xl transform transition-all duration-300">
+                    <!-- Form Container -->
+                    <div
+                        class="bg-white rounded-xl shadow-xl border border-slate-200/60 min-h-[600px] flex flex-col relative overflow-hidden ring-1 ring-slate-900/5">
+
+                        <div class="p-8 border-b border-slate-100 bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+                            <h2 class="text-3xl font-bold text-slate-800 mb-2">
+                                <%= form.title %>
+                            </h2>
+                            <p class="text-slate-500">
+                                <%= form.description || 'No description provided.' %>
+                            </p>
+                        </div>
+
+                        <div id="form-canvas" class="p-8 space-y-6 flex-1">
+                            <!-- Fields will be injected here -->
+                        </div>
+
+                        <!-- Submit Button Placeholder -->
+                        <div class="p-8 pt-0 mt-auto opacity-50 grayscale pointer-events-none select-none">
+                            <button class="w-full bg-slate-900 text-white font-bold py-3 rounded-lg shadow-sm">Submit
+                                Form</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Mobile Properties Drawer (Optional usually, but simpler to rely on sidebar for now) -->
+        </div>
+    </div>
+
+    <!-- Server-Side Data Container -->
+    <script id="form-initial-data" type="application/json">
+        <%- JSON.stringify(form.form_fields || []) %>
+    </script>
+
+    <script>
+        // Initialize Lucide
+        function refreshIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+        refreshIcons();
+
+        // ---------------------------------------------------------
+        // STATE & INITIALIZATION
+        // ---------------------------------------------------------
+
+        // Load existing fields or start empty
+        let serverFields = [];
+        try {
+            const rawData = document.getElementById('form-initial-data').textContent;
+            serverFields = JSON.parse(rawData);
+        } catch (e) {
+            console.error('Failed to load initial form data:', e);
+            serverFields = [];
+        }
+
+        // Transform DB fields to UI fields (UI uses 'id' instead of 'name' for internal logic, but we map back)
+        let fields = serverFields.map(f => ({
+            id: f.name, // Use 'name' as internal ID for continuity
+            ...f
+        })).filter(f => f); // Guard: Remove nulls
+
+        // Sort
+        fields.sort((a, b) => a.order - b.order);
+
+        let activeFieldId = null;
+
+        // ---------------------------------------------------------
+        // CORE FUNCTIONS
+        // ---------------------------------------------------------
+
+        function addField(type) {
+            const id = 'field_' + Math.random().toString(36).substr(2, 9);
+            const field = {
+                id: id,
+                name: id,
+                type: type,
+                label: `New ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+                placeholder: type === 'text' || type === 'email' || type === 'textarea' ? 'Enter text...' : '',
+                required: false,
+                options: type === 'select' ? 'Option 1, Option 2, Option 3' : '',
+                order: fields.length
+            };
+
+            fields.push(field);
+            renderCanvas();
+            selectField(id);
+
+            const canvas = document.getElementById('form-canvas');
+            canvas.lastElementChild?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderCanvas() {
+            const canvas = document.getElementById('form-canvas');
+            canvas.innerHTML = '';
+
+            if (fields.length === 0) {
+                canvas.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full text-slate-400 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50 p-12">
+                    <div class="bg-blue-50 text-blue-500 p-4 rounded-full mb-4">
+                        <i data-lucide="plus" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-medium text-slate-600">Your form is empty</p>
+                    <p class="text-sm">Click items on the left to add fields</p>
+                </div>
+            `;
+                refreshIcons();
+                return;
+            }
+
+            fields.forEach((field, index) => {
+                // Critical Guard: Skip if field is corrupted/undefined
+                if (!field) return;
+
+                const el = document.createElement('div');
+                const isActive = activeFieldId === field.id;
+
+                el.className = `group relative p-5 rounded-xl border-2 transition-all duration-200 cursor-pointer 
+                ${isActive
+                        ? 'border-blue-500 bg-blue-50/20 ring-4 ring-blue-500/10 z-10'
+                        : 'border-transparent hover:border-slate-200 hover:bg-slate-50'}`;
+
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    selectField(field.id);
+                };
+
+                // Floating Controls (Move/Delete)
+                const controls = document.createElement('div');
+                controls.className = `absolute right-2 top-2 flex gap-1 transition-all duration-200 ${isActive ? 'opacity-100 z-20' : 'opacity-0 group-hover:opacity-100 z-20'}`;
+
+                controls.innerHTML = `
+                <button onclick="moveField('${field.id}', -1, event)" type="button" class="p-1.5 bg-white text-slate-500 hover:text-blue-600 border border-slate-200 rounded shadow-sm hover:shadow-md transition" title="Move Up"><i data-lucide="chevron-up" class="w-4 h-4"></i></button>
+                <button onclick="moveField('${field.id}', 1, event)" type="button" class="p-1.5 bg-white text-slate-500 hover:text-blue-600 border border-slate-200 rounded shadow-sm hover:shadow-md transition" title="Move Down"><i data-lucide="chevron-down" class="w-4 h-4"></i></button>
+                <button onclick="deleteField('${field.id}', event)" type="button" class="p-1.5 bg-white text-red-500 hover:text-red-600 border border-slate-200 rounded shadow-sm hover:shadow-md transition" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            `;
+                el.appendChild(controls);
+
+                // Label
+                const label = document.createElement('label');
+                label.className = `block text-sm font-semibold text-slate-700 mb-1.5 pointer-events-none transition-colors ${isActive ? 'text-blue-700' : ''}`;
+                label.innerHTML = field.label + (field.required ? ' <span class="text-red-500">*</span>' : '');
+                el.appendChild(label);
+
+                // Input Mockup
+                let inputHtml = '';
+                const commonClasses = "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white text-slate-400 text-sm shadow-sm pointer-events-none";
+
+                if (field.type === 'textarea') {
+                    inputHtml = `<div class="${commonClasses} h-24 bg-slate-50/50">${field.placeholder || 'Enter detailed text...'}</div>`;
+                } else if (field.type === 'select') {
+                    inputHtml = `
+                    <div class="${commonClasses} flex justify-between items-center bg-slate-50/50">
+                        <span>Select an option</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 opacity-50"></i>
+                    </div>`;
+                } else if (field.type === 'checkbox') {
+                    inputHtml = `
+                    <div class="flex items-center gap-3 p-3 border border-slate-200 rounded-lg bg-slate-50/30 pointer-events-none">
+                        <div class="w-5 h-5 border-2 border-slate-300 rounded bg-white"></div>
+                        <span class="text-sm text-slate-600 font-medium">${field.label}</span>
+                    </div>`;
+                    if (el.querySelector('label')) el.querySelector('label').remove();
+                } else {
+                    inputHtml = `<div class="${commonClasses} bg-slate-50/50">${field.placeholder || `Enter ${field.type}...`}</div>`;
+                }
+
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = inputHtml;
+                el.appendChild(wrapper);
+
+                canvas.appendChild(el);
+            });
+
+            refreshIcons();
+        }
+
+        function selectField(id) {
+            activeFieldId = id;
+            renderCanvas();
+            renderPropertiesPanel(id);
+        }
+
+        function renderPropertiesPanel(id) {
+            const field = fields.find(f => f && f.id === id); // Guard against undefined
+            const panel = document.getElementById('properties-panel');
+
+            if (!field) {
+                panel.innerHTML = `<div class="text-sm text-slate-500 text-center italic mt-10 bg-slate-50 p-6 rounded-lg border border-slate-100">
+                        <i data-lucide="mouse-pointer-2" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                        Select a field on the right to edit details.
+                    </div>`;
+                refreshIcons();
+                return;
+            }
+
+            let html = `
+            <div class="space-y-5 animate-in slide-in-from-right-2 duration-300">
+                <div class="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider flex justify-between items-center">
+                    <span>${field.type} Field</span>
+                    <span class="font-mono opacity-50 text-[10px]">${field.id}</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Label</label>
+                    <input type="text" value="${field.label}" oninput="updateField('${id}', 'label', this.value)" class="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all font-medium text-slate-700">
+                </div>
+        `;
+
+            if (field.type !== 'checkbox' && field.type !== 'select') {
+                html += `
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Placeholder</label>
+                    <input type="text" value="${field.placeholder || ''}" oninput="updateField('${id}', 'placeholder', this.value)" class="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all text-slate-600">
+                </div>
+            `;
+            }
+
+            if (field.type === 'select') {
+                html += `
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Options <span class="text-[10px] lowercase font-normal opacity-70">(comma separated)</span></label>
+                    <textarea oninput="updateField('${id}', 'options', this.value)" class="w-full text-sm px-3 py-2 border border-slate-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none transition-all h-24 resize-none leading-relaxed">${field.options || ''}</textarea>
+                </div>
+            `;
+            }
+
+            html += `
+                <div class="pt-4 border-t border-slate-100">
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div class="relative">
+                            <input type="checkbox" id="req-${id}" ${field.required ? 'checked' : ''} onchange="updateField('${id}', 'required', this.checked)" class="peer sr-only">
+                            <div class="w-10 h-6 bg-slate-200 rounded-full peer-checked:bg-blue-600 transition-colors"></div>
+                            <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-4"></div>
+                        </div>
+                        <span class="text-sm font-medium text-slate-700 group-hover:text-blue-700 transition-colors">Required Field</span>
+                    </label>
+                </div>
+
+                <!-- Move Controls in Sidebar -->
+                <div class="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-slate-100">
+                     <button onclick="moveField('${id}', -1)" class="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                        <i data-lucide="arrow-up" class="w-4 h-4"></i> Move Up
+                    </button>
+                    <button onclick="moveField('${id}', 1)" class="flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                        <i data-lucide="arrow-down" class="w-4 h-4"></i> Move Down
+                    </button>
+                </div>
+
+                <div class="mt-3">
+                    <button onclick="deleteField('${id}', event)" type="button" class="w-full flex items-center justify-center gap-2 text-red-500 hover:text-white bg-red-50 hover:bg-red-500 py-2.5 rounded-lg transition-all text-sm font-medium duration-200">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Field
+                    </button>
+                </div>
+            </div>`;
+
+            panel.innerHTML = html;
+            refreshIcons();
+        }
+
+        function updateField(id, key, value) {
+            const field = fields.find(f => f && f.id === id);
+            if (field) {
+                field[key] = value;
+                renderCanvas();
+            }
+        }
+
+        function deleteField(id, e) {
+            if (e) e.stopPropagation();
+            if (!confirm('Are you sure?')) return;
+
+            // Robust Filter: remove deleted ID and any accidental undefined entries
+            fields = fields.filter(f => f && f.id !== id);
+
+            if (activeFieldId === id) {
+                activeFieldId = null;
+                document.getElementById('properties-panel').innerHTML = '';
+                renderPropertiesPanel(null);
+            }
+            renderCanvas();
+        }
+
+        function moveField(id, direction, e) {
+            if (e) e.stopPropagation();
+
+            // Critical Guard: Ensure field exists before finding index
+            // If the field isn't found (e.g. invalid ID or already deleted), index becomes -1
+            const index = fields.findIndex(f => f && f.id === id);
+
+            // STOP if the field was not found. 
+            // This prevents "fields[-1]" access which would corrupt the array.
+            if (index === -1) return;
+
+            const newIndex = index + direction;
+
+            if (newIndex >= 0 && newIndex < fields.length) {
+                // Safe to swap now because we know index is valid
+                [fields[index], fields[newIndex]] = [fields[newIndex], fields[index]];
+
+                // Update orders safely
+                fields.forEach((f, i) => {
+                    if (f) f.order = i;
+                });
+                renderCanvas();
+            }
+        }
+
+        async function saveFields() {
+            const btn = document.querySelector('button[onclick="saveFields()"]');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...';
+            btn.disabled = true;
+            refreshIcons();
+
+            // Guard: Filter out any nulls before sending to server
+            const payload = fields.filter(f => f).map((f, i) => ({
+                ...f,
+                order: i,
+                name: f.id
+            }));
+
+            try {
+                const response = await fetch('/admin/forms/<%= form.id %>/fields/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fields: payload })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i> Saved!';
+                    btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                    btn.classList.remove('bg-slate-900', 'hover:bg-slate-800');
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.disabled = false;
+                        btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        btn.classList.add('bg-slate-900', 'hover:bg-slate-800');
+                        refreshIcons();
+                    }, 2000);
+                } else {
+                    alert('Error: ' + result.error);
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Error saving form');
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+            refreshIcons();
+        }
+
+        renderCanvas();
+    </script>
+
+    <%- include('../../partials/footer') %>

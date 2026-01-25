@@ -1,0 +1,110 @@
+<%- include('../partials/header', { title: 'Manage Comments' , path: '/comments' }) %>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Manage Comments</h1>
+                <p class="text-slate-500 mt-1">Review and manage recent conversations across your platform.</p>
+            </div>
+
+            <!-- Search Bar -->
+            <form action="/admin/comments" method="GET" class="relative group w-full md:w-96">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
+                </div>
+                <input type="text" name="q" placeholder="Search comments..."
+                    class="block w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all shadow-sm"
+                    value="<%= typeof query !== 'undefined' ? query : '' %>">
+            </form>
+        </div>
+
+        <!-- Threads Table Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200">
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Title
+                            </th>
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Type
+                            </th>
+                            <th
+                                class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">
+                                Comments</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Last
+                                Activity
+                            </th>
+                            <th
+                                class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <% if (threads.length> 0) { %>
+                            <% threads.forEach(function(thread) { %>
+                                <tr class="group hover:bg-slate-50/80 transition-colors duration-150">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <div
+                                                class="w-10 h-10 rounded-lg flex items-center justify-center mr-4 <%= thread.type === 'Post' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600' %>">
+                                                <i
+                                                    class="<%= thread.type === 'Post' ? 'fas fa-newspaper' : 'fas fa-project-diagram' %> text-lg"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-slate-900 line-clamp-1 max-w-sm"
+                                                    title="<%= thread.title %>">
+                                                    <%= thread.title %>
+                                                </div>
+                                                <div class="text-xs text-slate-500 mt-0.5">ID: <%= thread.id %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= thread.type === 'Post' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' %>">
+                                            <%= thread.type %>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex w-8 h-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700 group-hover:bg-brand-100 group-hover:text-brand-700 transition-colors">
+                                            <%= thread.count %>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-slate-500">
+                                        <i class="far fa-clock mr-1.5 text-slate-400"></i>
+                                        <%= new Date(thread.lastActivity).toLocaleDateString('en-US', { month: 'short' ,
+                                            day: 'numeric' , year: 'numeric' }) %>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <a href="/admin/comments/<%= thread.type.toLowerCase() %>/<%= thread.id %>"
+                                            class="inline-flex items-center gap-2 text-sm font-medium text-brand-600 hover:text-brand-700 hover:bg-brand-50 px-3 py-1.5 rounded-lg transition-colors">
+                                            <span>View</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                                                <div class="flex flex-col items-center justify-center">
+                                                    <div
+                                                        class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 text-slate-400">
+                                                        <i class="fas fa-comments text-2xl"></i>
+                                                    </div>
+                                                    <p class="font-medium">No comments found.</p>
+                                                    <p class="text-sm mt-1">Start by adding a comment on your site.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>

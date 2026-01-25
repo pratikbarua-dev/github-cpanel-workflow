@@ -1,0 +1,72 @@
+[dotenv@17.2.3] injecting env (4) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Server started on port 3000
+Database connected...
+Error: Failed to lookup view "team" in views directory "/media/myhdd/Downloads/morpweb/views"
+    at Function.render (/media/myhdd/Downloads/morpweb/node_modules/express/lib/application.js:562:17)
+    at ServerResponse.render (/media/myhdd/Downloads/morpweb/node_modules/express/lib/response.js:923:7)
+    at exports.getTeam (/media/myhdd/Downloads/morpweb/src/controllers/publicController.js:114:13)
+Error
+    at Database.<anonymous> (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/sqlite/query.js:185:27)
+    at /media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/sqlite/query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/sqlite/query.js:183:12)
+    at /media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/sequelize.js:315:28
+    at async SQLiteQueryInterface.select (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
+    at async comment.findAll (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/model.js:1140:21)
+    at async exports.getPostDetail (/media/myhdd/Downloads/morpweb/src/controllers/publicController.js:73:26) {
+  name: 'SequelizeDatabaseError',
+  parent: [Error: SQLITE_ERROR: no such table: comments] {
+    errno: 1,
+    code: 'SQLITE_ERROR',
+    sql: "SELECT `id`, `content`, `status`, `author_name`, `createdAt`, `updatedAt`, `projectId`, `postId` FROM `comments` AS `comment` WHERE `comment`.`postId` = 1 AND `comment`.`status` = 'approved' ORDER BY `comment`.`createdAt` DESC;"
+  },
+  original: [Error: SQLITE_ERROR: no such table: comments] {
+    errno: 1,
+    code: 'SQLITE_ERROR',
+    sql: "SELECT `id`, `content`, `status`, `author_name`, `createdAt`, `updatedAt`, `projectId`, `postId` FROM `comments` AS `comment` WHERE `comment`.`postId` = 1 AND `comment`.`status` = 'approved' ORDER BY `comment`.`createdAt` DESC;"
+  },
+  sql: "SELECT `id`, `content`, `status`, `author_name`, `createdAt`, `updatedAt`, `projectId`, `postId` FROM `comments` AS `comment` WHERE `comment`.`postId` = 1 AND `comment`.`status` = 'approved' ORDER BY `comment`.`createdAt` DESC;",
+  parameters: {}
+}
+Error
+    at Database.<anonymous> (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/sqlite/query.js:185:27)
+    at /media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/sqlite/query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/sqlite/query.js:183:12)
+    at /media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/sequelize.js:315:28
+    at async SQLiteQueryInterface.select (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
+    at async comment.findAll (/media/myhdd/Downloads/morpweb/node_modules/sequelize/lib/model.js:1140:21)
+    at async exports.getPostDetail (/media/myhdd/Downloads/morpweb/src/controllers/publicController.js:73:26) {
+  name: 'SequelizeDatabaseError',
+  parent: [Error: SQLITE_ERROR: no such table: comments] {
+    errno: 1,
+    code: 'SQLITE_ERROR',
+    sql: "SELECT `id`, `content`, `status`, `author_name`, `createdAt`, `updatedAt`, `projectId`, `postId` FROM `comments` AS `comment` WHERE `comment`.`postId` = 1 AND `comment`.`status` = 'approved' ORDER BY `comment`.`createdAt` DESC;"
+  },
+  original: [Error: SQLITE_ERROR: no such table: comments] {
+    errno: 1,
+    code: 'SQLITE_ERROR',
+    sql: "SELECT `id`, `content`, `status`, `author_name`, `createdAt`, `updatedAt`, `projectId`, `postId` FROM `comments` AS `comment` WHERE `comment`.`postId` = 1 AND `comment`.`status` = 'approved' ORDER BY `comment`.`createdAt` DESC;"
+  },
+  sql: "SELECT `id`, `content`, `status`, `author_name`, `createdAt`, `updatedAt`, `projectId`, `postId` FROM `comments` AS `comment` WHERE `comment`.`postId` = 1 AND `comment`.`status` = 'approved' ORDER BY `comment`.`createdAt` DESC;",
+  parameters: {}
+}
+ReferenceError: /media/myhdd/Downloads/morpweb/views/search.ejs:5
+    3|     <main class="flex-grow bg-gray-50">
+    4|         <div class="container mx-auto px-4 py-16">
+ >> 5|             <h1 class="text-3xl font-bold text-secondary mb-8">Search Results for "<%= query %>"</h1>
+    6| 
+    7|             <% if (projects.length===0 && publications.length===0) { %>
+    8|                 <div class="text-center py-20 bg-white rounded-xl shadow-sm">
+
+query is not defined
+    at eval ("/media/myhdd/Downloads/morpweb/views/search.ejs":13:26)
+    at search (/media/myhdd/Downloads/morpweb/node_modules/ejs/lib/cjs/ejs.js:643:23)
+    at tryHandleCache (/media/myhdd/Downloads/morpweb/node_modules/ejs/lib/cjs/ejs.js:254:42)
+    at ejs.renderFile [as engine] (/media/myhdd/Downloads/morpweb/node_modules/ejs/lib/cjs/ejs.js:447:12)
+    at View.render (/media/myhdd/Downloads/morpweb/node_modules/express/lib/view.js:139:8)
+    at tryRender (/media/myhdd/Downloads/morpweb/node_modules/express/lib/application.js:627:10)
+    at Function.render (/media/myhdd/Downloads/morpweb/node_modules/express/lib/application.js:574:3)
+    at ServerResponse.render (/media/myhdd/Downloads/morpweb/node_modules/express/lib/response.js:923:7)
+    at exports.getSearch (/media/myhdd/Downloads/morpweb/src/controllers/publicController.js:220:32)
+    at Layer.handleRequest (/media/myhdd/Downloads/morpweb/node_modules/router/lib/layer.js:152:17)

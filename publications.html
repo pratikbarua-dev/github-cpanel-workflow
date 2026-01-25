@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoRPH - Publications</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Custom colors extracted from the design
+                        brand: {
+                            dark: '#0e7490', // Cyan-700
+                            DEFAULT: '#06b6d4', // Cyan-500
+                            light: '#e0f2fe', // Sky-100
+                        },
+                        // Colors required for your footer
+                        footer: '#1e293b', // Slate-800
+                        'primary-light': '#22d3ee', // Cyan-400
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white sticky top-0 z-50 shadow-sm py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 text-2xl font-bold text-primary group">
+                <img src="./images/logo.jpg" alt="MoRPH Logo" class="h-12 w-auto object-contain hidden md:block">
+                <i class=" md:hidden transition-transform group-hover:rotate-12"></i>
+                MoRPH
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="nav-link">Home</a>
+
+                <!-- About Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        About <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="about.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">Who
+                            We Are</a>
+                        <a href="team.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">Our
+                            Team</a>
+                        <a href="partnerships.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Partnerships</a>
+                    </div>
+                </div>
+
+                <!-- Research Dropdown -->
+                <div class="relative group">
+                    <button
+                        class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none text-primary">
+                        Research <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="focus-areas.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">Focus
+                            Areas</a>
+                        <a href="projects.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">Projects</a>
+                        <a href="publications.html"
+                            class="block px-5 py-3 text-primary bg-teal-50 font-medium last:rounded-b-xl border-t border-gray-50 transition-colors">Publications</a>
+                    </div>
+                </div>
+
+                <!-- Insights Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        Insights <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="news.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">News
+                            & Analysis</a>
+                        <a href="events.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Events</a>
+                    </div>
+                </div>
+
+                <a href="get-involved.html" class="nav-link">Get Involved</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="hidden md:block">
+                <a href="partner-with-us.html" class="btn-primary group">
+                    <span class="relative z-10">Partner with Us</span>
+                    <div
+                        class="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 group-hover:scale-100 group-hover:bg-white/10">
+                    </div>
+                </a>
+            </div>
+
+            <button class="md:hidden text-2xl text-secondary">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section
+        class="relative py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-cyan-50/40 to-white min-h-screen">
+
+        <div
+            class="absolute top-0 right-0 -z-10 w-1/2 h-full bg-gradient-to-bl from-teal-50/50 to-transparent pointer-events-none">
+        </div>
+
+        <div class="max-w-7xl mx-auto">
+
+            <div class="text-center mb-10">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                    Latest Publications & Insights
+                </h1>
+                <p class="text-gray-500 text-lg">
+                    Explore our recent research, reports, and community stories.
+                </p>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-10">
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+
+                    <div class="relative w-full sm:w-72">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <input type="text"
+                            class="block w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none shadow-sm text-sm"
+                            placeholder="Search">
+                    </div>
+
+                    <div class="relative w-full sm:w-48">
+                        <button
+                            class="flex items-center justify-between w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg shadow-sm text-sm text-gray-700 hover:bg-gray-50 transition">
+                            <span>Filter by Category</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button
+                    class="hidden md:inline-block px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium rounded-lg shadow-sm transition">
+                    See All Posts
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+
+                <article
+                    class="bg-white rounded-xl p-4 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] hover:shadow-lg transition-all duration-300 border border-gray-50 flex gap-4 h-full group">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 mb-1 block">Public Health</span>
+                            <h3
+                                class="text-base font-bold text-gray-900 leading-tight mb-2 group-hover:text-cyan-600 transition-colors">
+                                New Report on Community Water Access
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-3">Oct 26, 2025</p>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 rounded hover:bg-cyan-100 transition">View</button>
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1574482620826-40685ca5ebd2?auto=format&fit=crop&q=80&w=200&h=200"
+                            alt="Water Access"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                </article>
+
+                <article
+                    class="bg-white rounded-xl p-4 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] hover:shadow-lg transition-all duration-300 border border-gray-50 flex gap-4 h-full group">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 mb-1 block">Migration</span>
+                            <h3
+                                class="text-base font-bold text-gray-900 leading-tight mb-2 group-hover:text-cyan-600 transition-colors">
+                                Refugee Integration Policy Brief
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-3">Oct 20, 2025</p>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 rounded hover:bg-cyan-100 transition">View</button>
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&q=80&w=200&h=200"
+                            alt="Refugees"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                </article>
+
+                <article
+                    class="bg-white rounded-xl p-4 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] hover:shadow-lg transition-all duration-300 border border-gray-50 flex gap-4 h-full group">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 mb-1 block">Environment</span>
+                            <h3
+                                class="text-base font-bold text-gray-900 leading-tight mb-2 group-hover:text-cyan-600 transition-colors">
+                                Climate Resilience in Coastal Areas
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-3">Oct 15, 2025</p>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 rounded hover:bg-cyan-100 transition">View</button>
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=200&h=200"
+                            alt="Mangroves"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                </article>
+
+                <article
+                    class="bg-white rounded-xl p-4 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] hover:shadow-lg transition-all duration-300 border border-gray-50 flex gap-4 h-full group">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 mb-1 block">ICT</span>
+                            <h3
+                                class="text-base font-bold text-gray-900 leading-tight mb-2 group-hover:text-cyan-600 transition-colors">
+                                Digital Literacy for Rural Youth
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-3">Oct 10, 2025</p>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 rounded hover:bg-cyan-100 transition">View</button>
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=200&h=200"
+                            alt="Digital Tablets"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                </article>
+
+                <article
+                    class="bg-white rounded-xl p-4 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] hover:shadow-lg transition-all duration-300 border border-gray-50 flex gap-4 h-full group">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 mb-1 block">Bangladesh Studies</span>
+                            <h3
+                                class="text-base font-bold text-gray-900 leading-tight mb-2 group-hover:text-cyan-600 transition-colors">
+                                Cultural Heritage Preservation
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-3">Oct 5, 2025</p>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 rounded hover:bg-cyan-100 transition">View</button>
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1599579782806-38257008544a?auto=format&fit=crop&q=80&w=200&h=200"
+                            alt="Heritage"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                </article>
+
+                <article
+                    class="bg-white rounded-xl p-4 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] hover:shadow-lg transition-all duration-300 border border-gray-50 flex gap-4 h-full group">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-gray-500 mb-1 block">Education</span>
+                            <h3
+                                class="text-base font-bold text-gray-900 leading-tight mb-2 group-hover:text-cyan-600 transition-colors">
+                                Skills Development Workshop
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-3">Oct 1, 2025</p>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 rounded hover:bg-cyan-100 transition">View</button>
+                            <button
+                                class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&q=80&w=200&h=200"
+                            alt="Classroom"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="text-center md:hidden">
+                <button
+                    class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-teal-500 text-white font-medium rounded-lg shadow-lg">
+                    See All Posts
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-footer text-white pt-16 pb-6 mt-auto">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center gap-2 text-2xl font-bold mb-4">
+                    <i class="fas fa-layer-group"></i> MoRPH
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    Registration No: P-53086/2024.<br>Grassroots research for a sustainable future.
+                </p>
+            </div>
+            <div class="col-span-1 md:col-span-1">
+                <h4 class="font-bold mb-4 text-lg">Organization</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="about.html" class="hover:text-white transition">Who We Are</a></li>
+                    <li><a href="team.html" class="hover:text-white transition">Our Team</a></li>
+                    <li><a href="partnerships.html" class="hover:text-white transition">Partnerships</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-span-1 md:col-span-1">
+                <h4 class="font-bold mb-4 text-lg">Our Work</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="focus-areas.html" class="hover:text-white transition">Focus Areas</a></li>
+                    <li><a href="projects.html" class="hover:text-white transition">Projects</a></li>
+                    <li><a href="publications.html" class="hover:text-white transition">Publications</a></li>
+                    <li><a href="news.html" class="hover:text-white transition">News & Insights</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-lg">Connect</h4>
+                <div class="flex gap-4 text-xl mb-2">
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-twitter"></i></a>
+                </div>
+                <p class="text-sm text-gray-300">MoRPH_BD</p>
+                <div class="mt-4">
+                    <h4 class="font-bold mb-2 text-lg">Contact Us</h4>
+                    <p class="text-sm text-gray-300 mb-1">morph.1280739@gmail.com</p>
+                    <p class="text-sm text-gray-300">Sylhet, Bangladesh</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10 pt-6 text-center text-sm text-gray-400">
+            <p>&copy; 2026 MoRPH. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

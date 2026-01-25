@@ -1,0 +1,362 @@
+<%- include('partials/header') %>
+
+    <section class="pt-16 md:pt-24 pb-20 bg-white overflow-hidden relative">
+        <div
+            class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-teal-50/50 via-transparent to-transparent pointer-events-none">
+        </div>
+
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-start gap-12 relative z-10">
+
+            <div class="flex-1 space-y-6">
+                <h1 class="text-4xl md:text-5xl font-bold text-secondary leading-tight">
+                    Bridging Research, <br><span class="text-primary">Policy & Practice</span>
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed max-w-xl">
+                    An independent think tank based in Bangladesh working across public health, migration, refugee
+                    studies,
+                    environment, and ICT. We believe local voices and grassroots perspectives are essential for
+                    meaningful change.<br>
+                    <small class="text-gray-500 font-medium mt-2 block">Reg. No. P-53086/2024, Bangladesh.</small>
+                </p>
+
+                <div
+                    class="mt-12 p-8 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative max-w-2xl hover:shadow-lg transition-shadow duration-300">
+                    <!-- Vertical Line -->
+                    <div
+                        class="absolute left-[2.85rem] top-10 bottom-10 w-[2px] bg-gradient-to-b from-primary/30 to-secondary/30">
+                    </div>
+
+                    <!-- Item 01 -->
+                    <div class="relative flex gap-6 mb-8 group">
+                        <div
+                            class="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary font-bold text-lg border border-primary/20 shadow-sm z-10 group-hover:scale-110 transition-transform duration-300 relative">
+                            <span class="relative z-10">01</span>
+                            <div class="absolute inset-0 bg-primary/5 rounded-full blur-sm"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-primary uppercase tracking-wider mb-1">Our Mission</h3>
+                            <p class="text-gray-700 leading-relaxed text-[15px]">
+                                To generate evidence-based knowledge, foster innovation, and promote sustainable
+                                solutions that empower communities, influence policy, and strengthen governance.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Item 02 -->
+                    <div class="relative flex gap-6 group">
+                        <div
+                            class="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center text-secondary font-bold text-lg border border-secondary/20 shadow-sm z-10 group-hover:scale-110 transition-transform duration-300 relative">
+                            <span class="relative z-10">02</span>
+                            <div class="absolute inset-0 bg-secondary/5 rounded-full blur-sm"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-secondary uppercase tracking-wider mb-1">Catalyst for
+                                Change</h3>
+                            <p class="text-gray-600 leading-relaxed text-[15px]">
+                                Creating a platform where innovative ideas are tested, refined, and transformed into
+                                impact-driven outcomes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 relative w-full max-w-lg mt-8 md:mt-0">
+                <img src="/images/hero-team.jpg"
+                    onerror="this.src='https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80'"
+                    alt="MoRPH Team" class="w-full rounded-2xl shadow-xl transform transition hover:scale-[1.01]">
+
+                <div
+                    class="absolute top-[10%] -left-4 md:-left-8 bg-white/90 backdrop-blur-sm p-3 md:p-4 rounded-xl shadow-lg text-center animate-bounce duration-[3000ms]">
+                    <strong class="text-primary text-xl block">6+</strong>
+                    <span class="text-xs text-gray-600">Core Focus Areas</span>
+                </div>
+                <div
+                    class="absolute bottom-[20%] -right-2 md:-right-6 bg-white/90 backdrop-blur-sm p-3 md:p-4 rounded-xl shadow-lg text-center">
+                    <strong class="text-secondary block">Est. 2024</strong>
+                </div>
+                <div
+                    class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-6 py-2 rounded-xl shadow-lg text-sm font-semibold text-secondary">
+                    Global Partnerships
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Projects -->
+    <section class="reveal py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="text-3xl font-bold text-secondary">Latest Projects</h2>
+                <a href="/projects" class="btn-secondary text-sm">See all projects</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% if (projects.length> 0) { %>
+                    <% projects.forEach(function(project) { %>
+                        <div
+                            class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 group">
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="<%= project.image_url %>"
+                                    class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
+                                <div
+                                    class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary">
+                                    <%= project.status %>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h3
+                                    class="text-xl font-bold text-secondary mb-2 group-hover:text-primary transition-colors">
+                                    <%= project.title %>
+                                </h3>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                                    <%= project.summary %>
+                                </p>
+                                <a href="/projects/<%= project.slug %>"
+                                    class="inline-flex items-center text-primary font-semibold text-sm hover:gap-2 transition-all">
+                                    View Details <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <% }); %>
+                            <% } else { %>
+                                <p class="text-gray-600">No recent projects found.</p>
+                                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest News & Events -->
+    <section class="reveal py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="text-3xl font-bold text-secondary">Latest News & Events</h2>
+                <a href="/news" class="btn-secondary text-sm">See all news</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% if (newsPosts.length> 0) { %>
+                    <% newsPosts.forEach(function(post) { %>
+                        <a href="/news/<%= post.slug %>" class="block group">
+                            <article
+                                class="bg-white p-4 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 flex items-center gap-4 cursor-pointer">
+                                <div class="flex-1 min-w-0">
+                                    <h3
+                                        class="font-bold text-gray-800 mb-1 truncate group-hover:text-primary transition-colors">
+                                        <%= post.title %>
+                                    </h3>
+                                    <span class="text-xs text-gray-500 block mb-3">
+                                        <%= post.date %>
+                                    </span>
+                                    <span class="text-xs font-semibold text-primary uppercase tracking-wide">Read
+                                        More</span>
+                                </div>
+                                <img src="<%= post.image_url %>" alt="<%= post.title %>"
+                                    class="w-24 h-20 object-cover rounded-lg">
+                            </article>
+                        </a>
+                        <% }); %>
+                            <% } else { %>
+                                <p class="text-gray-600">No recent news found.</p>
+                                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Articles -->
+    <section class="reveal py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-end mb-12">
+                <h2 class="text-3xl font-bold text-secondary">Featured Articles</h2>
+                <a href="/news" class="btn-secondary text-sm">Browse articles</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <% if (articlePosts.length> 0) { %>
+                    <% articlePosts.forEach(function(post) { %>
+                        <a href="/news/<%= post.slug %>" class="block group">
+                            <div
+                                class="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                                <div class="h-48 overflow-hidden relative">
+                                    <img src="<%= post.image_url %>"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                    <span
+                                        class="absolute bottom-4 left-4 text-white text-xs font-bold bg-primary/90 px-2 py-1 rounded">Article</span>
+                                </div>
+                                <div class="p-6">
+                                    <h3
+                                        class="text-xl font-bold text-gray-800 mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                                        <%= post.title %>
+                                    </h3>
+                                    <p class="text-gray-500 text-sm line-clamp-3 mb-4">
+                                        <%= post.excerpt || 'Read the full article to learn more...' %>
+                                    </p>
+                                    <span class="text-primary font-semibold text-sm flex items-center gap-2">
+                                        Read Article <i class="fas fa-arrow-right"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                        <% }); %>
+                            <% } else { %>
+                                <div class="col-span-3 text-center py-10">
+                                    <p class="text-gray-500 italic">New articles coming soon.</p>
+                                </div>
+                                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section (Static for now) -->
+    <section class="reveal py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-secondary mb-12">Impact at a Glance</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div
+                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-4xl font-bold text-primary mb-2">12+</h3>
+                    <p class="text-gray-600 text-sm">Communities Served</p>
+                </div>
+                <div
+                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-4xl font-bold text-primary mb-2">500+</h3>
+                    <p class="text-gray-600 text-sm">Participants</p>
+                </div>
+                <div
+                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-4xl font-bold text-primary mb-2">8</h3>
+                    <p class="text-gray-600 text-sm">Research Projects</p>
+                </div>
+                <div
+                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    <h3 class="text-4xl font-bold text-primary mb-2">3</h3>
+                    <p class="text-gray-600 text-sm">Policy Papers</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Slider -->
+    <section class="reveal py-16 bg-white border-t border-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold text-center text-gray-400 mb-12 uppercase tracking-widest">Our Partners</h2>
+
+            <div class="relative max-w-5xl mx-auto overflow-hidden" id="partners-slider">
+                <!-- Slider Track -->
+                <div class="flex transition-transform duration-700 ease-in-out" id="partners-track">
+                    <!-- Partners Data -->
+                    <% const partners=[ { name: "Mawlana Bhashani Science and Technology University" ,
+                        img: "/images/partners/mbstu.png" , isText: false }, { name: "Daffodil International University"
+                        , img: "/images/partners/diu.png" , isText: false }, {
+                        name: "Grassroots Forum for Migration Governance" ,
+                        text: "Grassroots Forum for Migration Governance" , isText: true }, {
+                        name: "Global Forum on Migration and Development" ,
+                        img: "https://placehold.co/300x150/white/2c3e50?text=GFMD" , isText: false, isPlaceholder: true
+                        }, { name: "Bangladesh Civil Society for Migrants" , img: "/images/partners/bcsm.png" , isText:
+                        false }, { name: "Migrants Forum in Asia" , img: "/images/partners/mfa.png" , isText: false }, {
+                        name: "Government of Bangladesh" , img: "/images/partners/govt_bd.png" , isText: false }, {
+                        name: "IOM" , img: "/images/partners/iom.png" , isText: false }, { name: "UNHCR" ,
+                        img: "/images/partners/unhcr.png" , isText: false }, { name: "WHO" ,
+                        img: "/images/partners/who.png" , isText: false }, { name: "WFP" ,
+                        img: "/images/partners/wfp.png" , isText: false } ]; %>
+
+                        <% partners.forEach(partner=> { %>
+                            <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                                <div class="flex flex-col items-center group h-full">
+                                    <div
+                                        class="w-full h-32 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-6 hover:shadow-md transition mb-4">
+                                        <% if (partner.isText) { %>
+                                            <span class="text-primary font-bold text-center leading-tight">
+                                                <%= partner.text %>
+                                            </span>
+                                            <% } else { %>
+                                                <img src="<%= partner.img %>" alt="<%= partner.name %>"
+                                                    class="max-h-full max-w-full object-contain <%= partner.isPlaceholder ? 'grayscale opacity-70' : 'group-hover:scale-105 transition-transform' %>">
+                                                <% } %>
+                                    </div>
+                                    <span
+                                        class="text-sm text-gray-600 text-center font-medium leading-tight max-w-[200px]">
+                                        <%= partner.name %>
+                                    </span>
+                                </div>
+                            </div>
+                            <% }); %>
+                </div>
+
+                <!-- Dots/Indicators (Optional) -->
+                <div class="flex justify-center mt-8 gap-2" id="slider-dots"></div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const track = document.getElementById('partners-track');
+                const slides = track.children;
+                const slideCount = slides.length;
+                let currentIndex = 0;
+                const itemsPerView = 3; // Desktop default
+
+                // Clone items for infinite loop effect
+                // Simple version: just rewind
+
+                function updateSlider() {
+                    const slideWidth = 100 / itemsPerView;
+                    track.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+                }
+
+                function nextSlide() {
+                    currentIndex++;
+                    if (currentIndex > slideCount - itemsPerView) {
+                        currentIndex = 0;
+                    }
+                    updateSlider();
+                }
+
+                // Auto slide every 3 seconds
+                setInterval(nextSlide, 3000);
+
+                // Responsive adjustment (simple logic)
+                function checkResponsive() {
+                    if (window.innerWidth < 768) {
+                        // Mobile: 1 item
+                        // Adjust logic if needed, current CSS assumes md:w-1/3
+                        // To make it fully responsive JS needs to know actual widths or we rely on CSS
+                    }
+                }
+
+                // For simplicity in this EJS template, we rely on Tailwind classes structure
+                // But the JS translateX needs to match the visual width percentage.
+                // Current JS assumes 3 items always.
+                // Improvement: Detect screen size and adjust 'itemsPerView'
+
+                const getItemsPerView = () => window.innerWidth >= 768 ? 3 : 1;
+
+                function responsiveSlide() {
+                    const currentItemsPerView = getItemsPerView();
+                    const slideWidth = 100 / currentItemsPerView; // Percentage width of one slide
+                    track.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+
+                    // Reset index if out of bounds on resize
+                    if (currentIndex > slideCount - currentItemsPerView) {
+                        currentIndex = 0;
+                        track.style.transform = `translateX(0)`;
+                    }
+                }
+
+                let autoPlay = setInterval(() => {
+                    currentIndex++;
+                    const currentItemsPerView = getItemsPerView();
+                    if (currentIndex > slideCount - currentItemsPerView) {
+                        currentIndex = 0;
+                    }
+
+                    // Manual calculation for responsive translate
+                    const slideWidth = 100 / currentItemsPerView;
+                    track.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
+                }, 3000);
+            });
+        </script>
+    </section>
+
+    <%- include('partials/footer') %>

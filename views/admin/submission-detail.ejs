@@ -1,0 +1,115 @@
+<%- include('partials/header', { title: 'Submission Details', path: '/forms' }) %>
+
+<main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <a href="/admin/dashboard" class="text-slate-500 hover:text-slate-700 text-sm mb-2 inline-block">
+                    <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+                </a>
+                <h1 class="text-2xl font-bold text-slate-800">Submission Details</h1>
+                <p class="text-slate-500 text-sm mt-1">
+                    Received on <%= new Date(submission.createdAt).toLocaleString() %>
+                </p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="window.print()"
+                    class="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                    <i class="fas fa-print"></i>
+                </button>
+                <form action="/admin/submissions/<%= submission.id %>/delete?type=<%= type %>" method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this submission?');">
+                    <button type="submit"
+                        class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-sm font-medium transition">
+                        <i class="fas fa-trash-alt mr-2"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Content Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= type === 'custom' ? 'bg-indigo-100 text-indigo-800' : 'bg-blue-100 text-blue-800' %>">
+                    <%= type === 'custom' ? 'Custom Form' : 'Contact Form' %>
+                </span>
+                <span class="text-xs text-slate-400">ID: <%= submission.id %></span>
+            </div>
+
+            <div class="divide-y divide-slate-100">
+                <% if (type === 'legacy') { %>
+                    <!-- Legacy Form Fields -->
+                    <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="text-sm font-medium text-slate-500">Name</div>
+                        <div class="md:col-span-2 text-sm text-slate-800 font-medium">
+                            <%= submission.name %>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="text-sm font-medium text-slate-500">Email</div>
+                        <div class="md:col-span-2 text-sm text-slate-800">
+                            <a href="mailto:<%= submission.email %>" class="text-brand-600 hover:underline">
+                                <%= submission.email %>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="text-sm font-medium text-slate-500">Subject</div>
+                        <div class="md:col-span-2 text-sm text-slate-800">
+                            <%= submission.subject %>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="text-sm font-medium text-slate-500">Message</div>
+                        <div class="md:col-span-2 text-sm text-slate-800 whitespace-pre-wrap">
+                            <%= submission.message %>
+                        </div>
+                    </div>
+                    <% if (submission.file_url) { %>
+                        <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="text-sm font-medium text-slate-500">Attachment</div>
+                            <div class="md:col-span-2 text-sm">
+                                <a href="<%= submission.file_url %>" target="_blank"
+                                    class="text-brand-600 hover:underline flex items-center gap-2">
+                                    <i class="fas fa-paperclip"></i> View Attachment
+                                </a>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } else { %>
+                    <!-- Custom Form Fields (JSON Data) -->
+                    <% 
+                        let parsedData = {}; 
+                        try { parsedData = JSON.parse(submission.data); } catch(e) {}
+                        
+                        // Build a map of field name -> label from form fields
+                        const fieldLabelMap = {};
+                        if (submission.custom_form && submission.custom_form.form_fields) {
+                            submission.custom_form.form_fields.forEach(field => {
+                                fieldLabelMap[field.name] = field.label;
+                            });
+                        }
+                    %>
+                    <% for (const [key, value] of Object.entries(parsedData)) { %>
+                        <% if (key === 'captcha' || key === '_csrf') continue; %>
+                        <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="text-sm font-medium text-slate-500">
+                                <%= fieldLabelMap[key] || key.replace(/_/g, ' ').replace('field ', '') %>
+                            </div>
+                            <div class="md:col-span-2 text-sm text-slate-800 whitespace-pre-wrap"><%= value %></div>
+                        </div>
+                    <% } %>
+                    <% if (submission.custom_form) { %>
+                        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
+                            <p class="text-xs text-slate-500">Submitted via form: <strong><%= submission.custom_form.title %></strong></p>
+                        </div>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

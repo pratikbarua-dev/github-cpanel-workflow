@@ -1,0 +1,78 @@
+<%- include('../../partials/header', { title: 'Manage Forms' , path: '/forms' }) %>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">Custom Forms</h1>
+                <div class="flex gap-3">
+                    <a href="/admin/dashboard"
+                        class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-lg flex items-center gap-2 font-medium shadow-sm transition">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <a href="/admin/forms/new"
+                        class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-medium shadow-sm transition">
+                        <i class="fas fa-plus"></i> New Form
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b border-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Title</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Shortcode (URL)</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm">Created</th>
+                            <th class="px-6 py-4 font-semibold text-gray-600 text-sm text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <% if (forms.length> 0) { %>
+                            <% forms.forEach(form=> { %>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4 text-gray-800 font-medium">
+                                        <%= form.title %>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-gray-500 text-sm font-mono text-xs bg-gray-100 rounded px-2 py-1 select-all w-fit">
+                                        /forms/<%= form.slug %>
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-500 text-sm">
+                                        <%= form.createdAt.toLocaleDateString() %>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex justify-end gap-2">
+                                            <a href="/admin/forms/<%= form.id %>/builder"
+                                                class="text-teal-600 hover:text-teal-800 bg-teal-50 hover:bg-teal-100 p-2 rounded-lg transition"
+                                                title="Build Form">
+                                                <i class="fas fa-tools"></i>
+                                            </a>
+                                            <a href="/admin/forms/<%= form.id %>/responses"
+                                                class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition"
+                                                title="View Responses">
+                                                <i class="fas fa-list"></i>
+                                            </a>
+                                            <a href="/forms/<%= form.slug %>" target="_blank"
+                                                class="text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 p-2 rounded-lg transition"
+                                                title="Preview Public Link">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="4" class="px-6 py-12 text-center text-gray-400">
+                                                <div class="text-4xl mb-3"><i class="fas fa-clipboard-list"></i></div>
+                                                No forms created yet.
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../../partials/footer') %>

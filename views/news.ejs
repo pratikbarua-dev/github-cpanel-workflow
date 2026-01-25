@@ -1,0 +1,60 @@
+<%- include('partials/header') %>
+
+    <!-- Hero Section -->
+    <section class="bg-secondary text-white py-20 relative overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <%= __('header.news') %>
+            </h1>
+            <p class="text-xl text-teal-100 max-w-2xl mx-auto">Latest updates, insights, and analysis from MoRPH.</p>
+        </div>
+    </section>
+
+    <!-- News Grid -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% if (posts.length> 0) { %>
+                    <% posts.forEach(function(post) { %>
+                        <a href="/news/<%= post.slug %>" class="block group h-full">
+                            <article
+                                class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col group-hover:-translate-y-1">
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="<%= post.image_url %>"
+                                        alt="<%= locale === 'bn' && post.title_bn ? post.title_bn : post.title %>"
+                                        class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                                    <div
+                                        class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm">
+                                        <%= post.type %>
+                                    </div>
+                                </div>
+                                <div class="p-6 flex-1 flex flex-col">
+                                    <div class="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                                        <i class="far fa-calendar-alt"></i>
+                                        <%= post.date %>
+                                    </div>
+                                    <h3
+                                        class="text-xl font-bold text-secondary mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                                        <%= locale==='bn' && post.title_bn ? post.title_bn : post.title %>
+                                    </h3>
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-1">
+                                        <%= locale==='bn' && post.excerpt_bn ? post.excerpt_bn : post.excerpt %>
+                                    </p>
+                                    <span class="text-primary font-semibold text-sm mt-auto inline-flex items-center">
+                                        <%= __('home.view_details') %> <i
+                                                class="fas fa-arrow-right ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></i>
+                                    </span>
+                                </div>
+                            </article>
+                        </a>
+                        <% }); %>
+                            <% } else { %>
+                                <div class="col-span-full text-center py-10">
+                                    <p class="text-gray-500 text-lg">No news or articles found.</p>
+                                </div>
+                                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>

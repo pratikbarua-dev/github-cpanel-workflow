@@ -1,0 +1,84 @@
+<%- include('partials/header') %>
+
+    <article class="bg-gradient-to-b from-white via-cyan-50/30 to-white min-h-screen">
+        <!-- Hero Section with Heading Image -->
+        <% if (publication.heading_image) { %>
+            <div class="w-full h-64 md:h-80 overflow-hidden relative">
+                <img src="<%= publication.heading_image %>" alt="<%= publication.title %>"
+                    class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            </div>
+            <% } %>
+
+                <div class="max-w-4xl mx-auto px-4 py-12">
+                    <!-- Back Link -->
+                    <a href="/publications"
+                        class="inline-flex items-center text-sm text-teal-600 hover:text-teal-800 mb-6 transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Publications
+                    </a>
+
+                    <!-- Title & Meta -->
+                    <header class="mb-8">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                            <%= publication.title %>
+                        </h1>
+                        <div class="flex items-center gap-4 text-sm text-gray-500">
+                            <% if (publication.published_date) { %>
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <%= new Date(publication.published_date).toLocaleDateString('en-US', {
+                                        year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+                                </span>
+                                <% } %>
+                        </div>
+                    </header>
+
+                    <!-- Action Buttons -->
+                    <% if (publication.file_url) { %>
+                        <div class="flex flex-wrap gap-3 mb-8">
+                            <a href="<%= publication.file_url %>" target="_blank"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-medium shadow-sm">
+                                <i class="fas fa-external-link-alt"></i> View PDF
+                            </a>
+                            <a href="<%= publication.file_url %>" download
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                        </div>
+                        <% } %>
+
+                            <!-- Content/Description -->
+                            <div class="prose prose-lg max-w-none">
+                                <% if (publication.description) { %>
+                                    <%- publication.description %>
+                                        <% } else { %>
+                                            <p class="text-gray-500 italic">No description available for this
+                                                publication.</p>
+                                            <% } %>
+                            </div>
+
+                            <!-- Share Section -->
+                            <div class="mt-12 pt-8 border-t border-gray-200">
+                                <p class="text-sm text-gray-500 mb-3">Share this publication:</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent('http://localhost:3000/publications/' + publication.id) %>&text=<%= encodeURIComponent(publication.title) %>"
+                                        target="_blank"
+                                        class="px-4 py-2 bg-[#1DA1F2] text-white rounded-lg text-sm hover:opacity-90 transition">
+                                        <i class="fab fa-twitter"></i> Twitter
+                                    </a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3000/publications/' + publication.id) %>"
+                                        target="_blank"
+                                        class="px-4 py-2 bg-[#1877F2] text-white rounded-lg text-sm hover:opacity-90 transition">
+                                        <i class="fab fa-facebook"></i> Facebook
+                                    </a>
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= encodeURIComponent('http://localhost:3000/publications/' + publication.id) %>&title=<%= encodeURIComponent(publication.title) %>"
+                                        target="_blank"
+                                        class="px-4 py-2 bg-[#0A66C2] text-white rounded-lg text-sm hover:opacity-90 transition">
+                                        <i class="fab fa-linkedin"></i> LinkedIn
+                                    </a>
+                                </div>
+                            </div>
+                </div>
+    </article>
+
+    <%- include('partials/footer') %>

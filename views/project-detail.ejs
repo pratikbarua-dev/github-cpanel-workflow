@@ -1,0 +1,155 @@
+<%- include('partials/header', { title: locale==='bn' && project.title_bn ? project.title_bn : project.title }) %>
+
+    <main class="flex-1">
+        <!-- Hero Section -->
+        <div class="relative bg-gray-900 text-white py-24">
+            <% if (project.image_url) { %>
+                <div class="absolute inset-0 overflow-hidden">
+                    <img src="<%= project.image_url %>"
+                        alt="<%= locale === 'bn' && project.title_bn ? project.title_bn : project.title %>"
+                        class="w-full h-full object-cover opacity-30">
+                </div>
+                <% } %>
+                    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <span
+                            class="inline-block py-1 px-3 rounded-full bg-teal-600/80 text-white text-sm font-semibold mb-4">
+                            <%= project.status==='Ongoing' ? (locale==='bn' ? 'চলমান প্রকল্প' : 'Current Project' ) :
+                                (locale==='bn' ? 'সম্পন্ন প্রকল্প' : 'Completed Project' ) %>
+                        </span>
+                        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+                            <%= locale==='bn' && project.title_bn ? project.title_bn : project.title %>
+                        </h1>
+                        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                            <%= locale==='bn' && project.summary_bn ? project.summary_bn : (project.summary || '' ) %>
+                        </p>
+                    </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div
+                class="prose prose-lg prose-teal mx-auto bg-white p-6 md:p-12 rounded-2xl shadow-sm border border-gray-100">
+                <!-- Quill content is raw HTML, so using unescaped output -->
+                <%- locale==='bn' && project.content_bn ? project.content_bn : project.content %>
+
+                    <!-- Interactions Section -->
+                    <div class="mt-16 pt-10 border-t border-gray-100">
+                        <div class="flex flex-wrap items-center justify-between gap-y-4 mb-12">
+                            <% if (typeof isLiked !=='undefined' && isLiked) { %>
+                                <button id="likeBtn" data-type="project" data-id="<%= project.id %>"
+                                    class="flex items-center gap-3 px-6 py-3 bg-teal-50 text-teal-600 rounded-full transition-all duration-300 font-semibold shadow-sm border border-teal-200"
+                                    disabled>
+                                    <i class="fas fa-heart text-xl"></i>
+                                    <span>Liked</span>
+                                </button>
+                                <% } else { %>
+                                    <button id="likeBtn" data-type="project" data-id="<%= project.id %>"
+                                        class="flex items-center gap-3 px-6 py-3 bg-gray-50 hover:bg-teal-50 text-gray-600 hover:text-teal-600 rounded-full transition-all duration-300 font-semibold group shadow-sm hover:shadow-md border border-gray-200">
+                                        <i class="far fa-heart text-xl group-hover:scale-110 transition-transform"></i>
+                                        <span>Like this project</span>
+                                    </button>
+                                    <% } %>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="bg-gray-50/50 rounded-3xl p-5 md:p-10 border border-gray-100">
+                            <div class="flex items-center gap-3 mb-8">
+                                <h3 class="text-2xl font-bold text-gray-900">Discussion</h3>
+                                <div class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-bold">
+                                    <%= comments ? comments.length : 0 %>
+                                </div>
+                            </div>
+
+                            <!-- Comment Form -->
+                            <form id="commentForm" data-type="project" data-id="<%= project.id %>"
+                                class="mb-12 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                    <div class="relative">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-user text-gray-400"></i>
+                                        </div>
+                                        <input type="text" name="author_name" placeholder="Your Name (Optional)"
+                                            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all text-gray-700">
+                                    </div>
+                                </div>
+                                <div class="relative mb-5">
+                                    <textarea name="content" rows="3"
+                                        placeholder="Share your thoughts on this project..." required
+                                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all text-gray-700 resize-none"></textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                        class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                        <span>Post Comment</span>
+                                        <i class="fas fa-paper-plane text-sm"></i>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Comments List -->
+                            <div class="space-y-6">
+                                <% if (comments && comments.length> 0) { %>
+                                    <% comments.forEach(function(comment) { %>
+                                        <div
+                                            class="bg-white p-5 md:p-8 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-gray-100 transition-all hover:shadow-md">
+                                            <div class="flex gap-4 items-start">
+                                                <div class="flex-shrink-0">
+                                                    <% const colors=[ 'bg-red-100 text-red-600'
+                                                        , 'bg-blue-100 text-blue-600' , 'bg-green-100 text-green-600'
+                                                        , 'bg-purple-100 text-purple-600'
+                                                        , 'bg-yellow-100 text-yellow-600' , 'bg-pink-100 text-pink-600'
+                                                        ]; const randomColor=colors[comment.author_name.length %
+                                                        colors.length]; %>
+                                                        <div
+                                                            class="w-12 h-12 rounded-full <%= randomColor %> flex items-center justify-center font-bold text-lg shadow-sm">
+                                                            <%= comment.author_name.charAt(0).toUpperCase() %>
+                                                        </div>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div class="flex justify-between items-center mb-2">
+                                                        <h4 class="font-bold text-gray-900 text-base">
+                                                            <%= comment.author_name %>
+                                                        </h4>
+                                                        <span
+                                                            class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-lg">
+                                                            <%= comment.createdAt.toLocaleDateString('en-US', {
+                                                                month: 'short' , day: 'numeric' , year: 'numeric' }) %>
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-gray-600 leading-relaxed text-[15px]">
+                                                        <%= comment.content %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <div
+                                                    class="text-center py-12 bg-white rounded-2xl border border-dashed border-gray-300">
+                                                    <div
+                                                        class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300 text-2xl">
+                                                        <i class="far fa-comments"></i>
+                                                    </div>
+                                                    <h4 class="text-gray-900 font-semibold mb-1">No comments yet</h4>
+                                                    <p class="text-gray-500 text-sm">Be the first to share your thoughts
+                                                        on this project!</p>
+                                                </div>
+                                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="/projects"
+                    class="inline-flex items-center text-teal-600 hover:text-teal-700 font-semibold gap-2 transition">
+                    <i class="fas fa-arrow-left"></i>
+                    <%= locale==='bn' ? 'সব প্রকল্পে ফিরে যান' : 'Back to all projects' %>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/interactions.js"></script>
+    <%- include('partials/footer') %>

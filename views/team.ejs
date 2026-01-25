@@ -1,0 +1,87 @@
+<%- include('partials/header', { title: title }) %>
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-secondary to-footer text-white py-20 relative overflow-hidden">
+            <div
+                class="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=40')] bg-cover bg-center opacity-10">
+            </div>
+            <div class="container mx-auto px-4 relative z-10 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Meet Our Team</h1>
+                <p class="text-xl text-teal-100 max-w-2xl mx-auto">Dedicated professionals working together to drive
+                    impactful change.</p>
+            </div>
+        </section>
+
+        <!-- Team Grid -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <% if (team && team.length> 0) { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <% team.forEach(member=> { %>
+                            <div
+                                class="group bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 reveal">
+                                <div class="relative h-80 overflow-hidden bg-gray-100">
+                                    <% if (member.image_url) { %>
+                                        <img src="<%= member.image_url %>" alt="<%= member.name %>"
+                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                        <% } else { %>
+                                            <div
+                                                class="w-full h-full flex items-center justify-center bg-teal-50 text-teal-200">
+                                                <i class="fas fa-user-circle text-9xl"></i>
+                                            </div>
+                                            <% } %>
+
+                                                <!-- Social Overlay (Optional, consistent with premium designs) -->
+                                                <div
+                                                    class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+                                                    <!-- Add social links here if model supports it later -->
+                                                </div>
+                                </div>
+
+                                <div class="p-6 text-center">
+                                    <h3 class="text-xl font-bold text-secondary mb-1">
+                                        <%= member.name %>
+                                    </h3>
+                                    <p class="text-primary font-medium text-sm mb-4 uppercase tracking-wide">
+                                        <%= member.role %>
+                                    </p>
+
+                                    <% if (member.bio) { %>
+                                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-4">
+                                            <%= member.bio %>
+                                        </p>
+                                        <% } %>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <div class="text-center py-20">
+                            <div class="text-gray-300 text-6xl mb-4">
+                                <i class="fas fa-users-slash"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-secondary mb-2">No Team Members Found</h3>
+                            <p class="text-gray-500">We are currently updating our team roster. Please check back soon!
+                            </p>
+                        </div>
+                        <% } %>
+            </div>
+        </section>
+
+        <!-- Join Us CTA -->
+        <section class="py-16 bg-teal-50">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold text-secondary mb-4">Want to Join Our Mission?</h2>
+                <p class="text-gray-600 mb-8 max-w-2xl mx-auto">We are always looking for passionate individuals to
+                    collaborate with. Check out our career opportunities or get involved as a volunteer.</p>
+                <div class="flex justify-center gap-4">
+                    <a href="/get-involved" class="btn-primary">Get Involved</a>
+                    <a href="/contact" class="btn-secondary">Contact Us</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <%- include('partials/footer') %>

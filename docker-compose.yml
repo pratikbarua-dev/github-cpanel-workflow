@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+      - ./database.sqlite:/usr/src/app/database.sqlite
+    environment:
+      - NODE_ENV=production
+      - DB_DIALECT=sqlite
+      - PORT=3000
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+    restart: always

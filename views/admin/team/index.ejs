@@ -1,0 +1,69 @@
+<%- include('../partials/header', { title: 'Team Members' , path: '/team' }) %>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Manage Team</h1>
+            <a href="/admin/team/new"
+                class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm">
+                <i class="fas fa-plus mr-2"></i> Add Member
+            </a>
+        </div>
+
+        <!-- Team Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                        <tr>
+                            <th class="px-6 py-3">Photo</th>
+                            <th class="px-6 py-3">Name</th>
+                            <th class="px-6 py-3">Role</th>
+                            <th class="px-6 py-3">Order</th>
+                            <th class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <% if (team.length> 0) { %>
+                            <% team.forEach(function(member) { %>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <img src="<%= member.image_url || 'https://placehold.co/100?text=No+Img' %>"
+                                            class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">
+                                        <%= member.name %>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        <%= member.role %>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        <%= member.display_order %>
+                                    </td>
+                                    <td class="px-6 py-4 flex gap-3">
+                                        <a href="/admin/team/<%= member.id %>/edit"
+                                            class="text-blue-600 hover:text-blue-800" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="/admin/team/<%= member.id %>/delete" method="POST"
+                                            onsubmit="return confirm('Are you sure?');">
+                                            <button type="submit" class="text-red-500 hover:text-red-700"
+                                                title="Delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">No team members
+                                                found.</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>

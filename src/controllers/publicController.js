@@ -1,0 +1,497 @@
+const { Project, Post, TeamMember, Publication, FormSubmission, CustomForm, FormField, FormResponse, Like, Comment } = require('../models');
+const emailService = require('../utils/emailService');
+const Sequelize = require('sequelize');
+const svgCaptcha = require('svg-captcha');
+
+exports.getHome = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { status: { [Sequelize.Op.ne]: 'Archived' } },
+            limit: 3,
+            order: [['createdAt', 'DESC']]
+        });
+        const newsPosts = await Post.findAll({
+            where: {
+                status: 'published',
+                type: ['News', 'Event']
+            },
+            limit: 3,
+            order: [['date', 'DESC']]
+        });
+
+        const articlePosts = await Post.findAll({
+            where: {
+                status: 'published',
+                type: 'Article'
+            },
+            limit: 3,
+            order: [['date', 'DESC']]
+        });
+
+        res.render('index', { title: 'Home', projects, newsPosts, articlePosts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getProjects = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { status: { [Sequelize.Op.ne]: 'Archived' } },
+            order: [['createdAt', 'DESC']]
+        });
+        res.render('projects', { title: 'Projects', projects });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getProjectDetail = async (req, res) => {
+    try {
+        const project = await Project.findOne({ where: { slug: req.params.slug } });
+        if (!project) return res.status(404).render('404', { title: 'Not Found' });
+
+        const comments = await Comment.findAll({
+            where: { projectId: project.id, status: 'approved' },
+            order: [['createdAt', 'DESC']]
+        });
+
+        console.log('Client IP:', req.ip);
+        const isLiked = await Like.findOne({
+            where: {
+                ip_address: req.ip,
+                projectId: project.id
+            }
+        });
+        console.log('Is Liked Query Result:', isLiked);
+
+        res.render('project-detail', { title: project.title, project, comments, isLiked: !!isLiked });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getPostDetail = async (req, res) => {
+    try {
+        const post = await Post.findOne({ where: { slug: req.params.slug } });
+        if (!post) return res.status(404).render('404', { title: 'Not Found' });
+
+        // Fetch comments for this post
+        const comments = await Comment.findAll({
+            where: { postId: post.id, status: 'approved' },
+            order: [['createdAt', 'DESC']]
+        });
+
+        const isLiked = await Like.findOne({
+            where: {
+                ip_address: req.ip,
+                postId: post.id
+            }
+        });
+
+        res.render('post-detail', { title: post.title, post, comments, isLiked: !!isLiked });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getNews = async (req, res) => {
+    try {
+        const posts = await Post.findAll({
+            where: { status: 'published' },
+            order: [['date', 'DESC']]
+        });
+        res.render('news', { title: 'News & Articles', posts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getPublications = async (req, res) => {
+    try {
+        const publications = await Publication.findAll({
+            where: { is_archived: false },
+            order: [['published_date', 'DESC']]
+        });
+        res.render('publications', { title: 'Publications', publications });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getPublicationDetail = async (req, res) => {
+    try {
+        const publication = await Publication.findByPk(req.params.id);
+        if (!publication) return res.status(404).render('404', { title: 'Not Found' });
+
+        res.render('publication-detail', { title: publication.title, publication });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getTeam = async (req, res) => {
+    try {
+        const team = await TeamMember.findAll({ order: [['display_order', 'ASC']] });
+        res.render('team', { title: 'Our Team', team });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getContact = (req, res) => {
+    res.render('contact', { title: 'Contact Us' });
+};
+
+exports.postContact = async (req, res) => {
+    try {
+        if (!req.session.captcha || req.body.captcha !== req.session.captcha) {
+            return res.render('contact', {
+                title: 'Contact Us',
+                error: 'Invalid CAPTCHA. Please try again.',
+                formData: req.body // Pass back data to repopulate form
+            });
+        }
+        req.session.captcha = null; // Clear captcha
+
+        await FormSubmission.create(req.body);
+
+        // Send Email Notification to Admin
+        const emailSubject = `New Contact Message: ${req.body.subject}`;
+        const emailBody = `
+            <h3>New Message from Website</h3>
+            <p><strong>Name:</strong> ${req.body.name}</p>
+            <p><strong>Email:</strong> ${req.body.email}</p>
+            <p><strong>Subject:</strong> ${req.body.subject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${req.body.message}</p>
+        `;
+        await emailService.sendEmail(process.env.EMAIL_USER || 'morph.1280739@gmail.com', emailSubject, emailBody);
+
+        // Send Professional Auto-Reply to User
+        const userSubject = `We received your message: ${req.body.subject}`;
+        const userMessage = `
+            <p>Thank you for contacting MoRPH. We have received your message and will get back to you shortly.</p>
+        `;
+        await emailService.sendAutoReply(req.body.email, req.body.name, userSubject, userMessage);
+
+        res.render('contact', { title: 'Contact Us', success: 'Message sent successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.render('contact', { title: 'Contact Us', error: 'Error sending message.' });
+    }
+};
+
+exports.getAbout = (req, res) => {
+    res.render('about', { title: 'Who We Are - MoRPH' });
+};
+
+exports.getFocusAreas = (req, res) => {
+    res.render('focus-areas', { title: 'Focus Areas - MoRPH' });
+};
+
+exports.getPartnerships = (req, res) => {
+    res.render('partnerships', { title: 'Partnerships - MoRPH' });
+};
+
+exports.getPartnerWithUs = (req, res) => {
+    res.render('partner-with-us', { title: 'Partner With Us - MoRPH' });
+};
+
+exports.getEvents = async (req, res) => {
+    try {
+        const posts = await Post.findAll({
+            where: {
+                status: 'published',
+                type: 'Event'
+            },
+            order: [['date', 'DESC']]
+        });
+        res.render('events', { title: 'Events', posts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getGetInvolved = (req, res) => {
+    // Landing page for involvement options
+    res.render('get-involved', { title: 'Get Involved' });
+};
+
+exports.getApply = (req, res) => {
+    // Dedicated form page
+    res.render('apply', { title: 'Apply - MoRPH' });
+};
+
+exports.postApply = async (req, res) => {
+    try {
+        const { name, email, message, type, captcha } = req.body;
+
+        if (!req.session.captcha || captcha !== req.session.captcha) {
+            return res.render('apply', {
+                title: 'Apply - MoRPH',
+                error: 'Invalid CAPTCHA. Please try again.',
+                formData: req.body
+            });
+        }
+        req.session.captcha = null;
+
+        const fileUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+        await FormSubmission.create({
+            type: type || 'Application',
+            name,
+            email,
+            message: message + (req.file ? ` [Attached: ${req.file.originalname}]` : ''),
+            file_url: fileUrl,
+            status: 'New'
+        });
+
+
+        // Send Email Notification to Admin
+        const appSubject = `New Application: ${type} - ${name}`;
+        const appBody = `
+            <h3>New Application Received</h3>
+            <p><strong>Type:</strong> ${type}</p>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message}</p>
+            ${fileUrl ? `<p><strong>Attachment:</strong> <a href="${process.env.BASE_URL || 'http://localhost:3000'}${fileUrl}">View File</a></p>` : ''}
+        `;
+        await emailService.sendEmail(process.env.EMAIL_USER || 'morph.1280739@gmail.com', appSubject, appBody);
+
+        // Send Professional Auto-Reply to User
+        const userAppSubject = `Application Received: ${type}`;
+        const userAppMessage = `
+            <p>Thank you for your interest in MoRPH. We have received your application for <strong>${type}</strong>.</p>
+            <p>Our team will review your details and contact you if your profile matches our requirements.</p>
+        `;
+        await emailService.sendAutoReply(email, name, userAppSubject, userAppMessage);
+
+        res.render('contact', { title: 'Application Received', success: 'Thank you! Your application has been submitted successfully.' });
+    } catch (error) {
+        console.error(error);
+        res.render('contact', { title: 'Get Involved', error: 'Error submitting application.' });
+    }
+};
+
+exports.getSearch = async (req, res) => {
+    try {
+        const query = req.query.q;
+        if (!query) return res.render('search', { title: 'Search', results: [] });
+
+        const { Op } = require('sequelize');
+        const projects = await Project.findAll({
+            where: {
+                [Op.or]: [
+                    { title: { [Op.like]: `%${query}%` } },
+                    { summary: { [Op.like]: `%${query}%` } }
+                ]
+            }
+        });
+
+        const publications = await Publication.findAll({
+            where: {
+                [Op.or]: [
+                    { title: { [Op.like]: `%${query}%` } }
+                ]
+            }
+        });
+
+        res.render('search', { title: `Search Results: ${query}`, query, projects, publications });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getForm = async (req, res) => {
+    try {
+        const form = await CustomForm.findOne({
+            where: { slug: req.params.slug, status: 'Active' },
+            include: [{ model: FormField }]
+        });
+
+        if (!form) return res.status(404).render('404', { title: 'Form Not Found' });
+
+        // Sort fields
+        if (form.form_fields) {
+            form.form_fields.sort((a, b) => a.order - b.order);
+        }
+
+        res.render('form-render', { title: form.title, form });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.submitForm = async (req, res) => {
+    try {
+        const form = await CustomForm.findByPk(req.params.id);
+        if (!form) return res.status(404).send('Form not found');
+
+        // Capture all body data
+        const formData = JSON.stringify(req.body);
+
+        await FormResponse.create({
+            customFormId: form.id,
+            data: formData,
+            ip_address: req.ip
+        });
+
+        // Fetch form with fields to map names
+        const formWithFields = await CustomForm.findByPk(req.params.id, {
+            include: [{ model: FormField }]
+        });
+
+        // Construct HTML data table
+        let dataTable = '<table style="width:100%; border-collapse: collapse;">';
+
+        // Helper to find label by field ID
+        const getLabel = (key) => {
+            if (!formWithFields || !formWithFields.form_fields) return key;
+            const field = formWithFields.form_fields.find(f => `field_${f.id}` === key || f.name === key);
+            return field ? field.label : key;
+        };
+
+        for (const [key, value] of Object.entries(req.body)) {
+            // Skip automated fields if necessary, or just show everything
+            dataTable += `
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 40%;">${getLabel(key)}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">${value}</td>
+                </tr>
+            `;
+        }
+        dataTable += '</table>';
+
+        // Send Professional Email Notification to Admin
+        const adminSubject = `New Submission: ${form.title}`;
+        const adminMessage = `
+            <h3>New Form Submission Received</h3>
+            <p><strong>Form:</strong> ${form.title}</p>
+            <p><strong>Submission Details:</strong></p>
+            ${dataTable}
+        `;
+        await emailService.sendAutoReply(process.env.EMAIL_USER || 'morph.1280739@gmail.com', 'Admin', adminSubject, adminMessage);
+
+        // Send Professional Auto-Reply to User (Intelligent Field Detection)
+        let userEmail = null;
+        let userName = 'User';
+
+        if (formWithFields && formWithFields.form_fields) {
+            // Priority 1: Find field of type 'email'
+            const emailField = formWithFields.form_fields.find(f => f.type === 'email');
+            if (emailField) {
+                // Try finding value by ID (field_123) or exact name
+                const keyById = `field_${emailField.id}`;
+                userEmail = req.body[keyById] || req.body[emailField.name];
+            }
+
+            // Priority 2: If no type='email', look for label containing "Email"
+            if (!userEmail) {
+                const labelEmailField = formWithFields.form_fields.find(f => f.label.toLowerCase().includes('email'));
+                if (labelEmailField) {
+                    const keyById = `field_${labelEmailField.id}`;
+                    userEmail = req.body[keyById] || req.body[labelEmailField.name];
+                }
+            }
+
+            // Attempt to find Name for personalization
+            const nameField = formWithFields.form_fields.find(f => f.label.toLowerCase().includes('name'));
+            if (nameField) {
+                const keyById = `field_${nameField.id}`;
+                userName = req.body[keyById] || req.body[nameField.name] || 'User';
+            }
+        }
+
+        // Fallback: Check standard keys
+        if (!userEmail) {
+            userEmail = req.body.email || req.body.Email;
+        }
+
+        if (userEmail) {
+            const formUserSubject = `Submission Received: ${form.title}`;
+            const formUserMessage = `
+                <p>Thank you for your submission to <strong>${form.title}</strong>.</p>
+                <p>We have successfully recorded your response. Here is a copy of the information you submitted:</p>
+                ${dataTable}
+            `;
+            await emailService.sendAutoReply(userEmail, userName, formUserSubject, formUserMessage);
+        }
+
+        res.render('form-success', { title: 'Submission Received', form });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error submitting form');
+    }
+};
+
+exports.postLike = async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        const ip_address = req.ip;
+
+        // Simple spam check: limit likes per IP per item
+        const existingLike = await Like.findOne({
+            where: {
+                ip_address,
+                [type === 'project' ? 'projectId' : 'postId']: id
+            }
+        });
+
+        if (existingLike) {
+            return res.status(400).json({ error: 'You have already liked this.' });
+        }
+
+        await Like.create({
+            ip_address,
+            [type === 'project' ? 'projectId' : 'postId']: id
+        });
+
+        res.json({ success: true, message: 'Liked!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.postComment = async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        const { content, author_name } = req.body;
+
+        if (!content) return res.status(400).json({ error: 'Comment cannot be empty.' });
+
+        await Comment.create({
+            content,
+            author_name: author_name || 'Guest',
+            status: 'approved', // Auto-approve for testing
+            [type === 'project' ? 'projectId' : 'postId']: id
+        });
+
+        res.json({ success: true, message: 'Comment posted!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+};
+
+exports.getCaptcha = (req, res) => {
+    const captcha = svgCaptcha.create();
+    req.session.captcha = captcha.text;
+
+    res.type('svg');
+    res.status(200).send(captcha.data);
+};

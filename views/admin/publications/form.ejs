@@ -1,0 +1,354 @@
+<%- include('../partials/header', { title: publication.id ? 'Edit Publication' : 'New Publication' ,
+    path: '/publications' }) %>
+
+    <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+
+    <!-- Image Resize Styles -->
+    <style>
+        .ql-editor img {
+            cursor: nwse-resize;
+            max-width: 100%;
+        }
+
+        .ql-editor img.resizing {
+            outline: 2px dashed #0ea5e9;
+        }
+
+        #editor-container {
+            min-height: 300px;
+            height: auto !important;
+        }
+
+        #editor-container .ql-editor {
+            min-height: 250px;
+            overflow-y: visible;
+        }
+    </style>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <a href="/admin/publications"
+                        class="text-gray-500 hover:text-teal-600 text-sm flex items-center gap-1 mb-1">
+                        <i class="fas fa-arrow-left"></i> Back to Publications
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        <%= publication.id ? 'Edit Publication' : 'Add New Publication' %>
+                    </h1>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="savePublication()"
+                        class="bg-teal-600 text-white hover:bg-teal-700 px-6 py-2.5 rounded-lg font-bold shadow-sm transition transform active:scale-95">
+                        Save Publication
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                <form id="pubForm" class="space-y-6">
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Title -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input type="text" id="title" value="<%= publication.title || '' %>" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none">
+                        </div>
+
+                        <!-- Archive Toggle -->
+                        <div class="flex items-center pt-6">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" id="is_archived"
+                                    class="w-5 h-5 text-teal-600 rounded border-gray-300 focus:ring-teal-500"
+                                    <%=publication.is_archived ? 'checked' : '' %>>
+                                <span class="ml-2 text-gray-700 font-medium">Archived (Hide from Public)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Date -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Published Date</label>
+                            <input type="date" id="published_date" value="<%= publication.published_date || '' %>"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none">
+                        </div>
+
+                        <!-- File URL -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">File URL (PDF)</label>
+                            <input type="text" id="file_url" value="<%= publication.file_url || '' %>"
+                                placeholder="https://..."
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Heading Image Section -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-image mr-1 text-teal-600"></i> Heading Image
+                        </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Image URL</label>
+                                <input type="text" id="heading_image_url" value="<%= publication.heading_image || '' %>"
+                                    placeholder="https://example.com/image.jpg" onchange="previewHeadingImage()"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Or Upload Image</label>
+                                <input type="file" id="heading_image_file" accept="image/*"
+                                    onchange="handleImageUpload(this)"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-teal-50 file:text-teal-700 file:font-medium hover:file:bg-teal-100">
+                            </div>
+                        </div>
+                        <div id="heading_image_preview" class="mt-3 hidden">
+                            <p class="text-xs text-gray-500 mb-1">Preview:</p>
+                            <img id="preview_img" src="" alt="Preview"
+                                class="max-h-40 rounded-lg border border-gray-200 shadow-sm">
+                        </div>
+                    </div>
+
+                    <!-- Quill Editor for Description -->
+                    <div>
+                        <label
+                            class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Description
+                            / Abstract</label>
+                        <div id="editor-container" class="bg-white border border-gray-200 rounded-lg">
+                            <%- publication.description || '' %>
+                        </div>
+                        <!-- Hidden field to store original content for image style restoration -->
+                        <textarea id="original-content"
+                            style="display:none;"><%- publication.description || '' %></textarea>
+                    </div>
+
+                    <!-- Notification -->
+                    <div id="notification" class="hidden p-4 rounded-lg bg-blue-50 text-blue-700 text-sm">Saving...
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        // Custom Image Blot to preserve style attributes (for image resizing)
+        var BlockEmbed = Quill.import('blots/block/embed');
+
+        class ResizableImage extends BlockEmbed {
+            static create(value) {
+                let node = super.create();
+                if (typeof value === 'object') {
+                    node.setAttribute('src', value.src);
+                    if (value.width) node.style.width = value.width;
+                    if (value.height) node.style.height = value.height;
+                    if (value.style) node.setAttribute('style', value.style);
+                } else {
+                    node.setAttribute('src', value);
+                }
+                return node;
+            }
+
+            static value(node) {
+                return {
+                    src: node.getAttribute('src'),
+                    width: node.style.width,
+                    height: node.style.height,
+                    style: node.getAttribute('style')
+                };
+            }
+
+            static formats(node) {
+                let format = {};
+                if (node.hasAttribute('style')) {
+                    format.style = node.getAttribute('style');
+                }
+                if (node.style.width) {
+                    format.width = node.style.width;
+                }
+                return format;
+            }
+
+            format(name, value) {
+                if (name === 'style' || name === 'width') {
+                    if (value) {
+                        this.domNode.setAttribute('style', value);
+                    } else {
+                        this.domNode.removeAttribute('style');
+                    }
+                } else {
+                    super.format(name, value);
+                }
+            }
+        }
+
+        ResizableImage.blotName = 'image';
+        ResizableImage.tagName = 'IMG';
+
+        Quill.register(ResizableImage, true);
+
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Restore image styles from original content after Quill initializes
+        (function restoreImageStyles() {
+            const originalContent = document.getElementById('original-content').value;
+            if (!originalContent) return;
+
+            // Parse original content to extract image styles
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(originalContent, 'text/html');
+            const originalImages = doc.querySelectorAll('img');
+            const editorImages = document.querySelectorAll('#editor-container .ql-editor img');
+
+            originalImages.forEach((origImg, index) => {
+                if (editorImages[index] && origImg.getAttribute('style')) {
+                    editorImages[index].setAttribute('style', origImg.getAttribute('style'));
+                }
+            });
+        })();
+
+        // Image resize functionality
+        (function () {
+            const editorContainer = document.querySelector('#editor-container .ql-editor');
+            let currentImg = null;
+            let startX, startWidth;
+
+            editorContainer.addEventListener('mousedown', function (e) {
+                if (e.target.tagName === 'IMG') {
+                    currentImg = e.target;
+                    startX = e.clientX;
+                    startWidth = currentImg.offsetWidth;
+                    currentImg.classList.add('resizing');
+                    e.preventDefault();
+
+                    const onMouseMove = function (e) {
+                        if (currentImg) {
+                            const diff = e.clientX - startX;
+                            const newWidth = Math.max(50, startWidth + diff);
+                            currentImg.style.width = newWidth + 'px';
+                            currentImg.style.height = 'auto';
+                        }
+                    };
+
+                    const onMouseUp = function () {
+                        if (currentImg) {
+                            currentImg.classList.remove('resizing');
+                            currentImg = null;
+                        }
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                }
+            });
+        })();
+
+        // Image preview from URL
+        function previewHeadingImage() {
+            const url = document.getElementById('heading_image_url').value;
+            const previewContainer = document.getElementById('heading_image_preview');
+            const previewImg = document.getElementById('preview_img');
+
+            if (url) {
+                previewImg.src = url;
+                previewContainer.classList.remove('hidden');
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        }
+
+        // Handle file upload and convert to base64
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64 = e.target.result;
+                    document.getElementById('heading_image_url').value = base64;
+                    document.getElementById('preview_img').src = base64;
+                    document.getElementById('heading_image_preview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Initialize preview on load if there's an existing image
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingUrl = document.getElementById('heading_image_url').value;
+            if (existingUrl) {
+                previewHeadingImage();
+            }
+        });
+
+        async function savePublication() {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            notification.classList.add('bg-blue-100', 'text-blue-700');
+            notification.textContent = 'Saving...';
+            notification.classList.remove('hidden');
+
+            const title = document.getElementById('title').value;
+            const published_date = document.getElementById('published_date').value;
+            const file_url = document.getElementById('file_url').value;
+            const heading_image = document.getElementById('heading_image_url').value;
+            const description = quill.root.innerHTML;
+
+            if (!title.trim()) {
+                notification.textContent = "Title is required!";
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+                return;
+            }
+
+            const is_archived = document.getElementById('is_archived').checked;
+
+            const data = { title, published_date, file_url, heading_image, description, is_archived };
+
+            const publicationId = '<%= publication.id %>';
+            const url = publicationId ? `/admin/publications/${publicationId}/api` : '/admin/publications/api/create';
+            const method = 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    notification.textContent = 'Publication saved successfully! Redirecting...';
+                    notification.classList.replace('bg-blue-100', 'bg-green-100');
+                    notification.classList.replace('text-blue-700', 'text-green-700');
+                    setTimeout(() => window.location.href = '/admin/publications', 1000);
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                notification.textContent = 'Error: ' + error.message;
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+            }
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

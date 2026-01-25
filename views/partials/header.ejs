@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title || 'MoRPH - Advancing Research & Innovation' %>
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0e8c96',
+                        'primary-light': '#20b2aa',
+                        secondary: '#2c3e50',
+                        footer: '#0b5063',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .nav-link {
+                @apply relative text-secondary font-medium transition-colors duration-300 hover:text-primary pb-1;
+            }
+            .nav-link::after {
+                content: '';
+                @apply absolute w-0 h-[2px] bottom-0 left-0 bg-primary transition-all duration-300 ease-in-out;
+            }
+            .nav-link:hover::after {
+                @apply w-full;
+            }
+            .btn-primary {
+                @apply relative overflow-hidden bg-gradient-to-r from-primary to-primary-light text-white px-6 py-2.5 rounded-full font-semibold shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+            }
+            .btn-secondary {
+                @apply bg-teal-50 text-primary px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:bg-teal-100;
+            }
+            .reveal {
+                @apply opacity-0 translate-y-16 transition-all duration-1000 ease-out;
+            }
+            .reveal.active {
+                @apply opacity-100 translate-y-0;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-sans text-gray-800 bg-gray-50 antialiased flex flex-col min-h-screen">
+
+    <header class="bg-white sticky top-0 z-50 shadow-sm py-4">
+        <div class="bg-teal-900 text-white text-xs py-1 px-4 flex justify-end gap-2 lg:hidden">
+            <a href="?lang=en"
+                class="<%= locale === 'en' ? 'font-bold underline' : 'opacity-70 hover:opacity-100' %>">EN</a>
+            <span>|</span>
+            <a href="?lang=bn"
+                class="<%= locale === 'bn' ? 'font-bold underline' : 'opacity-70 hover:opacity-100' %>">BN</a>
+        </div>
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-2 text-2xl font-bold text-primary group">
+                <img src="/images/logo.jpg" alt="MoRPH Logo" class="h-12 w-auto object-contain hidden lg:block">
+                <i class=" lg:hidden transition-transform group-hover:rotate-12"></i>
+                <span style="color: #B91C1C;">MoRPH</span>
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="/" class="nav-link">
+                    <%= __('header.home') %>
+                </a>
+
+                <!-- About Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        <%= __('header.about') %> <i
+                                class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="/about"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">
+                            <%= __('header.who_we_are') %>
+                        </a>
+                        <a href="/team"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">
+                            <%= __('header.team') %>
+                        </a>
+                        <a href="/partnerships"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">
+                            <%= __('header.partnerships') %>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Research Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        <%= __('header.research') %> <i
+                                class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="/projects"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">
+                            <%= __('header.projects') %>
+                        </a>
+                        <a href="/publications"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">
+                            <%= __('header.publications') %>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="/focus-areas" class="nav-link">
+                    <%= __('header.focus_areas') %>
+                </a>
+                <a href="/contact" class="nav-link">
+                    <%= __('header.contact') %>
+                </a>
+            </nav>
+
+            <div class="hidden lg:flex items-center gap-4">
+                <form action="/search" method="GET" class="relative group">
+                    <input type="text" name="q" placeholder="<%= __('header.search_placeholder') %>"
+                        class="pl-4 pr-10 py-2 rounded-full border border-gray-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-sm w-32 focus:w-48 transition-all duration-300 outline-none">
+                    <button type="submit"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-teal-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                <div class="text-sm font-medium flex items-center gap-1 text-gray-400">
+                    <a href="?lang=en"
+                        class="<%= locale === 'en' ? 'text-primary font-bold' : 'hover:text-primary transition' %>">EN</a>
+                    <span>/</span>
+                    <a href="?lang=bn"
+                        class="<%= locale === 'bn' ? 'text-primary font-bold' : 'hover:text-primary transition' %>">BN</a>
+                </div>
+                <a href="/partner-with-us" class="btn-primary group">
+                    <span class="relative z-10">
+                        <%= __('header.partner_with_us') %>
+                    </span>
+                </a>
+            </div>
+
+            <button class="lg:hidden text-2xl text-secondary">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    <main class="flex-grow">

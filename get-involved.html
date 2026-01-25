@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Involved - MoRPH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0e8c96',
+                        'primary-light': '#20b2aa',
+                        secondary: '#2c3e50',
+                        footer: '#0b5063',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .nav-link {
+                @apply relative text-secondary font-medium transition-colors duration-300 hover:text-primary pb-1;
+            }
+            .nav-link::after {
+                content: '';
+                @apply absolute w-0 h-[2px] bottom-0 left-0 bg-primary transition-all duration-300 ease-in-out;
+            }
+            .nav-link:hover::after {
+                @apply w-full;
+            }
+            .btn-primary {
+                @apply relative overflow-hidden bg-gradient-to-r from-primary to-primary-light text-white px-6 py-2.5 rounded-full font-semibold shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+            }
+            .btn-secondary {
+                @apply bg-teal-50 text-primary px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:bg-teal-100;
+            }
+            .reveal {
+                @apply opacity-0 translate-y-16 transition-all duration-1000 ease-out;
+            }
+            .reveal.active {
+                @apply opacity-100 translate-y-0;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-sans text-gray-800 bg-gray-50 antialiased flex flex-col min-h-screen">
+
+    <header class="bg-white sticky top-0 z-50 shadow-sm py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 text-2xl font-bold text-primary group">
+                <img src="./images/logo.jpg" alt="MoRPH Logo" class="h-12 w-auto object-contain hidden md:block">
+                <i class=" md:hidden transition-transform group-hover:rotate-12"></i>
+                MoRPH
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="nav-link">Home</a>
+
+                <!-- About Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        About <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="about.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">Who
+                            We Are</a>
+                        <a href="team.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">Our
+                            Team</a>
+                        <a href="partnerships.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Partnerships</a>
+                    </div>
+                </div>
+
+                <!-- Research Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        Research <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="focus-areas.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">Focus
+                            Areas</a>
+                        <a href="projects.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary transition-colors">Projects</a>
+                        <a href="publications.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Publications</a>
+                    </div>
+                </div>
+
+                <!-- Insights Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        Insights <i
+                            class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <a href="news.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">News
+                            & Analysis</a>
+                        <a href="events.html"
+                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">Events</a>
+                    </div>
+                </div>
+
+                <a href="get-involved.html" class="nav-link text-primary font-bold">Get Involved</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="hidden md:block">
+                <a href="partner-with-us.html" class="btn-primary group">
+                    <span class="relative z-10">Partner with Us</span>
+                    <div
+                        class="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 group-hover:scale-100 group-hover:bg-white/10">
+                    </div>
+                </a>
+            </div>
+
+            <button class="md:hidden text-2xl text-secondary">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-primary-light to-primary text-white py-20 relative overflow-hidden">
+            <div class="container mx-auto px-4 relative z-10 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Get Involved</h1>
+                <p class="text-xl text-teal-100 max-w-2xl mx-auto">Be part of the change. Join us in shaping a
+                    sustainable future.</p>
+            </div>
+        </section>
+
+        <!-- Options Grid -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 max-w-5xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Option 1: Careers -->
+                    <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 reveal hover:shadow-lg transition">
+                        <div
+                            class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary text-xl shadow-sm mb-6">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-secondary mb-4">Careers</h3>
+                        <p class="text-gray-600 mb-6">Join our team of dedicated researchers, policy analysts, and
+                            operations specialists. Check out our open positions.</p>
+                        <a href="#" class="btn-secondary inline-block">View Openings</a>
+                    </div>
+
+                    <!-- Option 2: Volunteer -->
+                    <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 reveal hover:shadow-lg transition">
+                        <div
+                            class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary text-xl shadow-sm mb-6">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-secondary mb-4">Volunteer</h3>
+                        <p class="text-gray-600 mb-6">Contribute your time and skills to our community initiatives and
+                            field research projects.</p>
+                        <a href="contact.html" class="btn-secondary inline-block">Apply to Volunteer</a>
+                    </div>
+
+                    <!-- Option 3: Partner -->
+                    <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 reveal hover:shadow-lg transition">
+                        <div
+                            class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary text-xl shadow-sm mb-6">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-secondary mb-4">Partner With Us</h3>
+                        <p class="text-gray-600 mb-6">Collaborate on research, co-host events, or fund impact projects.
+                        </p>
+                        <a href="partner-with-us.html" class="btn-secondary inline-block">Partnership Inquiry</a>
+                    </div>
+
+                    <!-- Option 4: Donate -->
+                    <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 reveal hover:shadow-lg transition">
+                        <div
+                            class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary text-xl shadow-sm mb-6">
+                            <i class="fas fa-donate"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-secondary mb-4">Donate</h3>
+                        <p class="text-gray-600 mb-6">Support our grassroots initiatives and independent research with a
+                            donation.</p>
+                        <a href="#" class="btn-secondary inline-block">Support MoRPH</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="reveal bg-footer text-white pt-16 pb-6">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center gap-2 text-2xl font-bold mb-4">
+                    <i class="fas fa-layer-group"></i> MoRPH
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    Registration No: P-53086/2024.<br>Grassroots research for a sustainable future.
+                </p>
+            </div>
+            <div class="col-span-1 md:col-span-1">
+                <h4 class="font-bold mb-4 text-lg">Organization</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="about.html" class="hover:text-white transition">Who We Are</a></li>
+                    <li><a href="team.html" class="hover:text-white transition">Our Team</a></li>
+                    <li><a href="partnerships.html" class="hover:text-white transition">Partnerships</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-span-1 md:col-span-1">
+                <h4 class="font-bold mb-4 text-lg">Our Work</h4>
+                <ul class="space-y-2 text-sm text-gray-300">
+                    <li><a href="focus-areas.html" class="hover:text-white transition">Focus Areas</a></li>
+                    <li><a href="projects.html" class="hover:text-white transition">Projects</a></li>
+                    <li><a href="publications.html" class="hover:text-white transition">Publications</a></li>
+                    <li><a href="news.html" class="hover:text-white transition">News & Insights</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-lg">Connect</h4>
+                <div class="flex gap-4 text-xl mb-2">
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-primary-light transition"><i class="fab fa-twitter"></i></a>
+                </div>
+                <p class="text-sm text-gray-300">MoRPH_BD</p>
+                <div class="mt-4">
+                    <h4 class="font-bold mb-2 text-lg">Contact Us</h4>
+                    <p class="text-sm text-gray-300 mb-1">morph.1280739@gmail.com</p>
+                    <p class="text-sm text-gray-300">Sylhet, Bangladesh</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10 pt-6 text-center text-sm text-gray-400">
+            <p>&copy; 2026 MoRPH. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<%- include('partials/header', { title: locale==='bn' && post.title_bn ? post.title_bn : post.title }) %>
+
+    <main class="flex-1">
+        <!-- Hero Section -->
+        <div class="relative bg-teal-900 text-white py-24">
+            <% if (post.image_url) { %>
+                <div class="absolute inset-0 overflow-hidden">
+                    <img src="<%= post.image_url %>"
+                        alt="<%= locale === 'bn' && post.title_bn ? post.title_bn : post.title %>"
+                        class="w-full h-full object-cover opacity-20">
+                </div>
+                <% } %>
+                    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <div class="flex justify-center gap-4 mb-4">
+                            <span
+                                class="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold">
+                                <%= post.type %>
+                            </span>
+                            <span
+                                class="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold">
+                                <%= post.date %>
+                            </span>
+                        </div>
+
+                        <h1
+                            class="text-3xl md:text-5xl font-extrabold tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
+                            <%= locale==='bn' && post.title_bn ? post.title_bn : post.title %>
+                        </h1>
+
+                        <% if (post.excerpt) { %>
+                            <p class="text-lg text-gray-300 max-w-2xl mx-auto italic">
+                                "<%= locale==='bn' && post.excerpt_bn ? post.excerpt_bn : post.excerpt %>"
+                            </p>
+                            <% } %>
+                    </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div
+                class="prose prose-lg prose-teal mx-auto bg-white p-6 md:p-12 rounded-2xl shadow-sm border border-gray-100">
+                <!-- Quill content is raw HTML, so using unescaped output -->
+                <%- locale==='bn' && post.content_bn ? post.content_bn : post.content %>
+
+                    <!-- Interactions Section -->
+                    <div class="mt-12 pt-8 border-t border-gray-100">
+                        <div class="flex flex-wrap items-center justify-between gap-y-4 mb-10">
+                            <% if (typeof isLiked !=='undefined' && isLiked) { %>
+                                <button id="likeBtn" data-type="post" data-id="<%= post.id %>"
+                                    class="flex items-center gap-2 text-primary text-lg font-medium cursor-default"
+                                    disabled>
+                                    <i class="fas fa-heart"></i>
+                                    <span>Liked</span>
+                                </button>
+                                <% } else { %>
+                                    <button id="likeBtn" data-type="post" data-id="<%= post.id %>"
+                                        class="flex items-center gap-2 text-gray-500 hover:text-primary transition-colors text-lg font-medium group">
+                                        <i class="far fa-heart group-hover:scale-110 transition-transform"></i>
+                                        <span>Like this post</span>
+                                    </button>
+                                    <% } %>
+                                        <div class="flex gap-4">
+                                            <a href="#" class="text-gray-400 hover:text-[#1877F2] transition-colors"><i
+                                                    class="fab fa-facebook fa-lg"></i></a>
+                                            <a href="#" class="text-gray-400 hover:text-[#1DA1F2] transition-colors"><i
+                                                    class="fab fa-twitter fa-lg"></i></a>
+                                            <a href="#" class="text-gray-400 hover:text-[#0A66C2] transition-colors"><i
+                                                    class="fab fa-linkedin fa-lg"></i></a>
+                                        </div>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="bg-gray-50/50 rounded-3xl p-5 md:p-10 border border-gray-100">
+                            <div class="flex items-center gap-3 mb-8">
+                                <h3 class="text-2xl font-bold text-gray-900">Discussion</h3>
+                                <div class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-bold">
+                                    <%= comments ? comments.length : 0 %>
+                                </div>
+                            </div>
+
+                            <!-- Comment Form -->
+                            <form id="commentForm" data-type="post" data-id="<%= post.id %>"
+                                class="mb-12 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                    <div class="relative">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-user text-gray-400"></i>
+                                        </div>
+                                        <input type="text" name="author_name" placeholder="Your Name (Optional)"
+                                            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all text-gray-700">
+                                    </div>
+                                </div>
+                                <div class="relative mb-5">
+                                    <textarea name="content" rows="3" placeholder="Share your thoughts on this post..."
+                                        required
+                                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all text-gray-700 resize-none"></textarea>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                        class="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                        <span>Post Comment</span>
+                                        <i class="fas fa-paper-plane text-sm"></i>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Comments List -->
+                            <div class="space-y-6">
+                                <% if (comments && comments.length> 0) { %>
+                                    <% comments.forEach(function(comment) { %>
+                                        <div
+                                            class="bg-white p-5 md:p-8 rounded-2xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-gray-100 transition-all hover:shadow-md">
+                                            <div class="flex gap-4 items-start">
+                                                <div class="flex-shrink-0">
+                                                    <% const colors=[ 'bg-red-100 text-red-600'
+                                                        , 'bg-blue-100 text-blue-600' , 'bg-green-100 text-green-600'
+                                                        , 'bg-purple-100 text-purple-600'
+                                                        , 'bg-yellow-100 text-yellow-600' , 'bg-pink-100 text-pink-600'
+                                                        ]; const randomColor=colors[comment.author_name.length %
+                                                        colors.length]; %>
+                                                        <div
+                                                            class="w-12 h-12 rounded-full <%= randomColor %> flex items-center justify-center font-bold text-lg shadow-sm">
+                                                            <%= comment.author_name.charAt(0).toUpperCase() %>
+                                                        </div>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <div class="flex justify-between items-center mb-2">
+                                                        <h4 class="font-bold text-gray-900 text-base">
+                                                            <%= comment.author_name %>
+                                                        </h4>
+                                                        <span
+                                                            class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-lg">
+                                                            <%= comment.createdAt.toLocaleDateString('en-US', {
+                                                                month: 'short' , day: 'numeric' , year: 'numeric' }) %>
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-gray-600 leading-relaxed text-[15px]">
+                                                        <%= comment.content %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <div
+                                                    class="text-center py-12 bg-white rounded-2xl border border-dashed border-gray-300">
+                                                    <div
+                                                        class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300 text-2xl">
+                                                        <i class="far fa-comments"></i>
+                                                    </div>
+                                                    <h4 class="text-gray-900 font-semibold mb-1">No comments yet</h4>
+                                                    <p class="text-gray-500 text-sm">Be the first to share your thoughts
+                                                        on this post!</p>
+                                                </div>
+                                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 text-center">
+                        <a href="/"
+                            class="inline-flex items-center text-teal-600 hover:text-teal-700 font-semibold gap-2 transition">
+                            <i class="fas fa-arrow-left"></i>
+                            <%= locale==='bn' ? 'নীড়পাতায় ফিরে যান' : 'Back to Home' %>
+                        </a>
+                    </div>
+            </div>
+    </main>
+
+    <script src="/js/interactions.js"></script>
+    <%- include('partials/footer') %>

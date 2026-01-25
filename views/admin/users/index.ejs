@@ -1,0 +1,69 @@
+<%- include('../partials/header', { title: 'Manage Users' , path: '/users' }) %>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Team & Moderators</h1>
+            <a href="/admin/users/new" class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition">
+                <i class="fas fa-plus mr-2"></i> Add New User
+            </a>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                    <tr>
+                        <th class="px-6 py-3">Email</th>
+                        <th class="px-6 py-3">Role</th>
+                        <th class="px-6 py-3">Permissions</th>
+                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <% if (users && users.length > 0) { %>
+                        <% users.forEach(function(u) { %>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-800">
+                                    <%= u.email %>
+                                </td>
+                                <td class="px-6 py-4 text-sm">
+                                    <span
+                                        class="px-2 py-1 text-xs font-semibold rounded-full <%= u.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' %>">
+                                        <%= u.role %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600">
+                                    <% if (u.role === 'admin' ) { %>
+                                        <span class="text-gray-400 italic">All Access</span>
+                                        <% } else if (u.permissions && u.permissions.length > 0) { %>
+                                            <%= u.permissions.join(', ') %>
+                                <% } else { %>
+                                    <span class="text-gray-400">None</span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full <%= u.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+                                    <%= u.is_active ? 'Active' : 'Inactive' %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <form action="/admin/users/<%= u.id %>/delete" method="POST" class="inline"
+                                    onsubmit="return confirm('Are you sure?');">
+                                    <button type="submit" class="text-red-500 hover:text-red-700 ml-2">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">No users found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+<%- include('../partials/footer') %>
