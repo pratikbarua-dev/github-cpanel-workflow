@@ -131,7 +131,8 @@ sequelize.authenticate()
         console.log('✅ Database connected successfully');
         // SAFE sync - alter:false in production (no destructive changes)
         // SQLite foreign key constraints can fail during 'alter: true', so setting to false to prevent startup crashes.
-        const syncOptions = { alter: false };
+        // For MySQL (Production), we enable alter to allow schema updates (like adding new columns).
+        const syncOptions = { alter: !usingSQLite };
         return sequelize.sync(syncOptions);
     })
     .then(async () => {
