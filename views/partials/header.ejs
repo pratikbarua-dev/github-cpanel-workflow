@@ -111,9 +111,103 @@
                 </a>
             </div>
 
-            <button class="lg:hidden text-2xl text-secondary">
+            <button id="mobile-menu-btn" class="lg:hidden text-2xl text-secondary p-2 focus:outline-none">
                 <i class="fas fa-bars"></i>
             </button>
+        </div>
+
+        <!-- Mobile Menu (Full Overlay) -->
+        <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-white overflow-y-auto lg:hidden">
+            <div class="container mx-auto px-4 py-4 flex flex-col min-h-screen">
+                <div class="flex justify-between items-center mb-8">
+                    <a href="/" class="flex items-center gap-2 text-2xl font-bold text-primary">
+                        <span style="color: #B91C1C;">MoRPH</span>
+                    </a>
+                    <button id="close-mobile-menu" class="text-2xl text-secondary p-2 focus:outline-none">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Search Mobile -->
+                <form action="/search" method="GET" class="mb-6 relative">
+                    <input type="text" name="q" placeholder="<%= __('header.search_placeholder') %>"
+                        class="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-gray-50">
+                    <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <nav class="flex flex-col space-y-2 flex-grow">
+                    <a href="/"
+                        class="block px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors">
+                        <%= __('header.home') %>
+                    </a>
+
+                    <!-- About Accordion -->
+                    <div class="mobile-dropdown group border-b border-gray-50">
+                        <button
+                            class="w-full flex justify-between items-center px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors mobile-dropdown-btn">
+                            <%= __('header.about') %> <i
+                                    class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden pl-4 space-y-1 mb-2 mobile-dropdown-content">
+                            <a href="/about"
+                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                <%= __('header.who_we_are') %>
+                            </a>
+                            <a href="/team"
+                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                <%= __('header.team') %>
+                            </a>
+                            <a href="/partnerships"
+                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                <%= __('header.partnerships') %>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Research Accordion -->
+                    <div class="mobile-dropdown group border-b border-gray-50">
+                        <button
+                            class="w-full flex justify-between items-center px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors mobile-dropdown-btn">
+                            <%= __('header.research') %> <i
+                                    class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden pl-4 space-y-1 mb-2 mobile-dropdown-content">
+                            <a href="/projects"
+                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                <%= __('header.projects') %>
+                            </a>
+                            <a href="/publications"
+                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                <%= __('header.publications') %>
+                            </a>
+                        </div>
+                    </div>
+
+                    <a href="/focus-areas"
+                        class="block px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors">
+                        <%= __('header.focus_areas') %>
+                    </a>
+                    <a href="/contact"
+                        class="block px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors">
+                        <%= __('header.contact') %>
+                    </a>
+                </nav>
+
+                <div class="mt-8 pb-8 space-y-4">
+                    <a href="/partner-with-us"
+                        class="block w-full text-center bg-gradient-to-r from-primary to-primary-light text-white px-6 py-4 rounded-xl font-bold text-lg shadow-md">
+                        <%= __('header.partner_with_us') %>
+                    </a>
+
+                    <div class="flex justify-center gap-4 text-sm font-medium text-gray-500">
+                        <a href="?lang=en" class="<%= locale === 'en' ? 'text-primary font-bold' : '' %>">English</a>
+                        <span>|</span>
+                        <a href="?lang=bn" class="<%= locale === 'bn' ? 'text-primary font-bold' : '' %>">বাংলা</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
     <main class="flex-grow">

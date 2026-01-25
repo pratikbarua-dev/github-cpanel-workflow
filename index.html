@@ -13,8 +13,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0e8c96',
-                        'primary-light': '#20b2aa',
+                        primary: '#097079',
+                        'primary-light': '#159c94',
                         secondary: '#2c3e50',
                         footer: '#0b5063',
                     },
@@ -28,7 +28,7 @@
     <style type="text/tailwindcss">
         @layer utilities {
             .nav-link {
-                @apply relative text-secondary font-medium transition-colors duration-300 hover:text-primary pb-1;
+                @apply relative text-secondary font-medium transition-colors duration-300 hover:text-primary py-2 px-1;
             }
             .nav-link::after {
                 content: '';
@@ -134,9 +134,77 @@
                 </a>
             </div>
 
-            <button class="md:hidden text-2xl text-secondary">
+            <button id="mobile-menu-btn" class="md:hidden text-2xl text-secondary p-2 focus:outline-none">
                 <i class="fas fa-bars"></i>
             </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="hidden absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-xl md:hidden overflow-y-auto max-h-[80vh]">
+            <div class="flex flex-col p-4 space-y-2">
+                <a href="index.html"
+                    class="block px-4 py-3 text-secondary hover:bg-teal-50 hover:text-primary rounded-lg font-medium transition-colors">Home</a>
+
+                <!-- About Submenu -->
+                <div class="mobile-dropdown group">
+                    <button
+                        class="w-full flex justify-between items-center px-4 py-3 text-secondary hover:bg-teal-50 hover:text-primary rounded-lg font-medium transition-colors mobile-dropdown-btn">
+                        About <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                    </button>
+                    <div class="hidden pl-4 space-y-1 mobile-dropdown-content bg-gray-50/50 rounded-b-lg mb-1">
+                        <a href="about.html" class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">Who We
+                            Are</a>
+                        <a href="team.html" class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">Our
+                            Team</a>
+                        <a href="partnerships.html"
+                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">Partnerships</a>
+                    </div>
+                </div>
+
+                <!-- Research Submenu -->
+                <div class="mobile-dropdown group">
+                    <button
+                        class="w-full flex justify-between items-center px-4 py-3 text-secondary hover:bg-teal-50 hover:text-primary rounded-lg font-medium transition-colors mobile-dropdown-btn">
+                        Research <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                    </button>
+                    <div class="hidden pl-4 space-y-1 mobile-dropdown-content bg-gray-50/50 rounded-b-lg mb-1">
+                        <a href="focus-areas.html"
+                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">Focus Areas</a>
+                        <a href="projects.html"
+                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">Projects</a>
+                        <a href="publications.html"
+                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">Publications</a>
+                    </div>
+                </div>
+
+                <!-- Insights Submenu -->
+                <div class="mobile-dropdown group">
+                    <button
+                        class="w-full flex justify-between items-center px-4 py-3 text-secondary hover:bg-teal-50 hover:text-primary rounded-lg font-medium transition-colors mobile-dropdown-btn">
+                        Insights <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                    </button>
+                    <div class="hidden pl-4 space-y-1 mobile-dropdown-content bg-gray-50/50 rounded-b-lg mb-1">
+                        <a href="news.html" class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">News &
+                            Analysis</a>
+                        <a href="events.html"
+                            class="block px-4 py-2 text-sm text-gray-600 hover:text-primary">Events</a>
+                    </div>
+                </div>
+
+                <a href="get-involved.html"
+                    class="block px-4 py-3 text-secondary hover:bg-teal-50 hover:text-primary rounded-lg font-medium transition-colors">Get
+                    Involved</a>
+                <a href="contact.html"
+                    class="block px-4 py-3 text-secondary hover:bg-teal-50 hover:text-primary rounded-lg font-medium transition-colors">Contact</a>
+
+                <div class="pt-4 mt-2 border-t border-gray-100">
+                    <a href="partner-with-us.html"
+                        class="block w-full text-center bg-gradient-to-r from-primary to-primary-light text-white px-6 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all">
+                        Partner with Us
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -181,7 +249,7 @@
                             02
                         </div>
                         <div>
-                            <h3 class="font-bold text-secondary text-lg mb-1">Launch of Public Health Initiative</h3>
+                            <h2 class="font-bold text-secondary text-lg mb-1">Launch of Public Health Initiative</h2>
                             <p class="text-gray-600 text-sm">
                                 Initiated a community-based program to improve water and sanitation access.
                             </p>
@@ -456,26 +524,26 @@
             <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div>
                     <div class="bg-secondary text-white p-4 rounded-t-xl">
-                        <h3 class="font-bold text-lg">Upcoming Events & Workshops</h3>
+                        <h2 class="font-bold text-lg">Upcoming Events & Workshops</h2>
                     </div>
                     <div class="bg-white p-6 border-x border-b border-gray-100">
                         <div class="mb-6 pb-6 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0">
                             <span class="text-sm text-gray-500 flex items-center gap-2 mb-2"><i
                                     class="far fa-calendar text-primary"></i> Oct 28, 2025</span>
-                            <h4 class="font-bold text-secondary text-lg mb-3">Public Health Awareness Camp</h4>
+                            <h3 class="font-bold text-secondary text-lg mb-3">Public Health Awareness Camp</h3>
                             <a href="#" class="btn-primary block text-center w-full text-sm py-2">Register Now</a>
                         </div>
                         <div>
                             <span class="text-sm text-gray-500 flex items-center gap-2 mb-2"><i
                                     class="far fa-calendar text-primary"></i> Nov 5, 2025</span>
-                            <h4 class="font-bold text-secondary text-lg mb-3">Migration Policy Webinar</h4>
+                            <h3 class="font-bold text-secondary text-lg mb-3">Migration Policy Webinar</h3>
                             <a href="#" class="btn-primary block text-center w-full text-sm py-2">Add to Calendar</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex flex-col justify-center">
-                    <h3 class="text-3xl font-bold text-secondary mb-4">Stay Updated</h3>
+                    <h2 class="text-3xl font-bold text-secondary mb-4">Stay Updated</h2>
                     <p class="text-gray-600 mb-6">Research is ongoing. Subscribe to get our latest reports and briefs
                         delivered to your inbox.</p>
                     <form class="flex gap-2">

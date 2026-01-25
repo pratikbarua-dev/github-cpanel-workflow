@@ -16,49 +16,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Mobile Menu Toggle Logic
-    const menuBtn = document.querySelector('.fa-bars')?.parentElement;
-    const nav = document.querySelector('nav');
+    // Mobile Menu Logic
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const closeBtn = document.getElementById('close-mobile-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-    if (menuBtn && nav) {
-        menuBtn.addEventListener('click', () => {
-            nav.classList.toggle('hidden');
-            nav.classList.toggle('flex');
-            nav.classList.toggle('flex-col');
-            nav.classList.toggle('absolute');
-            nav.classList.toggle('top-[70px]'); // Adjusted height
-            nav.classList.toggle('left-0');
-            nav.classList.toggle('w-full');
-            nav.classList.toggle('bg-white');
-            nav.classList.toggle('p-6');
-            nav.classList.toggle('shadow-lg');
-            nav.classList.toggle('z-50'); // Ensure it's on top
-        });
+    function toggleMenu() {
+        if (mobileMenu) {
+            mobileMenu.classList.toggle('hidden');
+            if (!mobileMenu.classList.contains('hidden')) {
+                document.body.style.overflow = 'hidden'; // Lock scroll
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
     }
 
-    // Mobile Dropdown Interactions
-    // On mobile, clicking the parent button should toggle the submenu
-    const dropdownToggles = document.querySelectorAll('nav .group > button');
+    if (mobileBtn) mobileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+    });
 
-    dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', (e) => {
-            // Check if we are in mobile view (nav is flex-col)
-            if (nav.classList.contains('flex-col')) {
-                e.preventDefault();
-                const dropdown = toggle.nextElementSibling;
-                const icon = toggle.querySelector('.fa-chevron-down');
+    if (closeBtn) closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+    });
 
-                // Toggle visibility classes
-                // We need to override the desktop hover behavior
-                if (dropdown.classList.contains('invisible')) {
-                    // Show
-                    dropdown.classList.remove('invisible', 'opacity-0', 'absolute');
-                    dropdown.classList.add('visible', 'opacity-100', 'relative', 'pl-4');
-                    if (icon) icon.style.transform = 'rotate(180deg)';
+    // Mobile Accordion Logic
+    const dropdownBtns = document.querySelectorAll('.mobile-dropdown-btn');
+
+    dropdownBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('.fa-chevron-down');
+
+            // Toggle current dropdown
+            content.classList.toggle('hidden');
+            if (icon) {
+                if (content.classList.contains('hidden')) {
+                    icon.style.transform = 'rotate(0deg)';
                 } else {
-                    // Hide
-                    dropdown.classList.add('invisible', 'opacity-0', 'absolute');
-                    dropdown.classList.remove('visible', 'opacity-100', 'relative', 'pl-4');
-                    if (icon) icon.style.transform = 'rotate(0deg)';
+                    icon.style.transform = 'rotate(180deg)';
                 }
             }
         });
