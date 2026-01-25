@@ -4,3 +4,7 @@ _archive
 /public/uploads/*
 !/public/uploads/.gitkeep
 .DS_Store
+
+# Database backup secrets and files
+dbbackup/config.py
+dbbackup/backups/

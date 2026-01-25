@@ -136,35 +136,213 @@ app.get('/system-backup', (req, res) => {
         return res.status(403).send("Access Denied");
     }
 
-    // 3. Set Headers for Download
-    res.setHeader('Content-Type', 'application/gzip');
-    res.setHeader('Content-Disposition', 'attachment; filename="backup.sql.gz"');
+    // Check if we're using SQLite or MySQL
+    const usingSQLiteBackup = process.env.DB_DIALECT === 'sqlite';
 
-    // 4. Get DB Credentials from Env
-    const dbUser = process.env.DB_USER;
-    const dbPass = process.env.DB_PASS;
-    const dbName = process.env.DB_NAME;
-    // const dbHost = process.env.DB_HOST || 'localhost'; 
+    if (usingSQLiteBackup) {
+        // --- SQLite Backup (for local development) ---
+        const fs = require('fs');
+        const sqliteDbPath = path.join(__dirname, 'database.sqlite');
 
-    // 5. Spawn mysqldump process
-    const mysqldump = spawn('mysqldump', [
-        '--no-tablespaces',      // Fixes cPanel permission error
-        '--column-statistics=0', // Fixes version mismatch error
-        '-u', dbUser,
-        `-p${dbPass}`,           // No space after -p
-        dbName
-    ]);
+        if (!fs.existsSync(sqliteDbPath)) {
+            return res.status(404).send("SQLite database not found");
+        }
 
-    // 6. Spawn gzip process
-    const gzip = spawn('gzip');
+        // Set Headers for SQLite download (gzipped)
+        res.setHeader('Content-Type', 'application/gzip');
+        res.setHeader('Content-Disposition', 'attachment; filename="backup.sqlite.gz"');
 
-    // 7. Pipe data: mysqldump -> gzip -> Browser/Script
-    mysqldump.stdout.pipe(gzip.stdin);
-    gzip.stdout.pipe(res);
+        // Stream the SQLite file through gzip
+        const gzip = spawn('gzip', ['-c', sqliteDbPath]);
+        gzip.stdout.pipe(res);
 
-    mysqldump.stderr.on('data', (data) => {
-        console.error(`Backup Error: ${data}`);
-    });
+        gzip.stderr.on('data', (data) => {
+            console.error(`SQLite Backup Error: ${data}`);
+        });
+
+        gzip.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`gzip exited with code ${code}`);
+            }
+        });
+
+    } else {
+        // --- MySQL Backup (for production) ---
+        // 3. Set Headers for Download
+        res.setHeader('Content-Type', 'application/gzip');
+        res.setHeader('Content-Disposition', 'attachment; filename="backup.sql.gz"');
+
+        // 4. Get DB Credentials from Env
+        const dbUser = process.env.DB_USER;
+        const dbPass = process.env.DB_PASS;
+        const dbName = process.env.DB_NAME;
+        // const dbHost = process.env.DB_HOST || 'localhost'; 
+
+        // 5. Spawn mysqldump process
+        const mysqldump = spawn('mysqldump', [
+            '--no-tablespaces',      // Fixes cPanel permission error
+            '--column-statistics=0', // Fixes version mismatch error
+            '-u', dbUser,
+            `-p${dbPass}`,           // No space after -p
+            dbName
+        ]);
+
+        // 6. Spawn gzip process
+        const gzip = spawn('gzip');
+
+        // 7. Pipe data: mysqldump -> gzip -> Browser/Script
+        mysqldump.stdout.pipe(gzip.stdin);
+        gzip.stdout.pipe(res);
+
+        mysqldump.stderr.on('data', (data) => {
+            console.error(`Backup Error: ${data}`);
+        });
+
+        mysqldump.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`mysqldump exited with code ${code}`);
+            }
+        });
+    }
+});
+
+// --- SYSTEM RESTORE BRIDGE ROUTE ---
+const multer = require('multer');
+const zlib = require('zlib');
+const fs = require('fs');
+const os = require('os');
+
+// Configure multer to store uploaded file in temp directory
+const upload = multer({
+    dest: os.tmpdir(),
+    limits: { fileSize: 100 * 1024 * 1024 } // 100MB max
+});
+
+app.post('/system-restore', upload.single('backup'), async (req, res) => {
+    // 1. Get Secret from Env
+    const secretKey = process.env.BACKUP_SECRET_KEY;
+
+    if (!secretKey) {
+        console.error("Error: BACKUP_SECRET_KEY missing in .env");
+        return res.status(500).json({ success: false, error: "Configuration Error" });
+    }
+
+    // 2. Verify Key (from query or header)
+    const providedKey = req.query.key || req.headers['x-backup-key'];
+    if (providedKey !== secretKey) {
+        return res.status(403).json({ success: false, error: "Access Denied" });
+    }
+
+    // 3. Check if file was uploaded
+    if (!req.file) {
+        return res.status(400).json({ success: false, error: "No backup file provided" });
+    }
+
+    const uploadedFile = req.file.path;
+    console.log(`Restore request received: ${req.file.originalname} (${req.file.size} bytes)`);
+
+    // Check if we're using SQLite or MySQL
+    const usingSQLiteRestore = process.env.DB_DIALECT === 'sqlite';
+
+    try {
+        if (usingSQLiteRestore) {
+            // --- SQLite Restore ---
+            const sqliteDbPath = path.join(__dirname, 'database.sqlite');
+            const backupPath = sqliteDbPath + '.pre_restore_bak';
+
+            // Decompress the uploaded file
+            const tempSqlite = path.join(os.tmpdir(), 'temp_restore.sqlite');
+
+            await new Promise((resolve, reject) => {
+                const gunzip = zlib.createGunzip();
+                const input = fs.createReadStream(uploadedFile);
+                const output = fs.createWriteStream(tempSqlite);
+
+                input.pipe(gunzip).pipe(output);
+                output.on('finish', resolve);
+                output.on('error', reject);
+                gunzip.on('error', reject);
+            });
+
+            // Backup current database
+            if (fs.existsSync(sqliteDbPath)) {
+                fs.copyFileSync(sqliteDbPath, backupPath);
+            }
+
+            // Replace with restored database
+            fs.copyFileSync(tempSqlite, sqliteDbPath);
+            fs.unlinkSync(tempSqlite);
+            fs.unlinkSync(uploadedFile);
+
+            const stats = fs.statSync(sqliteDbPath);
+            console.log(`SQLite restore complete: ${stats.size} bytes`);
+
+            return res.json({
+                success: true,
+                message: "SQLite database restored successfully",
+                size: stats.size,
+                rollback: "database.sqlite.pre_restore_bak"
+            });
+
+        } else {
+            // --- MySQL Restore ---
+            const dbUser = process.env.DB_USER;
+            const dbPass = process.env.DB_PASS;
+            const dbName = process.env.DB_NAME;
+            const dbHost = process.env.DB_HOST || 'localhost';
+
+            // Create restore command: zcat file.gz | mysql
+            const gunzip = spawn('zcat', [uploadedFile]);
+            const mysql = spawn('mysql', [
+                '-h', dbHost,
+                '-u', dbUser,
+                `-p${dbPass}`,
+                dbName
+            ]);
+
+            // Pipe: gunzip -> mysql
+            gunzip.stdout.pipe(mysql.stdin);
+
+            let stderrOutput = '';
+            mysql.stderr.on('data', (data) => {
+                stderrOutput += data.toString();
+            });
+
+            await new Promise((resolve, reject) => {
+                mysql.on('close', (code) => {
+                    // Clean up uploaded file
+                    fs.unlinkSync(uploadedFile);
+
+                    if (code !== 0) {
+                        reject(new Error(stderrOutput || `mysql exited with code ${code}`));
+                    } else {
+                        resolve();
+                    }
+                });
+                mysql.on('error', reject);
+                gunzip.on('error', reject);
+            });
+
+            console.log(`MySQL restore complete: ${dbName}`);
+            return res.json({
+                success: true,
+                message: `MySQL database '${dbName}' restored successfully`
+            });
+        }
+
+    } catch (error) {
+        console.error(`Restore Error: ${error.message}`);
+
+        // Clean up uploaded file
+        if (fs.existsSync(uploadedFile)) {
+            fs.unlinkSync(uploadedFile);
+        }
+
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
 });
 
 // ========================================
