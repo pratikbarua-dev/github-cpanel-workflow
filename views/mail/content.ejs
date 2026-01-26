@@ -1,0 +1,232 @@
+<!-- This is loaded via AJAX into the main shell -->
+<div class="d-flex h-100">
+    <!-- Mail Sidebar (Transparent/Grey background inherited from wrapper) -->
+    <aside class="sidebar" style="width: 240px; background-color: transparent; padding-top: 16px;">
+        <div class="px-2 mb-3">
+            <button class="btn-compose w-100 justify-content-center" data-bs-toggle="modal"
+                data-bs-target="#composeModal">
+                <i class="fas fa-pencil me-2"></i> Compose
+            </button>
+        </div>
+
+        <nav class="nav flex-column pe-2">
+            <a class="nav-link <%= currentBox == 'inbox' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('inbox'); return false;">
+                <i class="fas fa-inbox"></i> Inbox
+            </a>
+            <a class="nav-link <%= currentBox == 'starred' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('starred'); return false;">
+                <i class="far fa-star"></i> Starred
+            </a>
+            <a class="nav-link <%= currentBox == 'snoozed' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('snoozed'); return false;">
+                <i class="far fa-clock"></i> Snoozed
+            </a>
+            <a class="nav-link <%= currentBox == 'sent' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('sent'); return false;">
+                <i class="far fa-paper-plane"></i> Sent
+            </a>
+            <a class="nav-link <%= currentBox == 'drafts' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('drafts'); return false;">
+                <i class="far fa-file"></i> Drafts
+            </a>
+            <a class="nav-link <%= currentBox == 'archive' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('archive'); return false;">
+                <i class="fas fa-archive"></i> Archive
+            </a>
+
+            <div class="nav-divider my-2 border-top mx-3"></div>
+
+            <a class="nav-link <%= currentBox == 'important' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('important'); return false;">
+                <i class="fas fa-tag"></i> Important
+            </a>
+            <a class="nav-link <%= currentBox == 'scheduled' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('scheduled'); return false;">
+                <i class="fas fa-calendar-alt"></i> Scheduled
+            </a>
+            <a class="nav-link <%= currentBox == 'spam' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('spam'); return false;">
+                <i class="fas fa-exclamation-circle"></i> Spam
+            </a>
+            <a class="nav-link <%= currentBox == 'trash' ? 'active' : '' %>" href="#"
+                onclick="loadMailbox('trash'); return false;">
+                <i class="far fa-trash-alt"></i> Trash
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Mail List (Card Style) -->
+    <main class="flex-grow-1 d-flex flex-column bg-white shadow-sm overflow-hidden m-3 rounded-4"
+        style="border: 1px solid #e0e0e0;">
+        <!-- Toolbar -->
+        <div class="email-toolbar d-flex align-items-center p-2 border-bottom">
+            <div class="me-3 ps-2">
+                <input type="checkbox" id="selectAll" class="form-check-input"
+                    style="width: 18px; height: 18px; cursor: pointer;">
+            </div>
+
+            <!-- Search Form -->
+            <form onsubmit="event.preventDefault(); loadMailbox('<%= currentBox %>', this.search.value)"
+                class="d-flex align-items-center me-3 border rounded-pill px-2 py-1 bg-light" style="width: 250px;">
+                <i class="fas fa-search text-muted me-2 small"></i>
+                <input type="text" name="search" class="border-0 bg-transparent small w-100"
+                    placeholder="Search mail..." style="outline: none;">
+                <button type="button" class="btn btn-link p-0 text-muted"
+                    onclick="this.form.search.value=''; loadMailbox('<%= currentBox %>')"
+                    style="font-size: 10px; text-decoration: none;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </form>
+
+            <button class="toolbar-btn btn btn-light btn-sm rounded-circle me-1" title="Refresh"
+                onclick="loadMailbox('<%= currentBox %>')">
+                <i class="fas fa-redo text-secondary"></i>
+            </button>
+
+            <div class="flex-grow-1"></div>
+
+            <span class="text-muted small pe-2">
+                <%= emails.length %> emails in <span class="text-capitalize fw-bold">
+                        <%= currentBox %>
+                    </span>
+            </span>
+        </div>
+
+        <% if (status) { %>
+            <div class="alert alert-danger m-3 py-2 px-3 small rounded-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <%= status %>
+            </div>
+            <% } %>
+
+                <!-- List -->
+                <div class="email-list flex-grow-1 overflow-auto">
+                    <% if (emails.length> 0) { %>
+                        <% emails.forEach(function(email, index) { %>
+                            <div class="email-row p-0 border-bottom <%= email.is_read ? '' : 'bg-white fw-bold' %>"
+                                style="cursor: pointer; transition: background 0.1s; <%= email.is_read ? 'background: rgba(246, 248, 252, 0.5);' : '' %>"
+                                onmouseover="this.style.boxShadow='inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60,64,67,.3)'"
+                                onmouseout="this.style.boxShadow='none'" onclick="toggleEmailDetail(<%= index %>)">
+                                <div class="d-flex align-items-center py-2 px-3">
+                                    <div class="email-checkbox me-3" onclick="event.stopPropagation()">
+                                        <input type="checkbox" value="<%= email.uid %>" class="form-check-input"
+                                            style="cursor: pointer;">
+                                    </div>
+                                    <div class="email-star me-2" onclick="event.stopPropagation(); toggleStar(this)">
+                                        <i class="far fa-star text-secondary"></i>
+                                    </div>
+                                    <div class="email-star me-3"
+                                        onclick="event.stopPropagation(); toggleImportant(this, '<%= email.uid %>', <%= email.isImportant %>)">
+                                        <i class="<%= email.isImportant ? 'fas' : 'far' %> fa-bookmark"
+                                            style="<%= email.isImportant ? 'color:#f4b400' : 'color:#dadce0' %>"></i>
+                                    </div>
+                                    <div class="email-sender text-truncate me-3"
+                                        style="width: 180px; font-size: 14px; <%= email.is_read ? 'color: #3c4043;' : 'color: #202124;' %>">
+                                        <%= email.from.split('<')[0].trim() %>
+                                    </div>
+                                    <div class="email-content text-truncate flex-grow-1" style="font-size: 14px;">
+                                        <span class="email-subject-main <%= email.is_read ? 'fw-normal' : 'fw-bold' %>">
+                                            <%= email.subject %>
+                                        </span>
+                                        <span class="text-secondary small"> - <%= email.preview || '' %></span>
+                                    </div>
+                                    <div class="email-date small text-secondary ms-3"
+                                        style="width: 80px; text-align: right; font-size: 12px; font-weight: 500;">
+                                        <%= email.dateShort || (email.date ? email.date.split(',')[0] : '' ) %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detail View -->
+                            <div class="email-detail border-bottom bg-white p-4" id="detail-<%= index %>"
+                                style="display: none;">
+                                <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                                    <div>
+                                        <div class="fw-bold fs-6">
+                                            <%= email.from %>
+                                        </div>
+                                        <div class="small text-muted">to me</div>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <%= email.date %>
+                                    </div>
+                                </div>
+
+                                <% if (email.attachments && email.attachments.length> 0) { %>
+                                    <div class="mb-3 d-flex gap-2 flex-wrap">
+                                        <% email.attachments.forEach(function(att) { %>
+                                            <a href="/mail/attachment?uid=<%= email.uid %>&box=<%= currentBox %>&filename=<%= encodeURIComponent(att.filename) %>"
+                                                target="_blank"
+                                                class="badge bg-light text-dark border p-2 text-decoration-none d-flex align-items-center gap-2">
+                                                <i class="fas fa-paperclip text-secondary"></i>
+                                                <span>
+                                                    <%= att.filename %>
+                                                </span>
+                                                <span class="text-muted fw-normal">(<%= Math.round(att.size/1024) %>
+                                                        KB)</span>
+                                            </a>
+                                            <% }); %>
+                                    </div>
+                                    <% } %>
+
+                                        <div class="email-body mt-3">
+                                            <%- email.html %>
+                                        </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <div
+                                        class="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
+                                        <div class="bg-light rounded-circle p-4 mb-3">
+                                            <i class="fas fa-inbox fa-3x text-secondary"></i>
+                                        </div>
+                                        <p class="fs-5">Your <span class="text-capitalize">
+                                                <%= currentBox %>
+                                            </span> is empty</p>
+                                    </div>
+                                    <% } %>
+                </div>
+    </main>
+</div>
+
+<!-- Compose Modal -->
+<div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-light py-2">
+                <h6 class="modal-title mb-0">New Message</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <form id="composeForm" action="/mail/send" method="POST" enctype="multipart/form-data"
+                    onsubmit="submitCompose(event)">
+                    <input type="email" id="composeTo" name="to"
+                        class="form-control border-0 border-bottom rounded-0 py-3" placeholder="To" required>
+                    <input type="text" id="composeSubject" name="subject"
+                        class="form-control border-0 border-bottom rounded-0 py-3" placeholder="Subject" required>
+
+                    <textarea id="summernote" name="message"></textarea>
+
+                    <div class="p-3 bg-light d-flex align-items-center gap-2 border-top">
+                        <button type="submit" class="btn btn-primary rounded-pill px-4">Send</button>
+
+                        <div class="d-flex align-items-center bg-white border rounded px-2">
+                            <input type="datetime-local" id="scheduleTime" class="border-0 small"
+                                style="height: 30px; outline: none;">
+                            <button type="button" class="btn btn-link text-decoration-none small"
+                                onclick="scheduleEmail()">
+                                <i class="fas fa-calendar-check me-1"></i> Schedule
+                            </button>
+                        </div>
+
+                        <label class="btn btn-link text-secondary" title="Attach File">
+                            <i class="fas fa-paperclip"></i>
+                            <input type="file" name="attachments" multiple hidden>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

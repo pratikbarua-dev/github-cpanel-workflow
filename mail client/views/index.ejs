@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morph Mail</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f6f8fc;
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 256px;
+            background-color: #f6f8fc;
+            padding: 10px 12px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+
+        .btn-compose {
+            background-color: #c2e7ff;
+            color: #001d35;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 24px 14px 16px;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: box-shadow 0.2s, background-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .btn-compose:hover {
+            background-color: #a8d4f0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-compose i {
+            font-size: 20px;
+        }
+
+        .nav-link {
+            color: #202124;
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 0 16px 16px 0;
+            padding: 6px 12px 6px 24px;
+            margin: 0 0 1px -12px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: background-color 0.15s;
+        }
+
+        .nav-link:hover {
+            background-color: #e8eaed;
+            color: #202124;
+        }
+
+        .nav-link.active {
+            background-color: #d3e3fd;
+            color: #001d35;
+            font-weight: 600;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            margin-right: 16px;
+            font-size: 16px;
+            color: #5f6368;
+        }
+
+        .nav-link.active i {
+            color: #001d35;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 12px 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background: white;
+            margin: 8px 8px 8px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Email List Header / Toolbar */
+        .email-toolbar {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            gap: 4px;
+            min-height: 48px;
+        }
+
+        .email-toolbar .toolbar-btn {
+            background: transparent;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            color: #5f6368;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .email-toolbar .toolbar-btn:hover {
+            background-color: #f1f3f4;
+        }
+
+        /* Email List */
+        .email-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .email-row {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            min-height: 40px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: box-shadow 0.15s;
+            position: relative;
+        }
+
+        .email-row:hover {
+            box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+            z-index: 2;
+        }
+
+        .email-row.highlighted {
+            background-color: #fff8e1;
+        }
+
+        .email-row.unread .email-sender,
+        .email-row.unread .email-subject-main {
+            font-weight: 700;
+        }
+
+        .email-checkbox {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .email-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #1a73e8;
+        }
+
+        .email-star {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .email-star i {
+            font-size: 18px;
+            color: #dadce0;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .email-star i:hover {
+            color: #f4b400;
+        }
+
+        .email-star i.starred {
+            color: #f4b400;
+        }
+
+        .email-sender {
+            width: 200px;
+            font-size: 14px;
+            color: #202124;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 0;
+            padding-right: 16px;
+        }
+
+        .email-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            gap: 4px;
+        }
+
+        .email-subject-main {
+            font-size: 14px;
+            color: #202124;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .email-subject-preview {
+            font-size: 14px;
+            color: #5f6368;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .email-attachment {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f1f3f4;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 4px 10px;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #5f6368;
+            gap: 6px;
+            max-width: fit-content;
+        }
+
+        .email-attachment i {
+            color: #ea4335;
+            font-size: 14px;
+        }
+
+        .email-date {
+            width: 80px;
+            text-align: right;
+            font-size: 12px;
+            color: #5f6368;
+            flex-shrink: 0;
+            padding-left: 12px;
+        }
+
+        /* Email Detail View */
+        .email-detail {
+            display: none;
+            padding: 20px;
+            background: #fafbfc;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .email-detail.show {
+            display: block;
+        }
+
+        .email-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .email-detail-from {
+            font-weight: 600;
+            color: #202124;
+            font-size: 14px;
+        }
+
+        .email-detail-date {
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .email-detail-body {
+            font-size: 14px;
+            color: #202124;
+            line-height: 1.6;
+        }
+
+        .email-detail-body img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #5f6368;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #dadce0;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* Alert Status */
+        .alert-status {
+            margin: 16px;
+            padding: 12px 16px;
+            background: #fce8e6;
+            border-radius: 8px;
+            color: #c5221f;
+            font-size: 14px;
+        }
+
+        /* Compose Modal */
+        .modal-content {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: #f6f8fc;
+            padding: 8px 16px;
+        }
+
+        .modal-header h6 {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .compose-input {
+            border: none;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 16px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .compose-input:focus {
+            outline: none;
+            border-bottom-color: #1a73e8;
+        }
+
+        .btn-send {
+            background: #0b57d0;
+            color: white;
+            border: none;
+            border-radius: 18px;
+            padding: 10px 24px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-send:hover {
+            background: #0842a0;
+        }
+
+        .btn-attach {
+            background: transparent;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            color: #5f6368;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .btn-attach:hover {
+            background-color: #f1f3f4;
+        }
+
+        .email-attachments {
+            padding: 10px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .attachment-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #f1f3f4;
+            border: 1px solid #dadce0;
+            border-radius: 16px;
+            font-size: 13px;
+            color: #202124;
+            text-decoration: none;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .attachment-chip:hover {
+            background: #e8eaed;
+            color: #202124;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <button class="btn-compose" data-bs-toggle="modal" data-bs-target="#composeModal">
+                <i class="fas fa-pencil"></i> Compose
+            </button>
+
+            <nav>
+                <a class="nav-link <%= currentBox == 'inbox' ? 'active' : '' %>" href="/?box=inbox">
+                    <i class="fas fa-inbox"></i> Inbox
+                </a>
+                <a class="nav-link <%= currentBox == 'starred' ? 'active' : '' %>" href="/?box=starred">
+                    <i class="far fa-star"></i> Starred
+                </a>
+                <a class="nav-link <%= currentBox == 'snoozed' ? 'active' : '' %>" href="/?box=snoozed">
+                    <i class="far fa-clock"></i> Snoozed
+                </a>
+                <a class="nav-link <%= currentBox == 'sent' ? 'active' : '' %>" href="/?box=sent">
+                    <i class="far fa-paper-plane"></i> Sent
+                </a>
+                <a class="nav-link <%= currentBox == 'drafts' ? 'active' : '' %>" href="/?box=drafts">
+                    <i class="far fa-file"></i> Drafts
+                </a>
+                <a class="nav-link <%= currentBox == 'archive' ? 'active' : '' %>" href="/?box=archive">
+                    <i class="fas fa-archive"></i> Archive
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a class="nav-link <%= currentBox == 'important' ? 'active' : '' %>" href="/?box=important">
+                    <i class="fas fa-tag"></i> Important
+                </a>
+                <a class="nav-link <%= currentBox == 'scheduled' ? 'active' : '' %>" href="/?box=scheduled">
+                    <i class="fas fa-calendar-alt"></i> Scheduled
+                </a>
+                <a class="nav-link <%= currentBox == 'spam' ? 'active' : '' %>" href="/?box=spam">
+                    <i class="fas fa-exclamation-circle"></i> Spam
+                </a>
+                <a class="nav-link <%= currentBox == 'trash' ? 'active' : '' %>" href="/?box=trash">
+                    <i class="far fa-trash-alt"></i> Trash
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Toolbar -->
+            <div class="email-toolbar">
+                <label style="display: flex; align-items: center; margin-right: 8px;">
+                    <input type="checkbox" id="selectAll" style="width: 18px; height: 18px;">
+                </label>
+                <button class="toolbar-btn" title="Refresh" onclick="location.reload()">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <button class="toolbar-btn" title="Archive">
+                    <i class="fas fa-archive"></i>
+                </button>
+                <button class="toolbar-btn" title="Delete">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+                <button class="toolbar-btn" title="Snooze" onclick="snoozeSelected()">
+                    <i class="far fa-clock"></i>
+                </button>
+                <div class="dropdown d-inline-block">
+                    <button class="toolbar-btn" title="More" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"
+                                onclick="alert('Mark read/unread not implemented in backend yet')">Mark as read</a></li>
+                        <li><a class="dropdown-item" href="#"
+                                onclick="alert('Mark read/unread not implemented in backend yet')">Mark as unread</a>
+                        </li>
+                    </ul>
+                </div>
+                <div style="flex: 1;"></div>
+                <span style="font-size: 12px; color: #5f6368;">
+                    <%= emails.length %> emails in <span style="text-transform: capitalize;">
+                            <%= currentBox %>
+                        </span>
+                </span>
+            </div>
+
+            <% if (status) { %>
+                <div class="alert-status"><i class="fas fa-exclamation-triangle me-2"></i>
+                    <%= status %>
+                </div>
+                <% } %>
+
+                    <div class="email-list">
+                        <% if (emails.length> 0) { %>
+                            <% emails.forEach(function(email, index) { %>
+                                <div class="email-row unread" onclick="toggleEmailDetail(<%= index %>)">
+                                    <div class="email-checkbox" onclick="event.stopPropagation()">
+                                        <input type="checkbox" value="<%= email.uid %>">
+                                    </div>
+                                    <div class="email-star" onclick="event.stopPropagation(); toggleStar(this)">
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <!-- Important Marker -->
+                                    <div class="email-star"
+                                        onclick="event.stopPropagation(); toggleImportant(this, '<%= email.uid %>', <%= email.isImportant %>)">
+                                        <i class="<%= email.isImportant ? 'fas' : 'far' %> fa-bookmark"
+                                            style="<%= email.isImportant ? 'color:#f4b400' : 'color:#dadce0' %>"></i>
+                                    </div>
+                                    <div class="email-sender">
+                                        <%= email.from.split('<')[0].trim() %>
+                                    </div>
+                                    <div class="email-content">
+                                        <span class="email-subject-main">
+                                            <%= email.subject %>
+                                        </span>
+                                        <span class="email-subject-preview"> - <%= email.preview || '' %></span>
+                                    </div>
+                                    <div class="email-date">
+                                        <%= email.dateShort || email.date.split(',')[0] %>
+                                    </div>
+                                </div>
+                                <div class="email-detail" id="detail-<%= index %>">
+                                    <div class="email-detail-header">
+                                        <div>
+                                            <div class="email-detail-from">
+                                                <%= email.from %>
+                                            </div>
+                                            <div style="font-size: 12px; color: #5f6368;">to me</div>
+                                        </div>
+                                        <div class="email-detail-date">
+                                            <%= email.date %>
+                                        </div>
+                                    </div>
+                                    <% if (email.attachments && email.attachments.length> 0) { %>
+                                        <div class="email-attachments">
+                                            <% email.attachments.forEach(function(att) { %>
+                                                <a href="/attachment?uid=<%= email.uid %>&box=<%= currentBox %>&filename=<%= encodeURIComponent(att.filename) %>"
+                                                    target="_blank" class="attachment-chip">
+                                                    <i class="fas fa-paperclip"></i>
+                                                    <%= att.filename %> (<%= Math.round(att.size/1024) %> KB)
+                                                </a>
+                                                <% }); %>
+                                        </div>
+                                        <% } %>
+                                            <div class="email-detail-body">
+                                                <%- email.html %>
+                                            </div>
+                                </div>
+                                <% }); %>
+                                    <% } else { %>
+                                        <div class="empty-state">
+                                            <i class="fas fa-inbox"></i>
+                                            <p>No emails in <span style="text-transform: capitalize;">
+                                                    <%= currentBox %>
+                                                </span></p>
+                                        </div>
+                                        <% } %>
+                    </div>
+        </main>
+    </div>
+
+    <!-- Compose Modal -->
+    <div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h6>New Message</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <form id="composeForm" action="/send" method="POST" enctype="multipart/form-data">
+                        <input type="email" id="composeTo" name="to" class="compose-input" placeholder="To" required>
+                        <input type="text" id="composeSubject" name="subject" class="compose-input"
+                            placeholder="Subject" required>
+
+                        <textarea id="summernote" name="message"></textarea>
+
+                        <div
+                            style="padding: 12px 16px; display: flex; align-items: center; gap: 8px; background: #f6f8fc; border-top: 1px solid #e0e0e0;">
+                            <button type="submit" class="btn-send">Send</button>
+
+                            <!-- Split Schedule Option -->
+                            <div class="d-flex align-items-center"
+                                style="border: 1px solid #dadce0; border-radius: 4px; background: white; padding: 2px 8px;">
+                                <input type="datetime-local" id="scheduleTime"
+                                    style="border:none; font-size:12px; height: 30px; outline: none; margin-right: 8px;">
+                                <button type="button" class="btn-send"
+                                    style="background:#fff; color:#1a73e8; border:none; box-shadow: none; padding: 4px 12px;"
+                                    onclick="scheduleEmail()">
+                                    <i class="fas fa-calendar-check me-1"></i> Schedule
+                                </button>
+                            </div>
+
+                            <label class="btn-attach" title="Attach File">
+                                <i class="fas fa-paperclip"></i>
+                                <input type="file" name="attachments" multiple hidden>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                placeholder: 'Write your message...',
+                tabsize: 2,
+                height: 300,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture']],
+                    ['view', ['codeview']]
+                ],
+                disableResizeEditor: true
+            });
+        });
+
+        function toggleEmailDetail(index) {
+            const detail = document.getElementById('detail-' + index);
+            const allDetails = document.querySelectorAll('.email-detail');
+
+            // Close other open details
+            allDetails.forEach((d, i) => {
+                if (i !== index) d.classList.remove('show');
+            });
+
+            // Toggle current
+            detail.classList.toggle('show');
+
+            // Mark as read
+            const row = detail.previousElementSibling;
+            if (row) row.classList.remove('unread');
+        }
+
+        function toggleStar(element) {
+            const icon = element.querySelector('i');
+            icon.classList.toggle('far');
+            icon.classList.toggle('fas');
+            icon.classList.toggle('starred');
+        }
+
+        // Select all checkbox
+        document.getElementById('selectAll').addEventListener('change', function () {
+            const checkboxes = document.querySelectorAll('.email-checkbox input');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        function performAction(action) {
+            const selected = [];
+            document.querySelectorAll('.email-row input[type="checkbox"]:checked').forEach(cb => {
+                if (cb.value) selected.push(cb.value);
+            });
+
+            if (selected.length === 0) {
+                alert('Please select at least one email.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to ${action} ${selected.length} email(s)?`)) return;
+
+            // Get current box from URL or default to inbox
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentBox = urlParams.get('box') || 'inbox';
+
+            fetch('/action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uids: selected, action: action, currentBox: currentBox })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                }).catch(err => {
+                    console.error(err);
+                    alert('Request failed');
+                });
+        }
+
+        // Attach event listeners to toolbar buttons
+        document.querySelector('button[title="Archive"]').onclick = () => performAction('archive');
+        document.querySelector('button[title="Delete"]').onclick = () => performAction('delete');
+
+        function toggleImportant(el, uid, currentStatus) {
+            const newStatus = !currentStatus;
+            fetch('/mark-important', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid: uid, isImportant: newStatus })
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to update.');
+                }
+            });
+        }
+
+        function snoozeSelected() {
+            const selected = [];
+            document.querySelectorAll('.email-row input[type="checkbox"]:checked').forEach(cb => {
+                if (cb.value) selected.push(cb.value);
+            });
+            if (selected.length === 0) { alert('Select emails to snooze'); return; }
+
+            const min = prompt("Snooze for how many minutes?", "1");
+            if (!min) return;
+
+            const until = Date.now() + (parseInt(min) * 60 * 1000);
+
+            fetch('/snooze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uids: selected, until: until })
+            }).then(res => res.json()).then(data => {
+                if (data.success) window.location.reload();
+                else alert('Failed to snooze: ' + data.message);
+            });
+        }
+
+        function scheduleEmail() {
+            const to = document.getElementById('composeTo').value;
+            const subject = document.getElementById('composeSubject').value;
+            // Fix: Use correct ID matching the textarea
+            const message = $('#summernote').summernote('code');
+            const timeStr = document.getElementById('scheduleTime').value;
+
+            if (!to || !timeStr) {
+                alert('Please provide Recipient and Schedule Time');
+                return;
+            }
+
+            const time = new Date(timeStr).getTime();
+            if (time <= Date.now()) {
+                alert('Schedule time must be in future');
+                return;
+            }
+
+            fetch('/schedule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ to, subject, message, time })
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    alert('Email Scheduled!');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('composeModal'));
+                    modal.hide();
+                } else {
+                    alert('Failed: ' + data.message);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

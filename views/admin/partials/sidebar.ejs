@@ -72,6 +72,13 @@
             Comments
         </a>
 
+        <a href="/mail"
+            class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/mail') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %> loading-link">
+            <i
+                class="fas fa-envelope-open-text w-5 text-center <%= path.startsWith('/mail') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
+            Mail Client
+        </a>
+
         <a href="/admin/media"
             class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/media') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %>">
             <i

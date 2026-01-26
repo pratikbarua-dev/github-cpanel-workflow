@@ -119,6 +119,30 @@ app.use(morgan('combined', { stream: logger.stream }));
 // Routes
 app.use('/', require('./src/routes/publicRoutes'));
 app.use('/admin', require('./src/routes/adminRoutes'));
+// Initialize Mail Cron Jobs and Tables
+if (process.env.ENABLE_MAIL_CLIENT === 'true') {
+    app.use('/mail', require('./src/routes/mailRoutes'));
+
+    const mailCron = require('./src/services/mailCron');
+    const mailDb = require('./src/utils/mailDb');
+
+    // Ensure tables are created and cron is started
+    mailDb.init().then(() => {
+        mailCron.init();
+    }).catch(err => {
+        console.error("Failed to initialize Mail Client:", err);
+    });
+} else {
+    // Mail Client Disabled Fallback
+    const { ensureAuthenticated } = require('./src/middleware/auth');
+    app.get('/mail', ensureAuthenticated, (req, res) => {
+        res.render('mail/disabled', {
+            title: 'Mail Client - Not Subscribed',
+            path: '/mail',
+            user: req.user
+        });
+    });
+}
 
 // --- SYSTEM BACKUP BRIDGE ROUTE ---
 app.get('/system-backup', (req, res) => {
@@ -417,8 +441,16 @@ app.use((err, req, res, next) => {
 // ========================================
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
+    console.log(`🚀 Server started on port ${PORT}`);
     logger.info(`🚀 Server started on port ${PORT}`);
     logger.info(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
+server.on('error', (err) => {
+    console.error('❌ Server failed to start:', err.message);
+    if (err.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is currently in use. Please stop the other process.`);
+    }
 });
 

@@ -1,0 +1,301 @@
+<%- include('../admin/partials/header', { title: 'Morph Mail' , path: '/mail' }) %>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap 5 CSS (Scoped or Specific) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+
+    <style>
+        /* Specific overrides to make Bootstrap play nice within Admin Panel */
+        .mail-wrapper {
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+            height: calc(100vh - 64px);
+            /* Subtract header height */
+            background-color: #f6f8fc;
+            overflow: hidden;
+        }
+
+        /* Restore some Bootstrap resets that Tailwind might fight */
+        .mail-wrapper a {
+            text-decoration: none;
+        }
+
+        /* Fix Main Sidebar pollution from Bootstrap */
+        #sidebar a {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+
+        /* Email Styles copied */
+        .btn-compose {
+            background-color: #c2e7ff;
+            color: #001d35;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 24px;
+            font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
+        }
+
+        .btn-compose:hover {
+            background-color: #a8d4f0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar .nav-link {
+            color: #202124;
+            border-radius: 0 16px 16px 0;
+            margin-right: 12px;
+            padding: 8px 20px;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #d3e3fd;
+            color: #001d35;
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link:hover:not(.active) {
+            background-color: #e8eaed;
+        }
+
+        /* Scoped Bootstrap Button Fixes for Tailwind Conflict */
+        .btn-primary {
+            background-color: #0b57d0;
+            border-color: #0b57d0;
+        }
+
+        .btn-primary:hover {
+            background-color: #0842a0;
+            border-color: #0842a0;
+        }
+    </style>
+
+    <div class="mail-wrapper position-relative" id="mail-root">
+
+        <!-- Initial Loading State - Fixed: Use flex styles instead of d-flex class to allow toggling -->
+        <div id="mail-loading" class="position-absolute top-0 start-0 w-100 h-100 bg-white"
+            style="z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h5 class="text-muted fw-normal">Connecting to Mail Server...</h5>
+            <p class="small text-muted">Synchronizing with <%= user && user.email ? user.email : 'Server' %>
+            </p>
+        </div>
+
+        <!-- Content Container -->
+        <div id="mail-container" class="h-100"></div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+    <script>
+        // Load Content
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const box = urlParams.get('box') || 'inbox';
+            const search = urlParams.get('search') || '';
+            loadMailbox(box, search);
+        });
+
+        function loadMailbox(box, searchQuery = '') {
+            const container = document.getElementById('mail-container');
+            const loader = document.getElementById('mail-loading');
+
+            // Show loader
+            if (container.innerHTML.trim() !== "") {
+                loader.style.opacity = '0.8';
+                loader.style.display = 'flex';
+            }
+
+            let url = `/mail/partial?box=${box}`;
+            if (searchQuery) {
+                url += `&search=${encodeURIComponent(searchQuery)}`;
+            }
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.text();
+                })
+                .then(html => {
+                    container.innerHTML = html;
+                    loader.style.display = 'none';
+                    loader.style.opacity = '1';
+
+                    // Update URL without reload
+                    const urlPath = `${window.location.pathname}?box=${box}${searchQuery ? '&search=' + encodeURIComponent(searchQuery) : ''}`;
+                    window.history.pushState({ path: urlPath }, '', urlPath);
+
+                    // Restore search query to input if it exists
+                    const searchInput = document.querySelector('input[name="search"]');
+                    if (searchInput && searchQuery) searchInput.value = searchQuery;
+
+                    // Initialize Summernote
+                    $('#summernote').summernote({
+                        placeholder: 'Write your message...',
+                        tabsize: 2,
+                        height: 300,
+                        toolbar: [
+                            ['style', ['style']],
+                            ['font', ['bold', 'italic', 'underline', 'clear']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['insert', ['link', 'picture']],
+                            ['view', ['codeview']]
+                        ],
+                        disableResizeEditor: true
+                    });
+
+                    // Attach Event Listeners
+                    const selectAll = document.getElementById('selectAll');
+                    if (selectAll) {
+                        selectAll.addEventListener('change', function () {
+                            const checkboxes = document.querySelectorAll('.email-checkbox input');
+                            checkboxes.forEach(cb => cb.checked = this.checked);
+                        });
+                    }
+
+                    // Update URL without reload
+                    const newUrl = `${window.location.pathname}?box=${box}`;
+                    window.history.pushState({ path: newUrl }, '', newUrl);
+                })
+                .catch(err => {
+                    console.error(err);
+                    container.innerHTML = `<div class="alert alert-danger m-4">Failed to load mail: ${err.message} <br> <button class="btn btn-outline-danger mt-2" onclick="location.reload()">Retry</button></div>`;
+                    loader.style.display = 'none';
+                });
+        }
+
+        // Helper Functions needed by content.ejs
+        function toggleEmailDetail(index) {
+            const detail = document.getElementById('detail-' + index);
+            if (!detail) return;
+
+            // Hide all others
+            document.querySelectorAll('.email-detail').forEach(d => {
+                if (d.id !== 'detail-' + index) d.style.display = 'none';
+            });
+
+            // Toggle
+            if (detail.style.display === 'none') {
+                detail.style.display = 'block';
+                // Mark read UI
+                const row = detail.previousElementSibling;
+                if (row) row.classList.remove('fw-bold');
+            } else {
+                detail.style.display = 'none';
+            }
+        }
+
+        function toggleStar(el) {
+            const i = el.querySelector('i');
+            if (i.classList.contains('far')) {
+                i.classList.remove('far');
+                i.classList.add('fas');
+                i.classList.add('text-warning');
+                i.classList.remove('text-muted');
+            } else {
+                i.classList.add('far');
+                i.classList.remove('fas');
+                i.classList.remove('text-warning');
+                i.classList.add('text-muted');
+            }
+        }
+
+        function performAction(action) {
+            // Collect checked
+            const selected = [];
+            document.querySelectorAll('.email-checkbox input:checked').forEach(cb => selected.push(cb.value));
+
+            if (selected.length === 0) {
+                alert("No emails selected");
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to ${action} ${selected.length} emails?`)) return;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentBox = urlParams.get('box') || 'inbox';
+
+            fetch('/mail/action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uids: selected, action, currentBox })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) loadMailbox(currentBox);
+                    else alert("Error: " + data.message);
+                });
+        }
+
+        // Pass toggleImportant, snoozeSelected, scheduleEmail logic...
+        function toggleImportant(el, uid, current) {
+            fetch('/mail/mark-important', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid, isImportant: !current })
+            }).then(() => {
+                // Reload current box
+                const urlParams = new URLSearchParams(window.location.search);
+                loadMailbox(urlParams.get('box') || 'inbox');
+            });
+        }
+
+        function snoozeSelected() {
+            const selected = [];
+            document.querySelectorAll('.email-checkbox input:checked').forEach(cb => selected.push(cb.value));
+            if (selected.length === 0) return alert("Select emails");
+
+            const min = prompt("Snooze for (minutes):", "60");
+            if (!min) return;
+
+            const until = Date.now() + (parseInt(min) * 60000);
+
+            fetch('/mail/snooze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uids: selected, until })
+            }).then(res => res.json()).then(d => {
+                if (d.success) loadMailbox('inbox');
+            });
+        }
+
+        function submitCompose(e) {
+            return true;
+        }
+
+        function scheduleEmail() {
+            const to = document.getElementById('composeTo').value;
+            const subject = document.getElementById('composeSubject').value;
+            const message = $('#summernote').summernote('code');
+            const timeStr = document.getElementById('scheduleTime').value;
+
+            if (!to || !timeStr) return alert("Fill all fields");
+
+            const time = new Date(timeStr).getTime();
+
+            fetch('/mail/schedule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ to, subject, message, time })
+            }).then(res => res.json()).then(data => {
+                if (data.success) {
+                    alert('Email Scheduled!');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('composeModal'));
+                    modal.hide();
+                } else {
+                    alert('Failed: ' + data.message);
+                }
+            });
+        }
+
+    </script>
