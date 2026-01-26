@@ -191,3 +191,43 @@
 {"level":"info","message":"::1 - - [26/Jan/2026:11:41:12 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 17:41:12"}
 {"level":"info","message":"::1 - - [26/Jan/2026:11:41:16 +0000] \"GET / HTTP/1.1\" 200 41614 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 17:41:16"}
 {"level":"info","message":"::1 - - [26/Jan/2026:11:41:19 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 17:41:19"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-26 18:18:17"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-26 18:18:17"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-26 18:18:17"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-26 18:18:17"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-26 18:18:17"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-26 18:18:18"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-26 18:18:18"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-26 18:18:18"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-26 18:18:18"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:18:27 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:18:27"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:18:28 +0000] \"GET /contact HTTP/1.1\" 200 24356 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:18:28"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:18:28 +0000] \"GET /captcha HTTP/1.1\" 200 8622 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:18:28"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:18:42 +0000] \"POST /contact HTTP/1.1\" 200 24801 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:18:42"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:18:42 +0000] \"GET /captcha HTTP/1.1\" 200 8004 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:18:42"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-26 18:19:03"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:19:08 +0000] \"POST /contact HTTP/1.1\" 200 24865 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:19:08"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:19:08 +0000] \"GET /captcha HTTP/1.1\" 200 9407 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:19:08"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:19:21 +0000] \"POST /contact HTTP/1.1\" 200 24853 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:19:21"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:19:21 +0000] \"GET /captcha HTTP/1.1\" 200 8099 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:19:21"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-26 18:21:34"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:22:23 +0000] \"POST /contact HTTP/1.1\" 200 24865 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:22:23"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:22:23 +0000] \"GET /captcha HTTP/1.1\" 200 12367 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:22:23"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:22:39 +0000] \"POST /contact HTTP/1.1\" 200 24801 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:22:39"}
+{"level":"info","message":"::1 - - [26/Jan/2026:12:22:39 +0000] \"GET /captcha HTTP/1.1\" 200 9179 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-26 18:22:39"}

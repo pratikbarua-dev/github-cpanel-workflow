@@ -82,13 +82,15 @@ exports.sendEmail = async (to, subject, html) => {
         console.error('Cannot send email: Resend client not initialized (Missing API Key)');
         return;
     }
+
+    // Get from address from env or use default
+    const fromAddress = process.env.EMAIL_FROM || 'MoRPH <info@morphbangladesh.org>';
+
     console.log(`Attempting to send email via Resend to: ${to}`);
     try {
         const { data, error } = await resend.emails.send({
-            from: 'MoRPH <info@pratikbarua.art>', // Verified domain
+            from: fromAddress,
             to: [to],
-            // For testing with onboarding@resend.dev, 'to' must be your verified email (baruaprathik06@gmail.com)
-            // If you verify a domain (e.g. mail.morph.org), you can send to anyone.
             subject: subject,
             html: html
         });

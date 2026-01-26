@@ -185,7 +185,7 @@ exports.postContact = async (req, res) => {
             <p><strong>Message:</strong></p>
             <p>${req.body.message}</p>
         `;
-        await emailService.sendEmail(process.env.EMAIL_USER || 'morph.1280739@gmail.com', emailSubject, emailBody);
+        await emailService.sendEmail(process.env.ADMIN_EMAIL || 'admin@morphbangladesh.org', emailSubject, emailBody);
 
         // Send Professional Auto-Reply to User
         const userSubject = `We received your message: ${req.body.subject}`;
@@ -279,7 +279,7 @@ exports.postApply = async (req, res) => {
             <p>${message}</p>
             ${fileUrl ? `<p><strong>Attachment:</strong> <a href="${process.env.BASE_URL || 'https://morphbangladesh.org'}${fileUrl}">View File</a></p>` : ''}
         `;
-        await emailService.sendEmail(process.env.EMAIL_USER || 'morph.1280739@gmail.com', appSubject, appBody);
+        await emailService.sendEmail(process.env.ADMIN_EMAIL || 'admin@morphbangladesh.org', appSubject, appBody);
 
         // Send Professional Auto-Reply to User
         const userAppSubject = `Application Received: ${type}`;
@@ -395,7 +395,7 @@ exports.submitForm = async (req, res) => {
             <p><strong>Submission Details:</strong></p>
             ${dataTable}
         `;
-        await emailService.sendAutoReply(process.env.EMAIL_USER || 'morph.1280739@gmail.com', 'Admin', adminSubject, adminMessage);
+        await emailService.sendAutoReply(process.env.ADMIN_EMAIL || 'admin@morphbangladesh.org', 'Admin', adminSubject, adminMessage);
 
         // Send Professional Auto-Reply to User (Intelligent Field Detection)
         let userEmail = null;
