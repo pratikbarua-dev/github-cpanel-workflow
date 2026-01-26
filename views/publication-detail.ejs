@@ -61,17 +61,17 @@
                             <div class="mt-12 pt-8 border-t border-gray-200">
                                 <p class="text-sm text-gray-500 mb-3">Share this publication:</p>
                                 <div class="flex flex-wrap gap-3">
-                                    <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent('http://localhost:3000/publications/' + publication.id) %>&text=<%= encodeURIComponent(publication.title) %>"
+                                    <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(baseUrl + '/publications/' + publication.id) %>&text=<%= encodeURIComponent(publication.title) %>"
                                         target="_blank"
                                         class="px-4 py-2 bg-[#1DA1F2] text-white rounded-lg text-sm hover:opacity-90 transition">
                                         <i class="fab fa-twitter"></i> Twitter
                                     </a>
-                                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3000/publications/' + publication.id) %>"
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(baseUrl + '/publications/' + publication.id) %>"
                                         target="_blank"
                                         class="px-4 py-2 bg-[#1877F2] text-white rounded-lg text-sm hover:opacity-90 transition">
                                         <i class="fab fa-facebook"></i> Facebook
                                     </a>
-                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= encodeURIComponent('http://localhost:3000/publications/' + publication.id) %>&title=<%= encodeURIComponent(publication.title) %>"
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=<%= encodeURIComponent(baseUrl + '/publications/' + publication.id) %>&title=<%= encodeURIComponent(publication.title) %>"
                                         target="_blank"
                                         class="px-4 py-2 bg-[#0A66C2] text-white rounded-lg text-sm hover:opacity-90 transition">
                                         <i class="fab fa-linkedin"></i> LinkedIn

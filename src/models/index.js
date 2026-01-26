@@ -95,6 +95,9 @@ const TeamMember = sequelize.define('team_member', {
     image_url: {
         type: Sequelize.STRING
     },
+    education: {
+        type: Sequelize.TEXT('long')
+    },
     display_order: {
         type: Sequelize.INTEGER,
         defaultValue: 0

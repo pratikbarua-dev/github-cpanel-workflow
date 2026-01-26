@@ -85,25 +85,29 @@ const seedData = async (force = false) => {
                     name: 'Dr. Md. Mahbubur Rahman',
                     role: 'Executive Director',
                     image_url: '/images/team/mahbubur.png',
-                    bio: 'Former Senior Fellow in Residence at the Global Migration Centre, Geneva Graduate Institute, Switzerland. Recipient of the Swiss Government Excellence Scholarship for postdoctoral research in human rights. Expertise in migration, human rights, security, refugee protection, displacement, and gender issues. Previously with UNHCR, IOM, and WFP.'
+                    bio: 'Former Senior Fellow in Residence at the Global Migration Centre, Geneva Graduate Institute, Switzerland. Recipient of the Swiss Government Excellence Scholarship for postdoctoral research in human rights. Expertise in migration, human rights, security, refugee protection, displacement, and gender issues. Previously with UNHCR, IOM, and WFP.',
+                    education: '<ul><li><strong>Post-Doctoral Research</strong>, Geneva Graduate Institute, Switzerland</li><li><strong>Ph.D. in Human Rights</strong>, University of [Name]</li><li><strong>M.A. in International Relations</strong></li></ul>'
                 },
                 {
                     name: 'Dr. Ahmed Hossain',
                     role: 'Director (Research and Education)',
                     image_url: '/images/team/ahmed.png',
-                    bio: 'Ph.D. in Public Health, University of Toronto. Former Canadian Institute of Health Research Fellow. A leading scholar in statistical genomics and public health research on chronic and infectious diseases, with nearly 100 articles in top journals like The Lancet and JAMA.'
+                    bio: 'Ph.D. in Public Health, University of Toronto. Former Canadian Institute of Health Research Fellow. A leading scholar in statistical genomics and public health research on chronic and infectious diseases, with nearly 100 articles in top journals like The Lancet and JAMA.',
+                    education: '<ul><li><strong>Ph.D. in Public Health</strong>, University of Toronto, Canada</li><li><strong>M.Sc. in Statistics</strong>, University of [Name]</li></ul>'
                 },
                 {
                     name: 'Dr. M M Taimur Hasan',
                     role: 'Director (Public Health)',
                     image_url: '/images/team/taimur.png',
-                    bio: 'MBBS and MPH. Over 20 years of experience, including leading the public health team at UNHCR for Rohingya refugees in Bangladesh. Leads all public health–related programs and provides strategic technical guidance.'
+                    bio: 'MBBS and MPH. Over 20 years of experience, including leading the public health team at UNHCR for Rohingya refugees in Bangladesh. Leads all public health–related programs and provides strategic technical guidance.',
+                    education: '<ul><li><strong>MPH (Master of Public Health)</strong>, [University Name]</li><li><strong>MBBS</strong>, [Medical College Name]</li></ul>'
                 },
                 {
                     name: 'Mr. Sajjadul Islam',
                     role: 'Director (Operations)',
                     image_url: '/images/team/sajjadul.png',
-                    bio: 'MSc in Geography & MBA. 26 years of professional experience, including 14 years with UN Agencies (UNDP, WFP, UN Women) and GIZ. Expert in disaster management, policy development, and project management in DRR, CCA, and environmental sectors.'
+                    bio: 'MSc in Geography & MBA. 26 years of professional experience, including 14 years with UN Agencies (UNDP, WFP, UN Women) and GIZ. Expert in disaster management, policy development, and project management in DRR, CCA, and environmental sectors.',
+                    education: '<ul><li><strong>MBA</strong>, [Business School Name]</li><li><strong>M.Sc. in Geography</strong>, [University Name]</li></ul>'
                 }
             ]);
             console.log('Team seeded.');

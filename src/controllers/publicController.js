@@ -147,6 +147,17 @@ exports.getTeam = async (req, res) => {
     }
 };
 
+exports.getTeamDetail = async (req, res) => {
+    try {
+        const member = await TeamMember.findByPk(req.params.id);
+        if (!member) return res.status(404).render('404', { title: 'Not Found' });
+        res.render('team-detail', { title: member.name, member });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
 exports.getContact = (req, res) => {
     res.render('contact', { title: 'Contact Us' });
 };
@@ -266,7 +277,7 @@ exports.postApply = async (req, res) => {
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Message:</strong></p>
             <p>${message}</p>
-            ${fileUrl ? `<p><strong>Attachment:</strong> <a href="${process.env.BASE_URL || 'http://localhost:3000'}${fileUrl}">View File</a></p>` : ''}
+            ${fileUrl ? `<p><strong>Attachment:</strong> <a href="${process.env.BASE_URL || 'https://morphbangladesh.org'}${fileUrl}">View File</a></p>` : ''}
         `;
         await emailService.sendEmail(process.env.EMAIL_USER || 'morph.1280739@gmail.com', appSubject, appBody);
 

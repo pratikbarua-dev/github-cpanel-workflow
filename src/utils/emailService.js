@@ -19,7 +19,7 @@ const getAutoReplyTemplate = (name, content) => {
     const footerColor = '#0b5063';
 
     // Ensure Base URL is correct for images (Render URL or fallback)
-    const baseUrl = process.env.BASE_URL || 'https://morph-m6ep.onrender.com';
+    const baseUrl = process.env.BASE_URL || 'https://morphbangladesh.org';
     const logoUrl = `${baseUrl}/images/logo.jpg`;
 
     return `
@@ -111,7 +111,7 @@ exports.sendAutoReply = async (to, name, subject, messageContent) => {
 };
 
 exports.sendWelcomeEmail = async (to, role, password, permissions = []) => {
-    const loginUrl = `${process.env.BASE_URL || 'https://morph-m6ep.onrender.com'}/admin/login`;
+    const loginUrl = `${process.env.BASE_URL || 'https://morphbangladesh.org'}/admin/login`;
 
     let permissionsList = 'None';
     if (permissions && permissions.length > 0) {

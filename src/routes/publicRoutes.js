@@ -11,6 +11,7 @@ router.get('/news/:slug', publicController.getPostDetail);
 router.get('/publications', publicController.getPublications);
 router.get('/publications/:id', publicController.getPublicationDetail);
 router.get('/team', publicController.getTeam);
+router.get('/team/:id', publicController.getTeamDetail);
 router.get('/contact', publicController.getContact);
 router.post('/contact', publicController.postContact);
 

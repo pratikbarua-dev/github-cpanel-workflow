@@ -51,11 +51,32 @@
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none">
                         </div>
 
-                        <!-- Image URL -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Profile Image URL</label>
-                            <input type="text" id="image_url" value="<%= member.image_url || '' %>"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none">
+                        <div></div> <!-- Spacer -->
+                    </div>
+
+                    <!-- Profile Image Section -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-user-circle mr-1 text-teal-600"></i> Profile Image
+                        </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Image URL</label>
+                                <input type="text" id="image_url" value="<%= member.image_url || '' %>"
+                                    placeholder="/images/team/member.png" onchange="previewProfileImage()"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Or Upload Image</label>
+                                <input type="file" id="profile_image_file" accept="image/*"
+                                    onchange="handleImageUpload(this)"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-teal-50 file:text-teal-700 file:font-medium hover:file:bg-teal-100">
+                            </div>
+                        </div>
+                        <div id="profile_image_preview" class="mt-3 hidden">
+                            <p class="text-xs text-gray-500 mb-1">Preview:</p>
+                            <img id="preview_img" src="" alt="Preview"
+                                class="w-32 h-32 rounded-full object-cover border-2 border-gray-200 shadow-sm">
                         </div>
                     </div>
 
@@ -64,9 +85,21 @@
                         <label class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Bio /
                             Description</label>
                         <div id="editor-container" class="bg-white border border-gray-200 rounded-lg"
-                            style="height: 300px;">
+                            style="height: 200px;">
                             <%- member.bio || '' %>
                         </div>
+                    </div>
+
+                    <!-- Quill Editor for Education -->
+                    <div>
+                        <label
+                            class="block text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Educational
+                            Background (HTML)</label>
+                        <div id="education-editor" class="bg-white border border-gray-200 rounded-lg"
+                            style="height: 200px;">
+                            <%- member.education || '' %>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Use bullet list for degrees/certifications</p>
                     </div>
 
                     <!-- Notification -->
@@ -92,6 +125,54 @@
             }
         });
 
+        var educationQuill = new Quill('#education-editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Profile image preview from URL
+        function previewProfileImage() {
+            const url = document.getElementById('image_url').value;
+            const previewContainer = document.getElementById('profile_image_preview');
+            const previewImg = document.getElementById('preview_img');
+
+            if (url) {
+                previewImg.src = url;
+                previewContainer.classList.remove('hidden');
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        }
+
+        // Handle file upload and convert to base64
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64 = e.target.result;
+                    document.getElementById('image_url').value = base64;
+                    document.getElementById('preview_img').src = base64;
+                    document.getElementById('profile_image_preview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Initialize preview on load if there's an existing image
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingUrl = document.getElementById('image_url').value;
+            if (existingUrl) {
+                previewProfileImage();
+            }
+        });
+
         async function saveMember() {
             const notification = document.getElementById('notification');
             notification.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
@@ -104,6 +185,7 @@
             const display_order = document.getElementById('display_order').value;
             const image_url = document.getElementById('image_url').value;
             const bio = quill.root.innerHTML;
+            const education = educationQuill.root.innerHTML;
 
             if (!name.trim()) {
                 notification.textContent = "Name is required!";
@@ -112,7 +194,7 @@
                 return;
             }
 
-            const data = { name, role, display_order, image_url, bio };
+            const data = { name, role, display_order, image_url, bio, education };
 
             const memberId = '<%= member.id %>';
             const url = memberId ? `/admin/team/${memberId}/api` : '/admin/team/api/create';

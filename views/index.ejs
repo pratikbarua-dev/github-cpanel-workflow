@@ -1,10 +1,9 @@
 <%- include('partials/header') %>
 
-    <section class="pt-16 md:pt-24 pb-20 bg-white overflow-hidden relative">
+    <section class="py-6 relative overflow-hidden">
         <div
             class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-teal-50/50 via-transparent to-transparent pointer-events-none">
         </div>
-
         <div class="container mx-auto px-4 flex flex-col md:flex-row items-start gap-12 relative z-10">
 
             <div class="flex-1 space-y-6">
@@ -12,11 +11,13 @@
                     Bridging Research, <br><span class="text-primary">Policy & Practice</span>
                 </h1>
                 <p class="text-lg text-gray-600 leading-relaxed max-w-xl">
-                    An independent think tank based in Bangladesh working across public health, migration, refugee
+                    An independent think tank based in Bangladesh working across public health, migration,
+                    refugee
                     studies,
                     environment, and ICT. We believe local voices and grassroots perspectives are essential for
                     meaningful change.<br>
-                    <small class="text-gray-500 font-medium mt-2 block">Reg. No. P-53086/2024, Bangladesh.</small>
+                    <small class="text-gray-500 font-medium mt-2 block">Reg. No. P-53086/2024,
+                        Bangladesh.</small>
                 </p>
 
                 <div
@@ -34,7 +35,8 @@
                             <div class="absolute inset-0 bg-primary/5 rounded-full blur-sm"></div>
                         </div>
                         <div>
-                            <h2 class="text-sm font-bold text-primary uppercase tracking-wider mb-1">Our Mission</h2>
+                            <h2 class="text-sm font-bold text-primary uppercase tracking-wider mb-1">Our Mission
+                            </h2>
                             <p class="text-gray-700 leading-relaxed text-[15px]">
                                 To generate evidence-based knowledge, foster innovation, and promote sustainable
                                 solutions that empower communities, influence policy, and strengthen governance.
@@ -50,10 +52,12 @@
                             <div class="absolute inset-0 bg-secondary/5 rounded-full blur-sm"></div>
                         </div>
                         <div>
-                            <h2 class="text-sm font-bold text-secondary uppercase tracking-wider mb-1">Catalyst for
+                            <h2 class="text-sm font-bold text-secondary uppercase tracking-wider mb-1">Catalyst
+                                for
                                 Change</h2>
                             <p class="text-gray-600 leading-relaxed text-[15px]">
-                                Creating a platform where innovative ideas are tested, refined, and transformed into
+                                Creating a platform where innovative ideas are tested, refined, and transformed
+                                into
                                 impact-driven outcomes.
                             </p>
                         </div>
@@ -84,7 +88,7 @@
     </section>
 
     <!-- Latest Projects -->
-    <section class="reveal py-20 bg-white">
+    <section class="reveal py-12">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-end mb-12">
                 <h2 class="text-3xl font-bold text-secondary">Latest Projects</h2>
@@ -127,7 +131,7 @@
     </section>
 
     <!-- Latest News & Events -->
-    <section class="reveal py-20 bg-gray-50">
+    <section class="reveal py-12">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-end mb-12">
                 <h2 class="text-3xl font-bold text-secondary">Latest News & Events</h2>
@@ -164,7 +168,7 @@
     </section>
 
     <!-- Featured Articles -->
-    <section class="reveal py-20 bg-white">
+    <section class="reveal py-12">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-end mb-12">
                 <h2 class="text-3xl font-bold text-secondary">Featured Articles</h2>
@@ -176,11 +180,12 @@
                     <% articlePosts.forEach(function(post) { %>
                         <a href="/news/<%= post.slug %>" class="block group">
                             <div
-                                class="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                                class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                                 <div class="h-48 overflow-hidden relative">
                                     <img src="<%= post.image_url %>" alt="<%= post.title %>"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                                    </div>
                                     <span
                                         class="absolute bottom-4 left-4 text-white text-xs font-bold bg-primary/90 px-2 py-1 rounded">Article</span>
                                 </div>
@@ -209,27 +214,27 @@
     </section>
 
     <!-- Impact Section (Static for now) -->
-    <section class="reveal py-20 bg-white">
+    <section class="reveal py-12">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-secondary mb-12">Impact at a Glance</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div
-                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    class="p-8 text-center bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
                     <h3 class="text-4xl font-bold text-primary mb-2">12+</h3>
                     <p class="text-gray-600 text-sm">Communities Served</p>
                 </div>
                 <div
-                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    class="p-8 text-center bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
                     <h3 class="text-4xl font-bold text-primary mb-2">500+</h3>
                     <p class="text-gray-600 text-sm">Participants</p>
                 </div>
                 <div
-                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    class="p-8 text-center bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
                     <h3 class="text-4xl font-bold text-primary mb-2">8</h3>
                     <p class="text-gray-600 text-sm">Research Projects</p>
                 </div>
                 <div
-                    class="p-8 text-center bg-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
+                    class="p-8 text-center bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
                     <h3 class="text-4xl font-bold text-primary mb-2">3</h3>
                     <p class="text-gray-600 text-sm">Policy Papers</p>
                 </div>
@@ -238,9 +243,10 @@
     </section>
 
     <!-- Partners Slider -->
-    <section class="reveal py-16 bg-white border-t border-gray-50">
+    <section class="reveal py-12 border-t border-gray-200/50">
         <div class="container mx-auto px-4">
-            <h2 class="text-2xl font-bold text-center text-gray-400 mb-12 uppercase tracking-widest">Our Partners</h2>
+            <h2 class="text-2xl font-bold text-center text-gray-400 mb-12 uppercase tracking-widest">Our Partners
+            </h2>
 
             <div class="relative max-w-5xl mx-auto overflow-hidden" id="partners-slider">
                 <!-- Slider Track -->

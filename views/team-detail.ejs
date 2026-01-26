@@ -1,0 +1,79 @@
+<%- include('partials/header') %>
+
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-5xl mx-auto">
+                <!-- Back Button -->
+                <a href="/team"
+                    class="inline-flex items-center text-gray-500 hover:text-primary mb-8 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Team
+                </a>
+
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="grid md:grid-cols-2">
+                        <!-- Left: Photo -->
+                        <div class="bg-gray-100">
+                            <% if (member.image_url) { %>
+                                <img src="<%= member.image_url %>" alt="<%= member.name %>"
+                                    class="w-full h-full object-cover" style="min-height: 500px; object-fit: cover;">
+                                <% } else { %>
+                                    <div class="w-full flex items-center justify-center bg-gray-200 text-gray-400"
+                                        style="min-height: 500px;">
+                                        <i class="fas fa-user text-8xl"></i>
+                                    </div>
+                                    <% } %>
+                        </div>
+
+                        <!-- Right: Info -->
+                        <div class="p-8 md:p-12 flex flex-col justify-center">
+                            <!-- Header -->
+                            <div class="mb-8">
+                                <h1 class="text-4xl font-bold text-secondary mb-2">
+                                    <%= member.name %>
+                                </h1>
+                                <p class="text-xl text-primary font-medium">
+                                    <%= member.role %>
+                                </p>
+                            </div>
+
+                            <!-- Bio -->
+                            <div class="mb-8">
+                                <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                    Biography
+                                </h2>
+                                <p class="text-gray-600 leading-relaxed">
+                                    <%= member.bio %>
+                                </p>
+                            </div>
+
+                            <!-- Educational Background -->
+                            <% if (member.education) { %>
+                                <div class="mb-8">
+                                    <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                        Educational Background
+                                    </h2>
+                                    <div class="text-gray-600 leading-relaxed education-list">
+                                        <%- member.education %>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                    <!-- Social Links -->
+                                    <div class="flex gap-4 mt-auto pt-6 border-t border-gray-100">
+                                        <a href="#"
+                                            class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all">
+                                            <i class="fas fa-envelope"></i>
+                                        </a>
+                                        <a href="#"
+                                            class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-blue-600 hover:text-white transition-all">
+                                            <i class="fab fa-linkedin-in"></i>
+                                        </a>
+                                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>

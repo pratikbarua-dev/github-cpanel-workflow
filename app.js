@@ -98,6 +98,8 @@ app.use((req, res, next) => {
         res.cookie('lang', req.query.lang);
         req.setLocale(req.query.lang);
     }
+    // Make BASE_URL available to all views
+    res.locals.baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
     next();
 });
 

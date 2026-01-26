@@ -31,16 +31,9 @@
     <link href="/styles.css" rel="stylesheet">
 </head>
 
-<body class="font-sans text-gray-800 bg-gray-50 antialiased flex flex-col min-h-screen">
+<body class="font-sans text-gray-800 antialiased flex flex-col min-h-screen" style="background-color: #f9f1f1;">
 
     <header class="bg-white sticky top-0 z-50 shadow-sm py-4">
-        <div class="bg-teal-900 text-white text-xs py-1 px-4 flex justify-end gap-2 lg:hidden">
-            <a href="?lang=en"
-                class="<%= locale === 'en' ? 'font-bold underline' : 'opacity-70 hover:opacity-100' %>">EN</a>
-            <span>|</span>
-            <a href="?lang=bn"
-                class="<%= locale === 'bn' ? 'font-bold underline' : 'opacity-70 hover:opacity-100' %>">BN</a>
-        </div>
         <div class="container mx-auto px-4 flex justify-between items-center">
             <a href="/" class="flex items-center gap-2 text-2xl font-bold text-primary group">
                 <img src="/images/logo.jpg" alt="MoRPH Logo" class="h-10 md:h-12 w-auto object-contain">
