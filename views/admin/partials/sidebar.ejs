@@ -114,5 +114,64 @@
                 </a>
             </div>
         </div>
-    </div>
 </aside>
+
+<!-- Mobile Sidebar Overlay -->
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden"></div>
+
+<script>
+    // Mobile Sidebar Toggle
+    (function () {
+        const sidebar = document.getElementById('sidebar');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full', 'hidden');
+            sidebar.classList.add('translate-x-0', 'flex');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebar.classList.remove('translate-x-0');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            // Re-add hidden after animation
+            setTimeout(() => {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('hidden');
+                    sidebar.classList.remove('flex');
+                }
+            }, 300);
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+                closeSidebar();
+            }
+        });
+
+        // Handle resize - show sidebar on desktop, hide on mobile
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('hidden', '-translate-x-full');
+                sidebar.classList.add('flex', 'translate-x-0');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            } else {
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.add('-translate-x-full', 'hidden');
+                    sidebar.classList.remove('flex', 'translate-x-0');
+                }
+            }
+        });
+    })();
+</script>
