@@ -17,6 +17,13 @@ const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 const HOST = process.env.EMAIL_HOST || process.env.HOST;
 
+// Debug: Log mail configuration on startup (mask password)
+console.log('[MailClient] Configuration Check:');
+console.log(`  - ENABLE_MAIL_CLIENT: ${process.env.ENABLE_MAIL_CLIENT || 'NOT SET'}`);
+console.log(`  - EMAIL_USER: ${EMAIL_USER ? 'SET (' + EMAIL_USER + ')' : 'NOT SET'}`);
+console.log(`  - EMAIL_PASS: ${EMAIL_PASS ? 'SET (hidden)' : 'NOT SET'}`);
+console.log(`  - EMAIL_HOST: ${HOST || 'NOT SET'}`);
+
 // Middleware to check if Mail Client is enabled AND Auth
 router.use(ensureAuthenticated, (req, res, next) => {
     // Role Check: Admin & Moderator Only
@@ -116,12 +123,23 @@ router.get('/partial', async (req, res) => {
                 host: HOST,
                 port: 993,
                 tls: true,
-                authTimeout: 10000,
+                authTimeout: 15000, // Increased from 10s to 15s
+                connTimeout: 15000, // Add connection timeout
                 tlsOptions: { rejectUnauthorized: false }
             }
         };
 
-        const connection = await imaps.connect(config);
+        console.log(`[MailClient] Attempting IMAP connection to ${HOST}:993 for box: ${currentBox}`);
+        const startTime = Date.now();
+
+        let connection;
+        try {
+            connection = await imaps.connect(config);
+            console.log(`[MailClient] IMAP connected successfully in ${Date.now() - startTime}ms`);
+        } catch (connErr) {
+            console.error(`[MailClient] IMAP connection FAILED after ${Date.now() - startTime}ms:`, connErr.message);
+            throw connErr;
+        }
 
         let searchCriteria = [['ALL']]; // Nested array for imap-simple if mixing
         let specificUids = null;
@@ -259,11 +277,25 @@ router.get('/partial', async (req, res) => {
         });
 
     } catch (err) {
-        console.error(err);
+        console.error('[MailClient] Error in /partial route:', err.message);
+        console.error('[MailClient] Full error:', err);
+
+        // Provide more helpful error messages
+        let errorMessage = err.message;
+        if (err.message.includes('ECONNREFUSED')) {
+            errorMessage = `Connection refused to ${HOST}:993. The IMAP server may be down or the port is blocked.`;
+        } else if (err.message.includes('ETIMEDOUT') || err.message.includes('timeout')) {
+            errorMessage = `Connection timed out to ${HOST}:993. This could be a firewall issue or the server is not responding.`;
+        } else if (err.message.includes('ENOTFOUND')) {
+            errorMessage = `Host not found: ${HOST}. Check your EMAIL_HOST setting.`;
+        } else if (err.message.includes('auth') || err.message.includes('credentials')) {
+            errorMessage = `Authentication failed. Check EMAIL_USER and EMAIL_PASS.`;
+        }
+
         res.render('mail/content', {
             emails: [],
             currentBox: currentBox,
-            status: `Error: Could not open folder '${searchBox}'. Server said: ${err.message}`,
+            status: `Error: ${errorMessage}`,
             layout: false
         });
     }

@@ -40,7 +40,7 @@
                 <span style="color: #B91C1C;">MoRPH</span>
             </a>
 
-            <nav class="hidden lg:flex items-center gap-8">
+            <nav class="hidden xl:flex items-center gap-6">
                 <a href="/" class="nav-link">
                     <%= __('header.home') %>
                 </a>
@@ -95,7 +95,7 @@
                 </a>
             </nav>
 
-            <div class="hidden lg:flex items-center gap-4">
+            <div class="hidden xl:flex items-center gap-3">
                 <form action="/search" method="GET" class="relative group">
                     <input type="text" name="q" placeholder="<%= __('header.search_placeholder') %>"
                         class="pl-4 pr-10 py-2 rounded-full border border-gray-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-sm w-32 focus:w-48 transition-all duration-300 outline-none">
@@ -118,13 +118,13 @@
                 </a>
             </div>
 
-            <button id="mobile-menu-btn" class="lg:hidden text-2xl text-secondary p-2 focus:outline-none">
+            <button id="mobile-menu-btn" class="xl:hidden text-2xl text-secondary p-2 focus:outline-none">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
 
         <!-- Mobile Menu (Full Overlay) -->
-        <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-white overflow-y-auto lg:hidden">
+        <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-white overflow-y-auto xl:hidden">
             <div class="container mx-auto px-4 py-4 flex flex-col min-h-screen">
                 <div class="flex justify-between items-center mb-8">
                     <a href="/" class="flex items-center gap-2 text-2xl font-bold text-primary">
