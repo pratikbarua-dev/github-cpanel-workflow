@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    <% if (users && users.length > 0) { %>
+                    <% if (users && users.length> 0) { %>
                         <% users.forEach(function(u) { %>
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-800">
@@ -33,37 +33,43 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600">
-                                    <% if (u.role === 'admin' ) { %>
+                                    <% if (u.role==='admin' ) { %>
                                         <span class="text-gray-400 italic">All Access</span>
-                                        <% } else if (u.permissions && u.permissions.length > 0) { %>
-                                            <%= u.permissions.join(', ') %>
-                                <% } else { %>
-                                    <span class="text-gray-400">None</span>
-                                <% } %>
+                                        <% } else if (u.permissions) { %>
+                                            <% let perms=u.permissions; if (typeof perms==='string' ) { try {
+                                                perms=JSON.parse(perms); } catch(e) { } } if (Array.isArray(perms)) { %>
+                                                <%= perms.join(', ') %>
+                                            <% } else { %>
+                                                <%= perms %>
+                                            <% } %>
+                                        <% } else { %>
+                                            <span class="text-gray-400">None</span>
+                                        <% } %>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full <%= u.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
-                                    <%= u.is_active ? 'Active' : 'Inactive' %>
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <form action="/admin/users/<%= u.id %>/delete" method="POST" class="inline"
-                                    onsubmit="return confirm('Are you sure?');">
-                                    <button type="submit" class="text-red-500 hover:text-red-700 ml-2">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        <% }); %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">No users found.</td>
-                        </tr>
-                    <% } %>
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full <%= u.is_active ? '
+                                                    bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %>">
+                                                    <%= u.is_active ? 'Active' : 'Inactive' %>
+                                                        </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <form action="/admin/users/<%= u.id %>/delete" method="POST" class="inline"
+                                        onsubmit="return confirm('Are you sure?');">
+                                        <button type="submit" class="text-red-500 hover:text-red-700 ml-2">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">No users found.</td>
+                                    </tr>
+                                    <% } %>
                 </tbody>
             </table>
         </div>
     </main>
 
-<%- include('../partials/footer') %>
+    <%- include('../partials/footer') %>

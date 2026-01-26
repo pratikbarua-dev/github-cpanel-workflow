@@ -50,7 +50,8 @@ router.get('/', (req, res) => {
     res.render('mail/index', {
         title: 'Morph Mail',
         path: '/mail',
-        user: req.user
+        user: req.user,
+        layout: false
     });
 });
 
@@ -86,9 +87,9 @@ router.get('/partial', async (req, res) => {
                 html: r.message,
                 attributes: { uid: r.id }
             }));
-            return res.render('mail/content', { emails: emails, currentBox: currentBox, status: null });
+            return res.render('mail/content', { emails: emails, currentBox: currentBox, status: null, layout: false });
         } catch (err) {
-            return res.render('mail/content', { emails: [], currentBox: currentBox, status: "DB Error: " + err.message });
+            return res.render('mail/content', { emails: [], currentBox: currentBox, status: "DB Error: " + err.message, layout: false });
         }
     }
 
@@ -129,7 +130,7 @@ router.get('/partial', async (req, res) => {
             const rows = await db.query("SELECT uid FROM important_emails");
             if (!rows || rows.length === 0) {
                 connection.end();
-                return res.render('mail/content', { emails: [], currentBox: currentBox, status: null });
+                return res.render('mail/content', { emails: [], currentBox: currentBox, status: null, layout: false });
             }
             specificUids = rows.map(r => r.uid);
             searchCriteria = [['UID', specificUids.join(',')]];
@@ -176,7 +177,7 @@ router.get('/partial', async (req, res) => {
 
         if (messages.length === 0) {
             connection.end();
-            return res.render('mail/content', { emails: [], currentBox: currentBox, status: null });
+            return res.render('mail/content', { emails: [], currentBox: currentBox, status: null, layout: false });
         }
 
         const targetUids = messages.map(m => m.attributes.uid);
@@ -253,7 +254,8 @@ router.get('/partial', async (req, res) => {
         res.render('mail/content', {
             emails: finalEmails,
             currentBox: currentBox,
-            status: null
+            status: null,
+            layout: false
         });
 
     } catch (err) {
@@ -261,7 +263,8 @@ router.get('/partial', async (req, res) => {
         res.render('mail/content', {
             emails: [],
             currentBox: currentBox,
-            status: `Error: Could not open folder '${searchBox}'. Server said: ${err.message}`
+            status: `Error: Could not open folder '${searchBox}'. Server said: ${err.message}`,
+            layout: false
         });
     }
 });

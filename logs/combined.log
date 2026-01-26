@@ -577,3 +577,103 @@
 {"level":"info","message":"-------------------------","timestamp":"2026-01-27 01:51:58"}
 {"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-27 01:51:58"}
 {"level":"info","message":"✅ Database synced","timestamp":"2026-01-27 01:51:58"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:56:57 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:56:57"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:56:57 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:56:57"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:33 +0000] \"GET /mail HTTP/1.1\" 200 24852 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:33"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:33 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:33"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:42 +0000] \"GET /mail HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:42"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:42 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:42"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:43 +0000] \"GET /mail HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:43"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:43 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:43"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:43 +0000] \"GET /mail HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:43"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:43 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:43"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-27 01:57:47"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-27 01:57:47"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-27 01:57:47"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-27 01:57:47"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-27 01:57:47"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-27 01:57:47"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-27 01:57:47"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:52 +0000] \"GET /mail HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:52"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:52 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:52"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:53 +0000] \"GET /mail HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:53"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:53 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:53"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:54 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:54"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:54 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:54"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:58 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:58"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:58 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:58"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:58 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:58"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:58 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:58"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:58 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:58"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:57:58 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:57:58"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:58:01 +0000] \"GET /mail HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:58:01"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:58:01 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:58:01"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:58:02 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:58:02"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:58:02 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:58:02"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-27 01:58:54"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-27 01:58:54"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-27 01:58:54"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-27 01:58:54"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-27 01:58:54"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-27 01:58:55"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-27 01:58:55"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-27 01:58:55"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-27 01:58:55"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-27 01:59:21"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-27 01:59:21"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-27 01:59:21"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-27 01:59:21"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-27 01:59:21"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-27 01:59:22"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-27 01:59:22"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-27 01:59:22"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-27 01:59:22"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:59:37 +0000] \"GET /mail HTTP/1.1\" 200 24852 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:59:37"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:59:37 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:59:37"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:59:38 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:59:38"}
+{"level":"info","message":"::1 - - [26/Jan/2026:19:59:38 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 01:59:38"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:01:03 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:01:03"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:01:03 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:01:03"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-27 02:01:36"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-27 02:01:36"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-27 02:01:36"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-27 02:01:36"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-27 02:01:36"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-27 02:01:37"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-27 02:01:37"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-27 02:01:37"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-27 02:01:37"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:01:49 +0000] \"GET /mail HTTP/1.1\" 200 33167 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:01:49"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:01:49 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:01:49"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:01:52 +0000] \"GET /mail/partial?box=inbox HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:01:52"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:02:39 +0000] \"GET /admin/users HTTP/1.1\" 200 24946 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:02:39"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:02:39 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:02:39"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-27 02:17:17"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:17:28 +0000] \"GET /mail HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:17:28"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:17:28 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:17:28"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:17:31 +0000] \"GET /mail/partial?box=inbox HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:17:31"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-27 02:17:34"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-27 02:17:34"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-27 02:17:34"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-27 02:17:34"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-27 02:17:34"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-27 02:17:34"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-27 02:17:34"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [26/Jan/2026:20:17:44 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0\"","timestamp":"2026-01-27 02:17:44"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:03 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:03"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:05 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:05"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:14 +0000] \"GET /admin/login HTTP/1.1\" 302 45 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:14"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:14 +0000] \"GET /admin/dashboard HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:14"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:14 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:14"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:15 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:15"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:20 +0000] \"GET /mail HTTP/1.1\" 200 33167 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:20"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:20 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:20"}
+{"level":"info","message":"::1 - - [26/Jan/2026:20:18:23 +0000] \"GET /mail/partial?box=inbox HTTP/1.1\" 200 74471 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-27 02:18:23"}
