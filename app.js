@@ -9,6 +9,8 @@ const i18n = require('i18n');
 const cookieParser = require('cookie-parser');
 
 const helmet = require('helmet');
+const morgan = require('morgan'); // Import morgan
+const logger = require('./src/config/logger'); // Import logger
 
 // Load env vars FIRST
 dotenv.config();
@@ -26,11 +28,11 @@ const requiredEnvVars = usingSQLite
 const missingVars = requiredEnvVars.filter(v => !process.env[v]);
 
 if (missingVars.length > 0) {
-    console.error('========================================');
-    console.error('❌ MISSING REQUIRED ENVIRONMENT VARIABLES:');
-    console.error(missingVars.join(', '));
-    console.error('Please configure your .env file before starting.');
-    console.error('========================================');
+    logger.error('========================================');
+    logger.error('❌ MISSING REQUIRED ENVIRONMENT VARIABLES:');
+    logger.error(missingVars.join(', '));
+    logger.error('Please configure your .env file before starting.');
+    logger.error('========================================');
     // In production, exit; in development, warn only
     if (process.env.NODE_ENV === 'production') {
         process.exit(1);
@@ -40,16 +42,16 @@ if (missingVars.length > 0) {
 // Validate SESSION_SECRET is not default
 if (process.env.SESSION_SECRET === 'your_secret_key_here' ||
     process.env.SESSION_SECRET === 'secret_key') {
-    console.warn('⚠️  WARNING: Using default SESSION_SECRET. Please set a secure random string in production!');
+    logger.warn('⚠️  WARNING: Using default SESSION_SECRET. Please set a secure random string in production!');
 }
 
 // Production Debug (Sanitized - no secrets)
 if (process.env.NODE_ENV !== 'production') {
-    console.log('--- Environment Debug ---');
-    console.log('NODE_ENV:', process.env.NODE_ENV || 'development');
-    console.log('DB_HOST:', process.env.DB_HOST ? 'SET' : 'NOT SET');
-    console.log('RESEND_API_KEY:', process.env.RESEND_API_KEY ? 'SET' : 'NOT SET');
-    console.log('-------------------------');
+    logger.info('--- Environment Debug ---');
+    logger.info(`NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`DB_HOST: ${process.env.DB_HOST ? 'SET' : 'NOT SET'}`);
+    logger.info(`RESEND_API_KEY: ${process.env.RESEND_API_KEY ? 'SET' : 'NOT SET'}`);
+    logger.info('-------------------------');
 }
 
 // i18n Configuration
@@ -109,13 +111,8 @@ app.get('/ping', (req, res) => {
     res.status(200).send('Pong');
 });
 
-// Request Logger (ONLY in development)
-if (process.env.NODE_ENV !== 'production') {
-    app.use((req, res, next) => {
-        console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-        next();
-    });
-}
+// Request Logger
+app.use(morgan('combined', { stream: logger.stream }));
 
 // Routes
 app.use('/', require('./src/routes/publicRoutes'));
@@ -389,7 +386,7 @@ const seedData = require('./seed');
 
 sequelize.authenticate()
     .then(() => {
-        console.log('✅ Database connected successfully');
+        logger.info('✅ Database connected successfully');
         // SAFE sync - alter:false in production (no destructive changes)
         // SQLite foreign key constraints can fail during 'alter: true', so setting to false to prevent startup crashes.
         // For MySQL (Production), we enable alter to allow schema updates (like adding new columns).
@@ -397,19 +394,19 @@ sequelize.authenticate()
         return sequelize.sync(syncOptions);
     })
     .then(async () => {
-        console.log('✅ Database synced');
+        logger.info('✅ Database synced');
         // Auto-seed if tables are empty (safe - checks before inserting)
         await seedData(false); // false = don't force wipe, only seed if empty
     })
     .catch(err => {
-        console.error('❌ Database connection failed:', err.message);
-        console.error('The application will continue but database features will not work.');
+        logger.error(`❌ Database connection failed: ${err.message}`);
+        logger.error('The application will continue but database features will not work.');
         // DON'T crash - let the app run so admin can see the health check
     });
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-    console.error('Application Error:', err.stack);
+    logger.error(`Application Error: ${err.stack}`);
     res.status(500).send('Something went wrong! Please try again later.');
 });
 
@@ -419,7 +416,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server started on port ${PORT}`);
-    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`🚀 Server started on port ${PORT}`);
+    logger.info(`   Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
