@@ -72,37 +72,39 @@
             Comments
         </a>
 
-        <a href="/mail"
-            class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/mail') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %> loading-link">
-            <i
-                class="fas fa-envelope-open-text w-5 text-center <%= path.startsWith('/mail') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
-            Mail Client
-        </a>
-
-        <a href="/admin/media"
-            class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/media') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %>">
-            <i
-                class="fas fa-images w-5 text-center <%= path.startsWith('/media') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
-            Media Library
-        </a>
-
-        <div class="my-4 border-t border-slate-800 mx-4"></div>
-
-        <a href="/admin/settings"
-            class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/settings') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %>">
-            <i
-                class="fas fa-cog w-5 text-center <%= path.startsWith('/settings') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
-            Settings
-        </a>
-
-        <% if (user && user.role==='admin' ) { %>
-            <a href="/admin/users"
-                class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/users') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %>">
+        <% if (locals.enableMailClient) { %>
+            <a href="/mail"
+                class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/mail') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %> loading-link">
                 <i
-                    class="fas fa-user-shield w-5 text-center <%= path.startsWith('/users') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
-                Users & Roles
+                    class="fas fa-envelope-open-text w-5 text-center <%= path.startsWith('/mail') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
+                Mail Client
             </a>
             <% } %>
+
+                <a href="/admin/media"
+                    class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/media') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %>">
+                    <i
+                        class="fas fa-images w-5 text-center <%= path.startsWith('/media') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
+                    Media Library
+                </a>
+
+                <div class="my-4 border-t border-slate-800 mx-4"></div>
+
+                <a href="/admin/settings"
+                    class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/settings') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %>">
+                    <i
+                        class="fas fa-cog w-5 text-center <%= path.startsWith('/settings') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
+                    Settings
+                </a>
+
+                <% if (user && user.role==='admin' ) { %>
+                    <a href="/admin/users"
+                        class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 <%= path.startsWith('/users') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'hover:bg-slate-800 hover:text-white' %>">
+                        <i
+                            class="fas fa-user-shield w-5 text-center <%= path.startsWith('/users') ? 'text-white' : 'text-slate-400 group-hover:text-white' %>"></i>
+                        Users & Roles
+                    </a>
+                    <% } %>
     </nav>
 
     <!-- User Profile Strip at Bottom -->

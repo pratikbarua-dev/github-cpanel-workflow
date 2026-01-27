@@ -100,6 +100,7 @@ app.use((req, res, next) => {
     }
     // Make BASE_URL available to all views
     res.locals.baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+    res.locals.enableMailClient = process.env.ENABLE_MAIL_CLIENT === 'true';
     next();
 });
 
