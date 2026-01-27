@@ -406,6 +406,28 @@ app.post('/system-restore', upload.single('backup'), async (req, res) => {
     }
 });
 
+// --- SYSTEM FORCE KILL ROUTE (Zombie Process Cleanup) ---
+app.get('/system-force-kill', (req, res) => {
+    const secretKey = process.env.BACKUP_SECRET_KEY;
+    if (!secretKey || req.query.key !== secretKey) {
+        return res.status(403).send("Access Denied");
+    }
+
+    console.log('Received System Force Kill Request. Executing pkill...');
+
+    // Execute pkill to kill ALL node processes for this user
+    const { exec } = require('child_process');
+    exec('pkill -f node', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`pkill error: ${error}`);
+            // Note: If pkill works, this might not even be reached as the server dies
+            return res.status(500).send(`Error: ${error.message}`);
+        }
+        console.log(`pkill output: ${stdout}`);
+        res.send("Kill command executed. Server should restart momentarily.");
+    });
+});
+
 // ========================================
 // Database Connection (Graceful Handling)
 // ========================================
