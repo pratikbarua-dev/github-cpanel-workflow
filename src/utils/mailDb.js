@@ -1,4 +1,10 @@
 const sequelize = require('../config/database');
+const crypto = require('crypto');
+
+function getAccountId(user, host) {
+    if (!user || !host) return 'default';
+    return crypto.createHash('md5').update(`${user}:${host}`).digest('hex');
+}
 
 const TABLE_SCHEMAS = {
     scheduled_emails: {
@@ -51,6 +57,7 @@ const TABLE_SCHEMAS = {
         sqlite: `CREATE TABLE IF NOT EXISTS email_cache (
             uid INTEGER,
             mailbox TEXT,
+            account_id TEXT DEFAULT 'default',
             from_text TEXT,
             subject TEXT,
             date_text TEXT,
@@ -58,11 +65,12 @@ const TABLE_SCHEMAS = {
             html TEXT,
             attachments_json TEXT,
             is_read INTEGER DEFAULT 0,
-            PRIMARY KEY (uid, mailbox)
+            PRIMARY KEY (uid, mailbox, account_id)
         )`,
         mysql: `CREATE TABLE IF NOT EXISTS email_cache (
             uid INT,
             mailbox VARCHAR(255),
+            account_id VARCHAR(64) DEFAULT 'default',
             from_text TEXT,
             subject TEXT,
             date_text VARCHAR(255),
@@ -70,72 +78,82 @@ const TABLE_SCHEMAS = {
             html LONGTEXT,
             attachments_json LONGTEXT,
             is_read BOOLEAN DEFAULT FALSE,
-            PRIMARY KEY (uid, mailbox)
+            PRIMARY KEY (uid, mailbox, account_id)
         )`
     }
 };
 
-async function init() {
+async function init(currentAccountId = 'default') {
     const dialect = sequelize.getDialect();
     console.log(`[MailClient] Initializing Database Tables (Dialect: ${dialect})...`);
 
     const schemas = Object.keys(TABLE_SCHEMAS);
-    // Map sequelize dialect to our schema keys ('sqlite' or 'mysql')
-    // If mariadb or others, fallback to mysql for now as their syntax is similar for these basic tables.
     const schemaKey = dialect === 'sqlite' ? 'sqlite' : 'mysql';
 
+    // 1. Check/Migrate email_cache if needed
+    try {
+        const queryInterface = sequelize.getQueryInterface();
+        const tableDesc = await queryInterface.describeTable('email_cache');
+
+        if (!tableDesc.account_id) {
+            console.warn('[MailClient] Schema mismatch detected: Missing "account_id" in email_cache. Starting Migration...');
+
+            // Step 1: Rename old table
+            console.log('[MailClient] Migration: Renaming old table to email_cache_backup...');
+            await sequelize.query(`ALTER TABLE email_cache RENAME TO email_cache_backup`);
+
+            // Step 2: Create new table (will happen in loop below, but we wait for it)
+            const createSql = TABLE_SCHEMAS['email_cache'][schemaKey];
+            await sequelize.query(createSql);
+            console.log('[MailClient] Migration: New table created.');
+
+            // Step 3: Copy Data
+            console.log(`[MailClient] Migration: Migrating data to account_id='${currentAccountId}'...`);
+            // Note: We deliberately migrate existing data to the CURRENT account ID, 
+            // assuming this is the first run of the new code on the existing environment.
+            await sequelize.query(`
+                INSERT INTO email_cache (
+                    uid, mailbox, account_id, from_text, subject, date_text, preview, html, attachments_json, is_read
+                )
+                SELECT 
+                    uid, mailbox, :accId, from_text, subject, date_text, preview, html, attachments_json, is_read
+                FROM email_cache_backup
+            `, {
+                replacements: { accId: currentAccountId }
+            });
+            console.log('[MailClient] Migration: Data copied successfully.');
+
+            // Optional: Drop backup? Kept for safety for now.
+        }
+    } catch (err) {
+        // If table doesn't exist, describeTable throws. That's fine, we create it below.
+        // console.log('[MailClient] Table check skipped (likely new):', err.message);
+    }
+
+    // 2. Ensure all tables exist
     for (const table of schemas) {
         const sql = TABLE_SCHEMAS[table][schemaKey];
         try {
             await sequelize.query(sql);
         } catch (err) {
-            console.error(`[MailClient] Error creating table ${table}:`, err.message);
+            // Ignore "Table already exists" errors if our check above failed to suppress them or logic overlapped
+            if (!err.message.includes('already exists')) {
+                console.error(`[MailClient] Error creating table ${table}:`, err.message);
+            }
         }
     }
 }
 
 async function query(sql, params = []) {
-    // Adapter for legacy db.query(sql, params) style
-    // Sequelize uses 'replacements' for ?
     try {
         const [results, metadata] = await sequelize.query(sql, {
             replacements: params
         });
 
-        // Return results differently based on query type?
-        // Sequelize query() returns [results, metadata] for raw queries by default.
-        // For SELECT, 'results' is the array of rows.
-        // For INSERT/UPDATE in MySQL, 'results' helps.
-        // In SQLite, it might differ slightly.
-
-        // Let's normalize. 
-        // If SELECT, we want the array of rows.
-        // If INSERT, we want metadata (insertId) if possible, but the mail client code 
-        // mostly cared about rows for SELECT or just success for others.
-
-        // Actually, for raw queries:
-        // SQLite: [ [rows...], metadata ] (metadata contains lastID, changes)
-        // MySQL: [ [rows...], metadata ] (metadata is ResultSetHeader)
-
-        // Wait, default raw query behavior depends on `type`. 
-        // If we don't specify type, it returns [results, metadata].
-        // For SELECT: results is rows.
-        // For INSERT (MySQL): results is ResultSetHeader (insertId etc), metadata is undefined? 
-        // No, typically [results, metadata].
-
-        // NOTE: Our consuming code expects an array of rows for SELECT.
-        // For INSERT/UPDATE, it often awaits it and might use insertId inside the specialized logic?
-        // Checking `mailDb.js` original:
-        // SQLite: resolve(rows) for SELECT. resolve({insertId, affectedRows}) for others.
-        // MySQL: resolve(rows).
-
         const isSelect = sql.trim().toUpperCase().startsWith('SELECT');
         if (isSelect) {
             return results;
         } else {
-            // Basic return for non-select.
-            // If we need insertId, we might need to inspect 'results' or 'metadata'.
-            // For now, returning results is usually safe for "await db.query(...)".
             return results;
         }
 
@@ -145,8 +163,12 @@ async function query(sql, params = []) {
     }
 }
 
+function getDialect() {
+    return sequelize.getDialect();
+}
+
 function close() {
     // Managed by main app
 }
 
-module.exports = { init, query, close };
+module.exports = { init, query, close, getAccountId, getDialect };

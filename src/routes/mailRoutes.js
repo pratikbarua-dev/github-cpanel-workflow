@@ -9,6 +9,7 @@ const db = require('../utils/mailDb');
 require('dotenv').config();
 
 const upload = multer({ storage: multer.memoryStorage() });
+const MailSyncService = require('../services/mailSync');
 
 const { ensureAuthenticated } = require('../middleware/auth');
 
@@ -63,44 +64,10 @@ router.get('/', (req, res) => {
 });
 
 // --- ROUTE: CONTENT PARTIAL (AJAX) ---
-router.get('/partial', async (req, res) => {
-    // Default to 'inbox' if no box is specified
-    const currentBox = req.query.box || 'inbox';
-    const searchQuery = req.query.search || null;
-
-    // --- DB-ONLY VIEWS ---
-    if (currentBox === 'scheduled') {
-        try {
-            let sql = "SELECT * FROM scheduled_emails WHERE status='pending'";
-            const params = [];
-
-            if (searchQuery) {
-                sql += " AND (subject LIKE ? OR message LIKE ? OR to_email LIKE ?)";
-                const term = `%${searchQuery}%`;
-                params.push(term, term, term);
-            }
-
-            sql += " ORDER BY scheduled_time ASC";
-
-            const rows = await db.query(sql, params);
-            const emails = rows.map(r => ({
-                uid: r.id,
-                isScheduled: true,
-                from: `To: ${r.to_email}`,
-                subject: r.subject,
-                date: new Date(r.scheduled_time).toLocaleString(),
-                dateShort: new Date(r.scheduled_time).toLocaleDateString(),
-                preview: (r.message || '').substring(0, 100),
-                html: r.message,
-                attributes: { uid: r.id }
-            }));
-            return res.render('mail/content', { emails: emails, currentBox: currentBox, status: null, layout: false });
-        } catch (err) {
-            return res.render('mail/content', { emails: [], currentBox: currentBox, status: "DB Error: " + err.message, layout: false });
-        }
-    }
-
-    // --- IMAP VIEWS ---
+// --- HELPER: Fetch Email Data (DB Only) ---
+// --- HELPER: Fetch Email Data (DB Only) ---
+// --- HELPER: Fetch Email Data (DB Only) ---
+async function fetchViewData(box, searchQuery, accountId) {
     const folderMap = {
         'inbox': 'INBOX',
         'sent': 'INBOX.Sent',
@@ -113,191 +80,148 @@ router.get('/partial', async (req, res) => {
         'important': 'INBOX'
     };
 
-    const searchBox = folderMap[currentBox] || 'INBOX';
+    // Safety
+    box = box || 'inbox';
+    const dbMailbox = folderMap[box] || 'INBOX';
+
+    // Scheduled is special table
+    if (box === 'scheduled') {
+        const rows = await db.query("SELECT * FROM scheduled_emails WHERE status='pending' ORDER BY scheduled_time ASC");
+        return rows.map(r => ({
+            uid: r.id,
+            isScheduled: true,
+            from: `To: ${r.to_email}`,
+            subject: r.subject,
+            date: new Date(r.scheduled_time).toLocaleString(),
+            dateShort: new Date(r.scheduled_time).toLocaleDateString(),
+            preview: (r.message || '').substring(0, 100),
+            html: r.message,
+            attributes: { uid: r.id }
+        }));
+    }
+
+    // Normal Tables
+    // If searching, we currently only search the current box.
+    // Ideally we might want to search ALL boxes, but UI structure expects currentBox context.
+    let sql = `SELECT * FROM email_cache WHERE mailbox = ? AND account_id = ?`;
+    let params = [dbMailbox, accountId];
+
+    if (searchQuery) {
+        // Search Logic
+        sql += ` AND (subject LIKE ? OR from_text LIKE ? OR preview LIKE ?)`;
+        const wild = `%${searchQuery}%`;
+        params.push(wild, wild, wild);
+    }
+
+    // Default Sort: Database UID Descending (approximate time)
+    // We fetch a larger limit to allow better in-memory sorting of near ties or if UIDs are out of sync with Date
+    sql += ` ORDER BY uid DESC LIMIT 200`;
+
+    const rows = await db.query(sql, params);
+
+    const mapped = rows.map(r => {
+        let attachments = [];
+        if (r.attachments_json) {
+            try { attachments = JSON.parse(r.attachments_json); } catch (e) { }
+        }
+
+        // Date Parsing & Formatting
+        let dateShort = '';
+        const dateStr = r.date_text;
+        let dateObj = new Date(0); // Default epoch
+
+        if (dateStr) {
+            const now = new Date();
+            const d = new Date(dateStr);
+            dateObj = d;
+
+            if (d.toString() !== 'Invalid Date') {
+                if (d.toDateString() === now.toDateString()) {
+                    // Today: 2:30 PM
+                    dateShort = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                } else {
+                    // Older: Jan 27, 2:30 PM (Showing time is important)
+                    dateShort = d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ', ' +
+                        d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                }
+            } else {
+                dateShort = dateStr.substring(0, 10);
+            }
+        }
+
+        return {
+            uid: r.uid,
+            mailbox: r.mailbox,
+            accountId: r.account_id,
+            isImportant: false, // TODO: Join with important_emails
+            from: r.from_text,
+            subject: r.subject,
+            date: r.date_text,
+            dateObj: dateObj, // Internal for sorting
+            dateShort: dateShort,
+            preview: r.preview,
+            html: r.html,
+            attachments: attachments
+        };
+    });
+
+    // Sort by Date Descending (Newest first)
+    // If dates are equal, fallback to UID
+    mapped.sort((a, b) => b.dateObj - a.dateObj || b.uid - a.uid);
+
+    return mapped;
+}
+
+// --- ROUTE: CONTENT PARTIAL (AJAX) ---
+router.get('/partial', async (req, res) => {
+    const currentBox = req.query.box || 'inbox';
+    const searchQuery = req.query.search || null;
+    const currentAccountId = db.getAccountId(EMAIL_USER, HOST);
 
     try {
-        const config = {
-            imap: {
-                user: EMAIL_USER,
-                password: EMAIL_PASS,
-                host: HOST,
-                port: 993,
-                tls: true,
-                authTimeout: 15000, // Increased from 10s to 15s
-                connTimeout: 15000, // Add connection timeout
-                tlsOptions: { rejectUnauthorized: false }
-            }
-        };
-
-        console.log(`[MailClient] Attempting IMAP connection to ${HOST}:993 for box: ${currentBox}`);
-        const startTime = Date.now();
-
-        let connection;
-        try {
-            connection = await imaps.connect(config);
-            console.log(`[MailClient] IMAP connected successfully in ${Date.now() - startTime}ms`);
-        } catch (connErr) {
-            console.error(`[MailClient] IMAP connection FAILED after ${Date.now() - startTime}ms:`, connErr.message);
-            throw connErr;
-        }
-
-        let searchCriteria = [['ALL']]; // Nested array for imap-simple if mixing
-        let specificUids = null;
-
-        if (currentBox === 'important') {
-            const rows = await db.query("SELECT uid FROM important_emails");
-            if (!rows || rows.length === 0) {
-                connection.end();
-                return res.render('mail/content', { emails: [], currentBox: currentBox, status: null, layout: false });
-            }
-            specificUids = rows.map(r => r.uid);
-            searchCriteria = [['UID', specificUids.join(',')]];
-        }
-        else if (currentBox === 'starred') {
-            searchCriteria = [['FLAGGED']];
-        } else {
-            searchCriteria = ['ALL'];
-        }
-
-        // Apply Search
-        if (searchQuery) {
-            // If we are already filtering by specific UIDs (Important), we can't easily mix 'TEXT' with 'UID' list in one go depending on server caps.
-            // But standard IMAP allows: UID x,y,z AND TEXT "foo"
-            // imap-simple criteria format: array of strings or sub-arrays.
-            // CAUTION: If currentBox is important, searchCriteria is [['UID', ...]]. 
-            // We want to ADD ['TEXT', searchQuery] to the criteria list.
-
-            if (Array.isArray(searchCriteria[0]) && searchCriteria[0][0] === 'UID') {
-                // It's the UID one. Add to it? Or as separate param?
-                // node-imap (underlying) accepts items as varargs or array. 
-                // Let's make searchCriteria an array of criteria.
-                searchCriteria.push(['TEXT', searchQuery]);
-            } else {
-                // For 'ALL' or 'FLAGGED'
-                // If it was just ['ALL'], we can replace or append.
-                searchCriteria = [['TEXT', searchQuery]];
-                if (currentBox === 'starred') searchCriteria.push(['FLAGGED']);
-            }
-        }
-
-
-        try {
-            await connection.openBox(searchBox);
-        } catch (boxErr) {
-            connection.end();
-            return res.render('mail/content', { emails: [], currentBox: currentBox, status: null });
-        }
-
-        const fetchOptions = { bodies: ['HEADER.FIELDS (UID DATE)'], struct: false };
-        let messages = await connection.search(searchCriteria, fetchOptions);
-
-        messages = messages.reverse();
-
-        if (messages.length === 0) {
-            connection.end();
-            return res.render('mail/content', { emails: [], currentBox: currentBox, status: null, layout: false });
-        }
-
-        const targetUids = messages.map(m => m.attributes.uid);
-        const placeholders = targetUids.map(() => '?').join(',');
-        const cachedRows = await db.query(`SELECT * FROM email_cache WHERE mailbox = ? AND uid IN (${placeholders})`, [searchBox, ...targetUids]);
-        const cachedUids = cachedRows.map(r => r.uid);
-        const missingUids = targetUids.filter(uid => !cachedUids.includes(uid));
-
-        let newEmails = [];
-        if (missingUids.length > 0) {
-            const missingFetchOptions = { bodies: [''], markSeen: false, struct: true };
-            const missingMessages = await connection.search([['UID', missingUids.join(',')]], missingFetchOptions);
-
-            for (const msg of missingMessages) {
-                const all = msg.parts.find(p => p.which === '');
-                const parsed = await simpleParser(all ? all.body : '');
-                const uid = msg.attributes.uid;
-
-                const fromText = parsed.from ? parsed.from.text : 'Unknown';
-                const subject = parsed.subject || '(No Subject)';
-                const dateText = parsed.date ? parsed.date.toLocaleString() : '';
-                const preview = (parsed.text || '').replace(/\s+/g, ' ').trim().substring(0, 100);
-                const html = parsed.html || parsed.textAsHtml || parsed.text;
-                const attachments = parsed.attachments ? parsed.attachments.map(a => ({
-                    filename: a.filename,
-                    size: a.size,
-                    contentType: a.contentType
-                })) : [];
-
-                newEmails.push({ uid, mailbox: searchBox, from: fromText, subject, date: dateText, preview, html, attachments: attachments });
-
-                try {
-                    await db.query(`INSERT INTO email_cache (uid, mailbox, from_text, subject, date_text, preview, html, attachments_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                        [uid, searchBox, fromText, subject, dateText, preview, html, JSON.stringify(attachments)]);
-                } catch (e) { }
-            }
-        }
-
-        connection.end();
-
-        const importantRows = await db.query("SELECT uid FROM important_emails");
-        const importantUids = importantRows.map(r => r.uid);
-
-        const finalEmails = targetUids.map(uid => {
-            let data = newEmails.find(e => e.uid === uid) || cachedRows.find(e => e.uid === uid);
-            if (!data) return null;
-            let attachments = [];
-            if (data.attachments) attachments = data.attachments;
-            else if (data.attachments_json) {
-                try { attachments = JSON.parse(data.attachments_json); } catch (e) { }
-            }
-            let dateShort = '';
-            const dateStr = data.date || data.date_text;
-            if (dateStr) {
-                const now = new Date();
-                const d = new Date(dateStr);
-                if (d.toDateString() === now.toDateString()) dateShort = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-                else dateShort = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            }
-
-            return {
-                uid: data.uid,
-                isImportant: importantUids.includes(data.uid),
-                from: data.from || data.from_text,
-                subject: data.subject,
-                date: dateStr,
-                dateShort: dateShort,
-                preview: data.preview,
-                html: data.html,
-                attachments: attachments
-            };
-        }).filter(e => e !== null);
+        // Pure DB call - NO network connection
+        const emails = await fetchViewData(currentBox, searchQuery, currentAccountId);
 
         res.render('mail/content', {
-            emails: finalEmails,
+            emails: emails,
             currentBox: currentBox,
             status: null,
             layout: false
         });
 
     } catch (err) {
-        console.error('[MailClient] Error in /partial route:', err.message);
-        console.error('[MailClient] Full error:', err);
-
-        // Provide more helpful error messages
-        let errorMessage = err.message;
-        if (err.message.includes('ECONNREFUSED')) {
-            errorMessage = `Connection refused to ${HOST}:993. The IMAP server may be down or the port is blocked.`;
-        } else if (err.message.includes('ETIMEDOUT') || err.message.includes('timeout')) {
-            errorMessage = `Connection timed out to ${HOST}:993. This could be a firewall issue or the server is not responding.`;
-        } else if (err.message.includes('ENOTFOUND')) {
-            errorMessage = `Host not found: ${HOST}. Check your EMAIL_HOST setting.`;
-        } else if (err.message.includes('auth') || err.message.includes('credentials')) {
-            errorMessage = `Authentication failed. Check EMAIL_USER and EMAIL_PASS.`;
-        }
-
+        console.error("[MailClient] DB Error in /partial:", err);
         res.render('mail/content', {
             emails: [],
             currentBox: currentBox,
-            status: `Error: ${errorMessage}`,
+            status: "Database Error: " + err.message,
             layout: false
         });
+    }
+});
+
+// --- ROUTE: MANUAL SYNC (Refresh) ---
+router.get('/api/sync', async (req, res) => {
+    // Only allow if configured
+    if (!EMAIL_USER || !EMAIL_PASS || !HOST) {
+        return res.status(500).json({ success: false, message: 'Mail not configured' });
+    }
+
+    try {
+        const syncService = new MailSyncService({
+            user: EMAIL_USER,
+            password: EMAIL_PASS,
+            host: HOST,
+            tls: true
+        });
+
+        // Run sync (fire and forget? No, user is waiting)
+        await syncService.syncAll();
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Manual Sync Error:", err);
+        res.status(500).json({ success: false, message: err.message });
     }
 });
 
@@ -415,6 +339,18 @@ router.post('/action', bodyParser.json(), async (req, res) => {
         }
 
         connection.end();
+
+        // --- UPDATE DATABASE ---
+        const currentAccId = db.getAccountId(EMAIL_USER, HOST);
+        if (uids && uids.length > 0) {
+            const validUids = uids.map(id => parseInt(id)).filter(id => !isNaN(id));
+            // We must update the mailbox for these UIDs
+            const placeholders = validUids.map(() => '?').join(',');
+            // Need to spread the array for params
+            await db.query(`UPDATE email_cache SET mailbox = ? WHERE account_id = ? AND uid IN (${placeholders})`,
+                [targetBox, currentAccId, ...validUids]);
+        }
+
         res.json({ success: true });
 
     } catch (err) {

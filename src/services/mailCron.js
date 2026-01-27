@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const nodemailer = require('nodemailer');
 const imaps = require('imap-simple');
 const db = require('../utils/mailDb');
+const MailSyncService = require('./mailSync');
 require('dotenv').config();
 
 // Configuration
@@ -9,27 +10,56 @@ const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
 const HOST = process.env.EMAIL_HOST || process.env.HOST;
 
+// Initialize Sync Service
+let mailSync = null;
+if (EMAIL_USER && EMAIL_PASS && HOST) {
+    mailSync = new MailSyncService({
+        user: EMAIL_USER,
+        password: EMAIL_PASS,
+        host: HOST,
+        tls: true
+    });
+}
+
 function init() {
     if (!process.env.ENABLE_MAIL_CLIENT || process.env.ENABLE_MAIL_CLIENT !== 'true') {
         console.log('[MailCron] Mail Client disabled. Skipping Cron init.');
         return;
     }
 
-    // Ensure DB is init (it might already be called in app.js, but safe to call again if idempotent)
-    // Actually app.js calls db.init(), so we assume tables exist.
+    // Initialize Sync Service if not already (in case env loaded late?)
+    if (!mailSync && EMAIL_USER) {
+        mailSync = new MailSyncService({ user: EMAIL_USER, password: EMAIL_PASS, host: HOST, tls: true });
+    }
+
+    const currentAccountId = db.getAccountId(EMAIL_USER, HOST);
+    // Initialize DB with migration support
+    // app.js calls db.init(), but passing accountId here ensures we're aligned?
+    // app.js might call it without args. Use a singleton promise or just call it.
+    // Safe to call again.
+    db.init(currentAccountId);
 
     console.log('[MailCron] Initializing Cron Jobs...');
 
-    // Check for scheduled emails every minute
+    // 1. Sync & Schedule Loop (Every Minute)
     cron.schedule('* * * * *', async () => {
-        // console.log('[MailCron] Running Cron: Checking scheduled & snoozed tasks...');
+        // console.log('[MailCron] Running Cron: Sync & Schedule...');
 
         if (!EMAIL_USER || !EMAIL_PASS || !HOST) {
             // console.warn('[MailCron] Missing Email Config. Skipping cycle.');
             return;
         }
 
-        // 1. Process Scheduled Emails
+        // A. Run Sync
+        if (mailSync) {
+            try {
+                await mailSync.syncAll();
+            } catch (err) {
+                console.error('[MailCron] Sync Error:', err);
+            }
+        }
+
+        // B. Process Scheduled Emails (Existing Logic)
         try {
             const rows = await db.query("SELECT * FROM scheduled_emails WHERE status='pending' AND scheduled_time <= ?", [Date.now()]);
 
@@ -63,7 +93,14 @@ function init() {
             }
         } catch (err) { console.error("[MailCron] Cron Scheduled Error:", err); }
 
-        // 2. Process Snoozed Emails (Move back to Inbox)
+        // C. Process Snoozed Emails (Move back to Inbox) - Logic needs update?
+        // If we move message on server, sync will catch it next time?
+        // Snoozing involves moving msg to 'INBOX.Snoozed'.
+        // Restoring moves it back to 'INBOX'.
+        // If we do this via IMAP here, the Sync Service will detect the 'New' email in INBOX
+        // and add it to DB (if UID changed).
+        // This is fine. The user will see it reappear.
+
         try {
             const rows = await db.query("SELECT * FROM snoozed_emails WHERE status='active' AND snooze_until <= ?", [Date.now()]);
 

@@ -80,8 +80,23 @@
             </form>
 
             <button class="toolbar-btn btn btn-light btn-sm rounded-circle me-1" title="Refresh"
-                onclick="loadMailbox('<%= currentBox %>')">
+                onclick="refreshMailbox('<%= currentBox %>')">
                 <i class="fas fa-redo text-secondary"></i>
+            </button>
+
+            <div class="vr mx-2 text-secondary" style="height: 20px;"></div>
+
+            <button class="toolbar-btn btn btn-light btn-sm rounded-circle me-1" title="Archive"
+                onclick="performAction('archive')">
+                <i class="fas fa-archive text-secondary"></i>
+            </button>
+            <button class="toolbar-btn btn btn-light btn-sm rounded-circle me-1" title="Delete"
+                onclick="performAction('delete')">
+                <i class="far fa-trash-alt text-secondary"></i>
+            </button>
+            <button class="toolbar-btn btn btn-light btn-sm rounded-circle me-1" title="Snooze"
+                onclick="snoozeSelected()">
+                <i class="far fa-clock text-secondary"></i>
             </button>
 
             <div class="flex-grow-1"></div>

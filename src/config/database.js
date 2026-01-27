@@ -13,7 +13,7 @@ if (useSQLite) {
     sequelize = new Sequelize({
         dialect: 'sqlite',
         storage: path.join(__dirname, '../../database.sqlite'),
-        logging: process.env.NODE_ENV !== 'production' ? console.log : false
+        logging: false
     });
 } else {
     // MySQL for production (cPanel)
@@ -33,7 +33,7 @@ if (useSQLite) {
         {
             host: process.env.DB_HOST || 'localhost',
             dialect: 'mysql',
-            logging: process.env.NODE_ENV !== 'production' ? console.log : false,
+            logging: false,
             pool: {
                 max: 5,
                 min: 0,

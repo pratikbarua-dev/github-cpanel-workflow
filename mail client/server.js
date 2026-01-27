@@ -114,221 +114,147 @@ const EMAIL_USER = 'admin@morphbangladesh.org';
 const EMAIL_PASS = 'Dm6:7tPZis56';
 const HOST = 's1.sitechai.com';
 
-// --- ROUTE: HOME (View Emails) ---
-app.get('/', async (req, res) => {
-    // Default to 'inbox' if no box is specified
-    const currentBox = req.query.box || 'inbox';
+const MailSyncService = require('../src/services/mailSync');
 
-    // --- DB-ONLY VIEWS ---
-    if (currentBox === 'scheduled') {
-        db.all("SELECT * FROM scheduled_emails WHERE status='pending' ORDER BY scheduled_time ASC", [], (err, rows) => {
-            if (err) return res.render('index', { emails: [], currentBox: currentBox, status: "DB Error" });
-
-            // Map DB rows to email-like objects for UI
-            const emails = rows.map(r => ({
-                uid: r.id, // Use DB ID as UID for UI
-                isScheduled: true, // Flag for UI
-                from: `To: ${r.to_email}`,
-                subject: r.subject,
-                date: new Date(r.scheduled_time).toLocaleString(),
-                dateShort: new Date(r.scheduled_time).toLocaleDateString(),
-                preview: (r.message || '').substring(0, 100),
-                html: r.message,
-                attributes: { uid: r.id }
-            }));
-
-            res.render('index', { emails: emails, currentBox: currentBox, status: null });
-        });
-        return; // Stop here for scheduled
-    }
-
-    // --- IMAP VIEWS ---
-
-    // --- IMAP VIEWS with CACHING ---
+// --- HELPER: Fetch Email Data ---
+async function fetchViewData(box, searchQuery) {
     const folderMap = {
         'inbox': 'INBOX',
         'sent': 'INBOX.Sent',
         'drafts': 'INBOX.Drafts',
         'trash': 'INBOX.Trash',
         'spam': 'INBOX.Junk',
-        'starred': 'INBOX',
+        'starred': 'INBOX', // We filter later? No, currently mapped to INBOX
         'archive': 'INBOX.Archive',
         'snoozed': 'INBOX.Snoozed',
         'important': 'INBOX'
     };
 
-    const searchBox = folderMap[currentBox] || 'INBOX';
+    // Safety
+    box = box || 'inbox';
+    const dbMailbox = folderMap[box] || 'INBOX';
+    const emails = [];
 
-    try {
-        const config = {
-            imap: {
-                user: EMAIL_USER,
-                password: EMAIL_PASS,
-                host: HOST,
-                port: 993,
-                tls: true,
-                authTimeout: 10000,
-                tlsOptions: { rejectUnauthorized: false }
-            }
-        };
+    // Scheduled is special table
+    if (box === 'scheduled') {
+        const rows = await db.query("SELECT * FROM scheduled_emails WHERE status='pending' ORDER BY scheduled_time ASC");
+        return rows.map(r => ({
+            uid: r.id,
+            isScheduled: true,
+            from: `To: ${r.to_email}`,
+            subject: r.subject,
+            date: new Date(r.scheduled_time).toLocaleString(),
+            dateShort: new Date(r.scheduled_time).toLocaleDateString(),
+            preview: (r.message || '').substring(0, 100),
+            html: r.message,
+            attributes: { uid: r.id }
+        }));
+    }
 
-        const connection = await imaps.connect(config);
+    // Normal Tables
+    let sql = `SELECT * FROM email_cache WHERE mailbox = ?`;
+    let params = [dbMailbox];
 
-        // Handle "Important" View separation
-        let searchCriteria = ['ALL'];
-        let specificUids = null;
+    if (searchQuery) {
+        sql += ` AND (subject LIKE ? OR from_text LIKE ? OR preview LIKE ?)`;
+        const wild = `%${searchQuery}%`;
+        params.push(wild, wild, wild);
+    }
 
-        if (currentBox === 'important') {
-            const rows = await db.query("SELECT uid FROM important_emails");
-            if (!rows || rows.length === 0) {
-                connection.end();
-                return res.render('index', { emails: [], currentBox: currentBox, status: null });
-            }
-            specificUids = rows.map(r => r.uid);
-            searchCriteria = [['UID', specificUids.join(',')]];
-        }
-        else if (currentBox === 'starred') {
-            searchCriteria = ['FLAGGED'];
-        }
+    sql += ` ORDER BY date_text DESC, uid DESC LIMIT 50`;
 
-        await connection.openBox(searchBox);
+    const rows = await db.query(sql, params);
 
-        // OPTIMIZATION:
-        // 1. Fetch only UIDs and Date for the last 15 messages (or specific UIDs)
-        const fetchOptions = { bodies: ['HEADER.FIELDS (UID DATE)'], struct: false };
-        let messages = await connection.search(searchCriteria, fetchOptions);
-
-        // Sort and slice top 15 (if not important view)
-        // Since we only fetched headers, sorting by date might be tricky if not parsed.
-        // Actually, search results often come in order (seqno).
-        // Let's assume order is correct or use attributes.uid.
-        // Reverse to get newest first.
-        messages = messages.reverse();
-        if (currentBox !== 'important') {
-            messages = messages.slice(0, 15);
+    return rows.map(r => {
+        let attachments = [];
+        if (r.attachments_json) {
+            try { attachments = JSON.parse(r.attachments_json); } catch (e) { }
         }
 
-        if (messages.length === 0) {
-            connection.end();
-            return res.render('index', { emails: [], currentBox: currentBox, status: null });
-        }
-
-        const targetUids = messages.map(m => m.attributes.uid);
-
-        // 2. Check Cache
-        const placeholders = targetUids.map(() => '?').join(',');
-        const cachedRows = await db.query(`SELECT * FROM email_cache WHERE mailbox = ? AND uid IN (${placeholders})`, [searchBox, ...targetUids]);
-        const cachedUids = cachedRows.map(r => r.uid);
-
-        // 3. Identify Missing
-        const missingUids = targetUids.filter(uid => !cachedUids.includes(uid));
-
-        // 4. Fetch Missing Bodies
-        let newEmails = [];
-        if (missingUids.length > 0) {
-            const missingFetchOptions = { bodies: [''], markSeen: false, struct: true };
-            const missingMessages = await connection.search([['UID', missingUids.join(',')]], missingFetchOptions);
-
-            for (const msg of missingMessages) {
-                const all = msg.parts.find(p => p.which === '');
-                const parsed = await simpleParser(all ? all.body : '');
-                const uid = msg.attributes.uid;
-
-                // Parse Data
-                const fromText = parsed.from ? parsed.from.text : 'Unknown';
-                const subject = parsed.subject || '(No Subject)';
-                const dateText = parsed.date ? parsed.date.toLocaleString() : '';
-                const preview = (parsed.text || '').replace(/\s+/g, ' ').trim().substring(0, 100);
-                const html = parsed.html || parsed.textAsHtml || parsed.text;
-                const attachments = parsed.attachments ? parsed.attachments.map(a => ({
-                    filename: a.filename,
-                    size: a.size,
-                    contentType: a.contentType
-                })) : [];
-
-                newEmails.push({
-                    uid,
-                    mailbox: searchBox,
-                    from: fromText,
-                    subject,
-                    date: dateText,
-                    preview,
-                    html,
-                    attachments: attachments
-                });
-
-                // 5. Update Cache
-                // Using INSERT OR REPLACE equivalent
-                // For MySQL/SQLite compatibility via db.js, we might need simple INSERT or check existence.
-                // We know it's missing, so INSERT should work.
-                try {
-                    await db.query(`INSERT INTO email_cache (uid, mailbox, from_text, subject, date_text, preview, html, attachments_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                        [uid, searchBox, fromText, subject, dateText, preview, html, JSON.stringify(attachments)]);
-                } catch (e) { console.error("Cache Insert Error:", e.message); }
-            }
-        }
-
-        connection.end();
-
-        // 6. Merge and Prepare for View
-        // Map original 'messages' to ensure correct order
-
-        // Fetch Important UIDs for flagging
-        const importantRows = await db.query("SELECT uid FROM important_emails");
-        const importantUids = importantRows.map(r => r.uid);
-
-        const finalEmails = targetUids.map(uid => {
-            // Find in cache or newEmails
-            let data = newEmails.find(e => e.uid === uid) || cachedRows.find(e => e.uid === uid);
-
-            if (!data) return null; // Should not happen
-
-            // Normalize data (cached rows have snake_case columns if selected directly?)
-            // db.js returns rows.
-            // If from DB, attachments_json needs parsing.
-
-            let attachments = [];
-            if (data.attachments) attachments = data.attachments; // From new fetch
-            else if (data.attachments_json) {
-                try { attachments = JSON.parse(data.attachments_json); } catch (e) { }
-            }
-
-            // Date Formatting
-            let dateShort = '';
-            const dateStr = data.date || data.date_text; // data.date from newConfig, date_text from DB
-            if (dateStr) {
-                const now = new Date();
-                const d = new Date(dateStr);
+        // Date Formatting
+        let dateShort = '';
+        const dateStr = r.date_text;
+        if (dateStr) {
+            const now = new Date();
+            const d = new Date(dateStr);
+            if (d.toString() !== 'Invalid Date') {
                 if (d.toDateString() === now.toDateString()) dateShort = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
                 else dateShort = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            } else {
+                dateShort = dateStr.substring(0, 10);
             }
+        }
 
-            return {
-                uid: data.uid,
-                isImportant: importantUids.includes(data.uid),
-                from: data.from || data.from_text,
-                subject: data.subject,
-                date: dateStr,
-                dateShort: dateShort,
-                preview: data.preview,
-                html: data.html,
-                attachments: attachments
-            };
-        }).filter(e => e !== null);
+        return {
+            uid: r.uid,
+            mailbox: r.mailbox,
+            accountId: r.account_id,
+            isImportant: false, // Join?
+            from: r.from_text,
+            subject: r.subject,
+            date: r.date_text,
+            dateShort: dateShort,
+            preview: r.preview,
+            html: r.html,
+            attachments: attachments
+        };
+    });
+}
 
-        res.render('index', {
-            emails: finalEmails,
-            currentBox: currentBox,
-            status: null
-        });
+// --- ROUTE: HOME (View Emails) ---
+app.get('/', async (req, res) => {
+    const currentBox = req.query.box || 'inbox';
+    const search = req.query.search || '';
 
+    // Init DB (non-blocking, okay to fire and forget or it's fast)
+    // accId logic moved to getAccountId
+
+    try {
+        const emails = await fetchViewData(currentBox, search);
+        res.render('mail/index', { emails: emails, currentBox: currentBox, status: null, searchQuery: search });
     } catch (err) {
         console.error(err);
-        res.render('index', {
-            emails: [],
-            currentBox: currentBox,
-            status: `Error: Could not open folder '${searchBox}'. Server said: ${err.message}`
+        res.render('mail/index', { emails: [], currentBox: currentBox, status: `DB Error: ${err.message}`, searchQuery: search });
+    }
+});
+
+// --- ROUTE: PARTIAL (For AJAX) ---
+// --- ROUTE: PARTIAL (For AJAX) ---
+app.get('/partial', async (req, res) => {
+    const currentBox = req.query.box || 'inbox';
+    const search = req.query.search || '';
+
+    try {
+        // Pure DB call - NO network connection should happen here
+        const emails = await fetchViewData(currentBox, search);
+
+        // Render ONLY the content part
+        res.render('mail/content', { emails: emails, currentBox: currentBox, searchQuery: search }, (err, html) => {
+            if (err) {
+                console.error("[MailClient] Template Render Error:", err);
+                return res.status(500).send("Template Error: " + err.message);
+            }
+            res.send(html);
         });
+    } catch (err) {
+        console.error("[MailClient] DB Error in /partial:", err);
+        res.status(500).send("Database Error: " + err.message);
+    }
+});
+
+// --- API: Manual Sync ---
+app.get('/api/sync', async (req, res) => {
+    try {
+        const syncService = new MailSyncService({
+            user: EMAIL_USER,
+            password: EMAIL_PASS,
+            host: HOST,
+            tls: true
+        });
+        await syncService.syncAll();
+        res.json({ success: true, message: 'Sync completed' });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
     }
 });
 
@@ -337,6 +263,9 @@ app.get('/attachment', async (req, res) => {
     const { uid, box, filename } = req.query;
     if (!uid || !filename) return res.status(400).send('Missing UID or Filename');
 
+    // ... (Keep existing attachment logic, or use DB if we stored content?)
+    // We didn't store content. So this MUST use IMAP.
+    // Copy existing logic:
     const folderMap = {
         'inbox': 'INBOX',
         'sent': 'INBOX.Sent',
@@ -394,10 +323,14 @@ app.get('/attachment', async (req, res) => {
 });
 
 // --- ROUTE: HANDLE ACTIONS (Delete/Archive) ---
+// --- ROUTE: HANDLE ACTIONS (Delete/Archive) ---
 app.post('/action', bodyParser.json(), async (req, res) => {
-    const { uids, action, currentBox } = req.body;
+    const { uids, action, currentBox, accountId } = req.body;
+    // accountId optional for backward compat? 
+    // If we have mixed views, frontend MUST pass accountId for the specific email.
+    // If uids is array, we assume all belong to same account? 
+    // Normally frontend sends batch actions.
 
-    // Map UI names to actual Server Folder names
     const folderMap = {
         'inbox': 'INBOX',
         'sent': 'INBOX.Sent',
@@ -412,46 +345,63 @@ app.post('/action', bodyParser.json(), async (req, res) => {
     let targetBox;
 
     if (action === 'delete') {
-        targetBox = folderMap['trash'];
+        targetBox = folderMap['trash']; // Or 'Trash'
     } else if (action === 'archive') {
         targetBox = folderMap['archive'];
     } else {
         return res.status(400).json({ success: false, message: 'Invalid action' });
     }
 
+    const currentAccId = db.getAccountId(EMAIL_USER, HOST);
+    const isOfflineAction = accountId && accountId !== currentAccId;
+
     try {
-        const config = {
-            imap: {
-                user: EMAIL_USER,
-                password: EMAIL_PASS,
-                host: HOST,
-                port: 993,
-                tls: true,
-                authTimeout: 10000,
-                tlsOptions: { rejectUnauthorized: false }
+        if (!isOfflineAction) {
+            // Online Action: Move on Real Server + Update DB
+            const config = {
+                imap: {
+                    user: EMAIL_USER,
+                    password: EMAIL_PASS,
+                    host: HOST,
+                    port: 993,
+                    tls: true,
+                    authTimeout: 10000,
+                    tlsOptions: { rejectUnauthorized: false }
+                }
+            };
+
+            const connection = await imaps.connect(config);
+            await connection.openBox(sourceBox);
+
+            if (uids && uids.length > 0) {
+                const validUids = uids.map(id => parseInt(id)).filter(id => !isNaN(id));
+                if (validUids.length > 0) {
+                    await connection.moveMessage(validUids, targetBox);
+                }
             }
-        };
-
-        const connection = await imaps.connect(config);
-        await connection.openBox(sourceBox);
-
-        // Move messages to target folder
-        // Note: 'uids' should be an array of numbers
-        // If we are using seqno as fallback, moveMessage might behave unexpectedly if it expects UIDs.
-        // imap-simple's moveMessage usually expects UIDs.
-        // If msg.attributes.uid was missing, we passed seqno.
-        // We might need to check how to move by seqno or ensure UIDs work.
-        // For now, let's assume if we passed seqno, we try the move, but it might fail or move wrong msg if UIDs are expected.
-
-        if (uids && uids.length > 0) {
-            // Ensure UIDs are numbers
-            const validUids = uids.map(id => parseInt(id)).filter(id => !isNaN(id));
-            if (validUids.length > 0) {
-                await connection.moveMessage(validUids, targetBox);
+            connection.end();
+            // Now update DB to match
+            if (action === 'delete') {
+                // Actually move in DB or delete?
+                // Trash is a box. So UPDARE mailbox.
+                await db.query("UPDATE email_cache SET mailbox=? WHERE uid IN (" + uids.join(',') + ") AND account_id=?",
+                    [targetBox, currentAccId]);
+            } else {
+                await db.query("UPDATE email_cache SET mailbox=? WHERE uid IN (" + uids.join(',') + ") AND account_id=?",
+                    [targetBox, currentAccId]);
+            }
+        } else {
+            // Offline Action (Legacy/Migrated): Only Update DB
+            console.log(`[MailAction] Performing offline action on account ${accountId}`);
+            if (action === 'delete') {
+                await db.query("UPDATE email_cache SET mailbox=? WHERE uid IN (" + uids.join(',') + ") AND account_id=?",
+                    [targetBox, accountId]);
+            } else {
+                await db.query("UPDATE email_cache SET mailbox=? WHERE uid IN (" + uids.join(',') + ") AND account_id=?",
+                    [targetBox, accountId]);
             }
         }
 
-        connection.end();
         res.json({ success: true });
 
     } catch (err) {

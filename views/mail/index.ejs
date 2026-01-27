@@ -76,9 +76,9 @@
 
     <div class="mail-wrapper position-relative" id="mail-root">
 
-        <!-- Initial Loading State - Fixed: Use flex styles instead of d-flex class to allow toggling -->
+        <!-- Initial Loading State (Toggle visibility based on SSR data) -->
         <div id="mail-loading" class="position-absolute top-0 start-0 w-100 h-100 bg-white"
-            style="z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            style="z-index: 50; display: <%= (typeof emails !== 'undefined' && emails.length > 0) ? 'none' : 'flex' %>; flex-direction: column; align-items: center; justify-content: center;">
             <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
                 <span class="visually-hidden">Loading...</span>
             </div>
@@ -88,7 +88,11 @@
         </div>
 
         <!-- Content Container -->
-        <div id="mail-container" class="h-100"></div>
+        <div id="mail-container" class="h-100">
+            <% if (typeof emails !=='undefined' && emails.length> 0) { %>
+                <%- include('content', { emails: emails, currentBox: currentBox, status: status || null }) %>
+                    <% } %>
+        </div>
 
     </div>
 
@@ -100,21 +104,68 @@
     <script>
         // Load Content
         document.addEventListener('DOMContentLoaded', function () {
+            // Check if we already have content (SSR)
+            const container = document.getElementById('mail-container');
+            const hasContent = container.innerHTML.trim().length > 100; // Rough check
+
+            if (hasContent) {
+                // Initialize Summernote directly
+                initSummernote();
+                return;
+            }
+
+            // Fallback for empty state or first load if SSR failed
             const urlParams = new URLSearchParams(window.location.search);
             const box = urlParams.get('box') || 'inbox';
             const search = urlParams.get('search') || '';
             loadMailbox(box, search);
         });
 
+        function initSummernote() {
+            $('#summernote').summernote({
+                placeholder: 'Write your message...',
+                tabsize: 2,
+                height: 300,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture']],
+                    ['view', ['codeview']]
+                ],
+                disableResizeEditor: true
+            });
+        }
+
+        function refreshMailbox(box) {
+            const container = document.getElementById('mail-container');
+            const loader = document.getElementById('mail-loading');
+
+            // Show loader
+            loader.style.opacity = '0.8';
+            loader.style.display = 'flex';
+            loader.querySelector('h5').innerText = "Syncing Emails...";
+
+            fetch('/mail/api/sync')
+                .then(res => res.json())
+                .then(data => {
+                    // Whether sync succeeded or failed, we reload the mailbox
+                    // (Failed sync might just mean network error, but we still want to see cached DB)
+                    loadMailbox(box);
+                })
+                .catch(err => {
+                    console.error("Sync failed:", err);
+                    loadMailbox(box);
+                });
+        }
+
         function loadMailbox(box, searchQuery = '') {
             const container = document.getElementById('mail-container');
             const loader = document.getElementById('mail-loading');
 
             // Show loader
-            if (container.innerHTML.trim() !== "") {
-                loader.style.opacity = '0.8';
-                loader.style.display = 'flex';
-            }
+            loader.style.opacity = '0.8';
+            loader.style.display = 'flex';
 
             let url = `/mail/partial?box=${box}`;
             if (searchQuery) {
@@ -139,20 +190,8 @@
                     const searchInput = document.querySelector('input[name="search"]');
                     if (searchInput && searchQuery) searchInput.value = searchQuery;
 
-                    // Initialize Summernote
-                    $('#summernote').summernote({
-                        placeholder: 'Write your message...',
-                        tabsize: 2,
-                        height: 300,
-                        toolbar: [
-                            ['style', ['style']],
-                            ['font', ['bold', 'italic', 'underline', 'clear']],
-                            ['para', ['ul', 'ol', 'paragraph']],
-                            ['insert', ['link', 'picture']],
-                            ['view', ['codeview']]
-                        ],
-                        disableResizeEditor: true
-                    });
+                    initSummernote();
+
 
                     // Attach Event Listeners
                     const selectAll = document.getElementById('selectAll');
