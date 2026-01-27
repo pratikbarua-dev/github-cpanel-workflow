@@ -80,6 +80,18 @@ const TABLE_SCHEMAS = {
             is_read BOOLEAN DEFAULT FALSE,
             PRIMARY KEY (uid, mailbox, account_id)
         )`
+    },
+    cron_locks: {
+        sqlite: `CREATE TABLE IF NOT EXISTS cron_locks (
+            lock_name TEXT PRIMARY KEY,
+            locked_at INTEGER,
+            expires_at INTEGER
+        )`,
+        mysql: `CREATE TABLE IF NOT EXISTS cron_locks (
+            lock_name VARCHAR(50) PRIMARY KEY,
+            locked_at BIGINT,
+            expires_at BIGINT
+        )`
     }
 };
 
