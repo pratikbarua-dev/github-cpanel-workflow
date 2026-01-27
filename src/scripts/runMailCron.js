@@ -23,13 +23,13 @@ async function run() {
         await db.init(accountId);
         console.log('[CronRunner] DB Initialized.');
 
-        // 2. Initialize Cron Service (sets up mailSync instance)
-        mailCron.init(); // This schedules the task in-memory... wait.
+        // 2. Initialize Cron Service
+        // mailCron.init(); // REMOVED: We don't want to start the scheduler, just run the tasks.
         // We refactored mailCron.init to use runTasks, but it also does setup.
         // But importantly, we just want to run the TASKS immediately.
         // mailCron.init() sets up `mailSync` variable inside the module scope if not already.
         // But `init` ALSO starts the node-cron scheduler, which we don't want to keep running here if we are just "run once".
-        // HOWEVER, `mailCron.js` logic for `mailSync` initialization happens at module load OR inside `init`.
+        // HOWEVER, `mailCron.js` logic for `mailSync` initialization happens at top level OR inside `init`.
         // Let's call a minimal setup steps if we can, or just call runTasks and let it handle checks?
 
         // Inspecting mailCron.js: 
@@ -41,8 +41,15 @@ async function run() {
         // One catch: `init` also calls `db.init`. We did that manually above.
 
         // 3. Run Tasks
+        // Add a safety timeout to prevent process stacking (Force kill after 55s)
+        const safetyTimeout = setTimeout(() => {
+            console.error('[CronRunner] Timeout reached (55s). Forcing exit.');
+            process.exit(1);
+        }, 55000);
+
         await mailCron.runTasks();
 
+        clearTimeout(safetyTimeout);
         console.log('[CronRunner] Tasks completed successfully.');
 
     } catch (err) {
