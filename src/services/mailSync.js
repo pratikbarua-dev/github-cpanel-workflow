@@ -27,6 +27,7 @@ class MailSyncService {
         this.isSyncing = true;
         logger.info(`[MailSync] Starting sync for account: ${this.accountId.substring(0, 8)}...`);
 
+        let connection;
         try {
             const imapConfig = {
                 imap: {
@@ -40,7 +41,7 @@ class MailSyncService {
                 }
             };
 
-            const connection = await imaps.connect(imapConfig);
+            connection = await imaps.connect(imapConfig);
 
             const boxes = ['INBOX', 'INBOX.Sent', 'INBOX.Drafts', 'INBOX.Trash', 'INBOX.Junk', 'INBOX.Archive'];
 
@@ -52,12 +53,18 @@ class MailSyncService {
                 }
             }
 
-            connection.end();
             logger.info('[MailSync] Sync completed.');
 
         } catch (err) {
             logger.error(`[MailSync] Connection Error: ${err.message}`);
         } finally {
+            if (connection) {
+                try {
+                    connection.end();
+                } catch (closeErr) {
+                    logger.error(`[MailSync] Error closing connection: ${closeErr.message}`);
+                }
+            }
             this.isSyncing = false;
         }
     }

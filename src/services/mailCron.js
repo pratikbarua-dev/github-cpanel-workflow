@@ -42,7 +42,7 @@ function init() {
     console.log('[MailCron] Initializing Cron Jobs...');
 
     // 1. Sync & Schedule Loop (Every Minute)
-    cron.schedule('* * * * *', async () => {
+    scheduledTask = cron.schedule('* * * * *', async () => {
         // console.log('[MailCron] Running Cron: Sync & Schedule...');
 
         if (!EMAIL_USER || !EMAIL_PASS || !HOST) {
@@ -153,4 +153,12 @@ function init() {
     });
 }
 
-module.exports = { init };
+function stop() {
+    if (scheduledTask) {
+        console.log('[MailCron] Stopping cron jobs...');
+        scheduledTask.stop();
+        scheduledTask = null;
+    }
+}
+
+module.exports = { init, stop };

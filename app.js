@@ -454,3 +454,40 @@ server.on('error', (err) => {
     }
 });
 
+// ========================================
+// Graceful Shutdown Logic
+// ========================================
+const gracefulShutdown = async (signal) => {
+    logger.info(`Received ${signal}. Starting graceful shutdown...`);
+
+    // 1. Stop Server accepting new connections
+    server.close(() => {
+        logger.info('Http server closed.');
+    });
+
+    // 2. Stop Cron Jobs
+    if (process.env.ENABLE_MAIL_CLIENT === 'true') {
+        try {
+            const mailCron = require('./src/services/mailCron');
+            mailCron.stop();
+            logger.info('Cron jobs stopped.');
+        } catch (err) {
+            logger.error('Error stopping cron jobs:', err.message);
+        }
+    }
+
+    // 3. Close Database Connection
+    try {
+        await sequelize.close();
+        logger.info('Database connection closed.');
+    } catch (err) {
+        logger.error('Error closing database connection:', err.message);
+    }
+
+    logger.info('Graceful shutdown complete. Exiting.');
+    process.exit(0);
+};
+
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+
