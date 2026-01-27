@@ -1,0 +1,10 @@
+# DO NOT EDIT. AUTOMATICALLY GENERATED.
+# Passenger Node.js Configuration for Low Resource Environments
+
+# optimize for shared hosting
+PassengerMaxInstancesPerApp 2
+PassengerMinInstances 1
+PassengerPoolIdleTime 300
+
+# Ensure we use production mode
+PassengerAppEnv production

@@ -128,7 +128,9 @@ if (process.env.ENABLE_MAIL_CLIENT === 'true') {
 
     // Ensure tables are created and cron is started
     mailDb.init().then(() => {
-        mailCron.init();
+        // mailCron.init(); 
+        // INTERNAL CRON DISABLED: Use system cron via src/scripts/runMailCron.js to reduce NPROC
+        console.log('[MailClient] DB Initialized. Internal cron disabled (System Cron required).');
     }).catch(err => {
         console.error("Failed to initialize Mail Client:", err);
     });
