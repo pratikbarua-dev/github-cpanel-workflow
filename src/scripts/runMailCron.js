@@ -7,12 +7,13 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const mailCron = require('../services/mailCron');
 const db = require('../utils/mailDb');
 const sequelize = require('../config/database');
+const logger = require('../config/logger');
 
 async function run() {
-    console.log(`[CronRunner] Starting System Cron Task at ${new Date().toISOString()}...`);
+    logger.info(`[CronRunner] Starting System Cron Task...`);
 
     if (!process.env.EMAIL_USER) {
-        console.log('[CronRunner] No EMAIL_USER defined. Exiting.');
+        logger.warn('[CronRunner] No EMAIL_USER defined. Exiting.');
         process.exit(0);
     }
 
@@ -21,7 +22,7 @@ async function run() {
         // Safe to run multiple times.
         const accountId = db.getAccountId(process.env.EMAIL_USER, process.env.EMAIL_HOST || process.env.HOST);
         await db.init(accountId);
-        console.log('[CronRunner] DB Initialized.');
+        // logger.info('[CronRunner] DB Initialized.'); // Optional verbose log
 
         // 2. Initialize Cron Service
         // mailCron.init(); // REMOVED: We don't want to start the scheduler, just run the tasks.
@@ -43,21 +44,21 @@ async function run() {
         // 3. Run Tasks
         // Add a safety timeout to prevent process stacking (Force kill after 55s)
         const safetyTimeout = setTimeout(() => {
-            console.error('[CronRunner] Timeout reached (55s). Forcing exit.');
+            logger.error('[CronRunner] Timeout reached (55s). Forcing exit.');
             process.exit(1);
         }, 55000);
 
         await mailCron.runTasks();
 
         clearTimeout(safetyTimeout);
-        console.log('[CronRunner] Tasks completed successfully.');
+        logger.info('[CronRunner] Tasks completed successfully.');
 
     } catch (err) {
-        console.error('[CronRunner] Critical Error:', err);
+        logger.error(`[CronRunner] Critical Error: ${err.message}`);
     } finally {
         // 4. Force Exit (closes DB connections)
         await sequelize.close();
-        console.log('[CronRunner] Exiting.');
+        // console.log('[CronRunner] Exiting.');
         process.exit(0);
     }
 }

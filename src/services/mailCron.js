@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const imaps = require('imap-simple');
 const db = require('../utils/mailDb');
 const MailSyncService = require('./mailSync');
+const logger = require('../config/logger'); // Import logger
 require('dotenv').config();
 
 // Configuration
@@ -46,10 +47,10 @@ function init() {
 }
 
 async function runTasks() {
-    // console.log('[MailCron] Running Cron: Sync & Schedule...');
+    // logger.info('[MailCron] Running Cron: Sync & Schedule...');
 
     if (!EMAIL_USER || !EMAIL_PASS || !HOST) {
-        // console.warn('[MailCron] Missing Email Config. Skipping cycle.');
+        // logger.warn('[MailCron] Missing Email Config. Skipping cycle.');
         return;
     }
 
@@ -58,7 +59,7 @@ async function runTasks() {
         try {
             await mailSync.syncAll();
         } catch (err) {
-            console.error('[MailCron] Sync Error:', err);
+            logger.error(`[MailCron] Sync Error: ${err.message}`);
         }
     }
 
@@ -86,24 +87,17 @@ async function runTasks() {
 
                     // Update status to sent
                     await db.query("UPDATE scheduled_emails SET status='sent' WHERE id=?", [row.id]);
-                    console.log(`[MailCron] Scheduled email ${row.id} sent.`);
+                    logger.info(`[MailCron] Scheduled email ${row.id} sent.`);
 
                 } catch (e) {
-                    console.error(`[MailCron] Failed to send scheduled email ${row.id}:`, e);
+                    logger.error(`[MailCron] Failed to send scheduled email ${row.id}: ${e.message}`);
                     await db.query("UPDATE scheduled_emails SET status='failed' WHERE id=?", [row.id]);
                 }
             }
         }
-    } catch (err) { console.error("[MailCron] Cron Scheduled Error:", err); }
+    } catch (err) { logger.error(`[MailCron] Cron Scheduled Error: ${err.message}`); }
 
-    // C. Process Snoozed Emails (Move back to Inbox) - Logic needs update?
-    // If we move message on server, sync will catch it next time?
-    // Snoozing involves moving msg to 'INBOX.Snoozed'.
-    // Restoring moves it back to 'INBOX'.
-    // If we do this via IMAP here, the Sync Service will detect the 'New' email in INBOX
-    // and add it to DB (if UID changed).
-    // This is fine. The user will see it reappear.
-
+    // C. Process Snoozed Emails
     try {
         const rows = await db.query("SELECT * FROM snoozed_emails WHERE status='active' AND snooze_until <= ?", [Date.now()]);
 
@@ -124,7 +118,6 @@ async function runTasks() {
                 await connection.openBox('INBOX.Snoozed');
 
                 for (const row of rows) {
-                    // Search by Message-ID since UID invalid
                     if (row.message_id) {
                         try {
                             const searchCriteria = [['HEADER', 'MESSAGE-ID', row.message_id]];
@@ -132,27 +125,24 @@ async function runTasks() {
                             const messages = await connection.search(searchCriteria, fetchOptions);
 
                             if (messages.length > 0) {
-                                // Move it back
                                 const foundUid = messages[0].attributes.uid;
                                 await connection.moveMessage([foundUid], row.original_box || 'INBOX');
                                 await db.query("DELETE FROM snoozed_emails WHERE id=?", [row.id]);
-                                console.log(`[MailCron] Snoozed email ${row.message_id} restored to Inbox.`);
+                                logger.info(`[MailCron] Snoozed email ${row.message_id} restored to Inbox.`);
                             } else {
-                                console.log(`[MailCron] Snoozed email ${row.message_id} not found in Snoozed box.`);
-                                // Maybe mark as lost or deleted?
-                                // await db.query("UPDATE snoozed_emails SET status='lost' WHERE id=?", [row.id]);
+                                logger.info(`[MailCron] Snoozed email ${row.message_id} not found in Snoozed box.`);
                             }
                         } catch (searchErr) {
-                            console.error("[MailCron] Failed to restore snoozed msg:", searchErr);
+                            logger.error(`[MailCron] Failed to restore snoozed msg: ${searchErr.message}`);
                         }
                     }
                 }
                 connection.end();
             } catch (connErr) {
-                console.error("[MailCron] IMAP Cron connection error:", connErr);
+                logger.error(`[MailCron] IMAP Cron connection error: ${connErr.message}`);
             }
         }
-    } catch (err) { console.error("[MailCron] Cron Snooze Error:", err); }
+    } catch (err) { logger.error(`[MailCron] Cron Snooze Error: ${err.message}`); }
 }
 
 function stop() {
