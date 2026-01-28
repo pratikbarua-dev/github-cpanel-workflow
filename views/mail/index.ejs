@@ -104,6 +104,19 @@
     <script>
         // Load Content
         document.addEventListener('DOMContentLoaded', function () {
+            // Hijack Global Header Search
+            const headerSearchForm = document.querySelector('form[action="/admin/search"]');
+            if (headerSearchForm) {
+                headerSearchForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const query = this.querySelector('input[name="q"]').value;
+                    // Get current box from URL or default to inbox
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const currentBox = urlParams.get('box') || 'inbox';
+                    loadMailbox(currentBox, query);
+                });
+            }
+
             // Check if we already have content (SSR)
             const container = document.getElementById('mail-container');
             const hasContent = container.innerHTML.trim().length > 100; // Rough check
@@ -118,6 +131,11 @@
             const urlParams = new URLSearchParams(window.location.search);
             const box = urlParams.get('box') || 'inbox';
             const search = urlParams.get('search') || '';
+
+            // Sync initial state to header search
+            const headerSearchInput = document.querySelector('form[action="/admin/search"] input[name="q"]');
+            if (headerSearchInput && search) headerSearchInput.value = search;
+
             loadMailbox(box, search);
         });
 
@@ -187,8 +205,13 @@
                     window.history.pushState({ path: urlPath }, '', urlPath);
 
                     // Restore search query to input if it exists
+                    // Restore search query to input if it exists
                     const searchInput = document.querySelector('input[name="search"]');
-                    if (searchInput && searchQuery) searchInput.value = searchQuery;
+                    if (searchInput) searchInput.value = searchQuery;
+
+                    // Sync Global Header Search Input
+                    const headerSearchInput = document.querySelector('form[action="/admin/search"] input[name="q"]');
+                    if (headerSearchInput) headerSearchInput.value = searchQuery;
 
                     initSummernote();
 

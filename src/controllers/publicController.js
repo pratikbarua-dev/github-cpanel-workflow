@@ -306,20 +306,36 @@ exports.getSearch = async (req, res) => {
             where: {
                 [Op.or]: [
                     { title: { [Op.like]: `%${query}%` } },
-                    { summary: { [Op.like]: `%${query}%` } }
+                    { summary: { [Op.like]: `%${query}%` } },
+                    { content: { [Op.like]: `%${query}%` } }
                 ]
-            }
+            },
+            limit: 5
+        });
+
+        const posts = await Post.findAll({
+            where: {
+                status: 'published',
+                [Op.or]: [
+                    { title: { [Op.like]: `%${query}%` } },
+                    { content: { [Op.like]: `%${query}%` } },
+                    { excerpt: { [Op.like]: `%${query}%` } }
+                ]
+            },
+            limit: 5
         });
 
         const publications = await Publication.findAll({
             where: {
                 [Op.or]: [
-                    { title: { [Op.like]: `%${query}%` } }
+                    { title: { [Op.like]: `%${query}%` } },
+                    { description: { [Op.like]: `%${query}%` } }
                 ]
-            }
+            },
+            limit: 5
         });
 
-        res.render('search', { title: `Search Results: ${query}`, query, projects, publications });
+        res.render('search', { title: `Search Results: ${query}`, query, projects, posts, publications });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');

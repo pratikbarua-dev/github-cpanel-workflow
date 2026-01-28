@@ -1071,7 +1071,8 @@ exports.search = async (req, res) => {
             where: {
                 [Op.or]: [
                     { title: { [Op.like]: `%${query}%` } },
-                    { summary: { [Op.like]: `%${query}%` } }
+                    { summary: { [Op.like]: `%${query}%` } },
+                    { content: { [Op.like]: `%${query}%` } }
                 ]
             },
             limit: 5
@@ -1081,7 +1082,8 @@ exports.search = async (req, res) => {
             where: {
                 [Op.or]: [
                     { title: { [Op.like]: `%${query}%` } },
-                    { content: { [Op.like]: `%${query}%` } }
+                    { content: { [Op.like]: `%${query}%` } },
+                    { excerpt: { [Op.like]: `%${query}%` } }
                 ]
             },
             limit: 5
@@ -1089,7 +1091,10 @@ exports.search = async (req, res) => {
 
         const publications = await Publication.findAll({
             where: {
-                title: { [Op.like]: `%${query}%` }
+                [Op.or]: [
+                    { title: { [Op.like]: `%${query}%` } },
+                    { description: { [Op.like]: `%${query}%` } }
+                ]
             },
             limit: 5
         });
