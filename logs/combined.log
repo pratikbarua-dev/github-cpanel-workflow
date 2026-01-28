@@ -1642,3 +1642,111 @@
 {"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-01-28 11:54:17"}
 {"level":"info","message":"Cron jobs stopped.","timestamp":"2026-01-28 11:54:17"}
 {"level":"info","message":"Http server closed.","timestamp":"2026-01-28 11:54:17"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-28 11:55:07"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:09 +0000] \"GET / HTTP/1.1\" 200 44492 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:09"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:16 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:16"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:18 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36\"","timestamp":"2026-01-28 11:55:18"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:18 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:18"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:19 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Mobile Safari/537.36\"","timestamp":"2026-01-28 11:55:19"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:19 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:19"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:28 +0000] \"GET /news HTTP/1.1\" 200 22075 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:28"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:36 +0000] \"POST /admin/posts/15/api HTTP/1.1\" 200 24 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:36"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:37 +0000] \"GET /admin/posts HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:37"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:37 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:37"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:40 +0000] \"GET /news HTTP/1.1\" 200 24622 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:40"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:55:41 +0000] \"GET /news/what-are-the-role-of-international-organisations-in-the-socio-economic-developme-1769579640479 HTTP/1.1\" 200 29606 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:55:41"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 11:56:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 11:57:00"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:57:13 +0000] \"GET /admin/import-processing HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:57:13"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:57:17 +0000] \"POST /admin/posts/api/create HTTP/1.1\" 200 24 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:57:17"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:57:25 +0000] \"GET /admin/posts HTTP/1.1\" 200 41978 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:57:25"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:57:25 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:57:25"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:57:27 +0000] \"GET /admin/posts/16/edit HTTP/1.1\" 200 45938 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:57:27"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:57:27 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:57:27"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 11:58:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 11:59:00"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-01-28 11:59:21"}
+{"level":"info","message":"Cron jobs stopped.","timestamp":"2026-01-28 11:59:21"}
+{"level":"info","message":"Http server closed.","timestamp":"2026-01-28 11:59:21"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-28 11:59:22"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:59:46 +0000] \"GET /admin/import-facebook HTTP/1.1\" 200 29477 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:59:46"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:59:46 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:59:46"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:59:56 +0000] \"GET /admin/import-facebook HTTP/1.1\" 200 29477 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:59:56"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:59:56 +0000] \"GET /admin/api/notifications HTTP/1.1\" 200 551 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:59:56"}
+{"level":"info","message":"::1 - - [28/Jan/2026:05:59:59 +0000] \"GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1\" 404 187 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 11:59:59"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:00:00"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:00:58 +0000] \"GET /admin/import-facebook HTTP/1.1\" 200 29053 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:00:58"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:00:58 +0000] \"GET /admin/api/notifications HTTP/1.1\" 200 551 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:00:58"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:01:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:02:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:03:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:04:00"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:04:57 +0000] \"GET /admin/import-facebook HTTP/1.1\" 200 30293 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:04:57"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:04:58 +0000] \"GET /admin/api/notifications HTTP/1.1\" 200 551 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:04:58"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:05:00"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:16 +0000] \"GET /admin/import-processing HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:16"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:16 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:16"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:17 +0000] \"POST /admin/posts/api/create HTTP/1.1\" 200 24 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:17"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:20 +0000] \"GET /admin/posts HTTP/1.1\" 200 44154 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:20"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:20 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:20"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:22 +0000] \"GET /admin/posts/17/edit HTTP/1.1\" 200 42106 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:22"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:22 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:22"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:45 +0000] \"GET /admin/import-processing HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:45"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:45 +0000] \"POST /admin/posts/api/create HTTP/1.1\" 200 24 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:45"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:48 +0000] \"GET /admin/posts HTTP/1.1\" 200 46330 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:48"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:48 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:48"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:50 +0000] \"GET /admin/posts/18/edit HTTP/1.1\" 200 45944 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:50"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:05:51 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:05:51"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:06:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:07:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:08:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:09:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:10:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:11:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:12:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:13:00"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-01-28 12:13:13"}
+{"level":"info","message":"Cron jobs stopped.","timestamp":"2026-01-28 12:13:13"}
+{"level":"info","message":"Http server closed.","timestamp":"2026-01-28 12:13:13"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-28 12:13:15"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-28 12:13:15"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-28 12:13:15"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-28 12:13:15"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-28 12:13:15"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-28 12:13:16"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-28 12:13:16"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-28 12:13:16"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-28 12:13:16"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:21 +0000] \"GET /admin/login HTTP/1.1\" 302 45 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:21"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:21 +0000] \"GET /admin/dashboard HTTP/1.1\" 200 53177 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:21"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:22 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:22"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:25 +0000] \"GET /admin/import-facebook HTTP/1.1\" 200 28689 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:25"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:26 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:26"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:44 +0000] \"GET /admin/import-processing HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:44"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:45 +0000] \"POST /admin/posts/api/create HTTP/1.1\" 200 24 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:45"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:47 +0000] \"GET /admin/import-facebook HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:47"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:48 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:48"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:48 +0000] \"GET /admin/posts HTTP/1.1\" 200 48504 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:48"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:48 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:48"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:54 +0000] \"GET /admin/posts/19/edit HTTP/1.1\" 200 51577 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:54"}
+{"level":"info","message":"::1 - - [28/Jan/2026:06:13:54 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 12:13:54"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 12:14:00"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-01-28 12:14:00"}
+{"level":"info","message":"Cron jobs stopped.","timestamp":"2026-01-28 12:14:00"}
+{"level":"info","message":"Http server closed.","timestamp":"2026-01-28 12:14:00"}
