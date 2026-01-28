@@ -573,6 +573,27 @@ exports.deletePost = async (req, res) => {
     }
 };
 
+exports.updatePostStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const post = await Post.findByPk(req.params.id);
+
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        if (!['draft', 'published', 'archived'].includes(status)) {
+            return res.status(400).send('Invalid status');
+        }
+
+        await post.update({ status });
+        res.redirect('/admin/posts');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error updating post status');
+    }
+};
+
 // --- CUSTOM FORMS CRUD ---
 
 exports.getForms = async (req, res) => {

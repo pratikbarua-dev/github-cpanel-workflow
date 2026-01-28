@@ -18,6 +18,7 @@
                             <th class="px-6 py-3">Image</th>
                             <th class="px-6 py-3">Title</th>
                             <th class="px-6 py-3">Type</th>
+                            <th class="px-6 py-3">Status</th>
                             <th class="px-6 py-3">Date</th>
                             <th class="px-6 py-3">Actions</th>
                         </tr>
@@ -42,18 +43,49 @@
                                     <td class="px-6 py-4 text-sm text-gray-600">
                                         <%= post.date %>
                                     </td>
+                                    <td class="px-6 py-4">
+                                        <% if (post.status==='published' ) { %>
+                                            <span
+                                                class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Published</span>
+                                            <% } else if (post.status==='archived' ) { %>
+                                                <span
+                                                    class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Archived</span>
+                                                <% } else { %>
+                                                    <span
+                                                        class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">Draft</span>
+                                                    <% } %>
+                                    </td>
                                     <td class="px-6 py-4 flex gap-3">
-                                        <a href="/admin/posts/<%= post.id %>/edit"
-                                            class="text-blue-600 hover:text-blue-800" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="/admin/posts/<%= post.id %>/delete" method="POST"
-                                            onsubmit="return confirm('Are you sure?');">
-                                            <button type="submit" class="text-red-500 hover:text-red-700"
-                                                title="Delete">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
+                                        <!-- Quick Publish/Unpublish -->
+                                        <% if (post.status==='published' ) { %>
+                                            <form action="/admin/posts/<%= post.id %>/status" method="POST"
+                                                title="Unpublish (Set to Draft)">
+                                                <input type="hidden" name="status" value="draft">
+                                                <button type="submit" class="text-yellow-600 hover:text-yellow-800">
+                                                    <i class="fas fa-eye-slash"></i>
+                                                </button>
+                                            </form>
+                                            <% } else { %>
+                                                <form action="/admin/posts/<%= post.id %>/status" method="POST"
+                                                    title="Publish Now">
+                                                    <input type="hidden" name="status" value="published">
+                                                    <button type="submit" class="text-green-600 hover:text-green-800">
+                                                        <i class="fas fa-paper-plane"></i>
+                                                    </button>
+                                                </form>
+                                                <% } %>
+
+                                                    <a href="/admin/posts/<%= post.id %>/edit"
+                                                        class="text-blue-600 hover:text-blue-800" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="/admin/posts/<%= post.id %>/delete" method="POST"
+                                                        onsubmit="return confirm('Are you sure?');">
+                                                        <button type="submit" class="text-red-500 hover:text-red-700"
+                                                            title="Delete">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
                                     </td>
                                 </tr>
                                 <% }); %>

@@ -47,6 +47,7 @@ router.post('/posts/:id/api', ensureAuthenticated, checkPermission('manage_posts
 router.get('/posts/:id/edit', ensureAuthenticated, checkPermission('manage_posts'), adminController.getEditPost);
 router.post('/posts/:id', ensureAuthenticated, checkPermission('manage_posts'), upload.single('image'), adminController.updatePost);
 router.post('/posts/:id/delete', ensureAuthenticated, checkPermission('manage_posts'), adminController.deletePost);
+router.post('/posts/:id/status', ensureAuthenticated, checkPermission('manage_posts'), adminController.updatePostStatus);
 
 // Team
 router.get('/team', ensureAuthenticated, checkPermission('manage_team'), adminController.getTeam);
