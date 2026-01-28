@@ -7,6 +7,37 @@ const path = require('path');
 const { generateToken } = require('../utils/jwtHelper');
 const bcrypt = require('bcryptjs');
 
+// Helper to process Base64 or URL images
+async function processImage(inputData) {
+    if (!inputData) return null;
+
+    // Check if it's base64
+    if (inputData.startsWith('data:image')) {
+        const matches = inputData.match(/^data:image\/([a-z]+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            return null;
+        }
+
+        const ext = matches[1];
+        const data = matches[2];
+        const buffer = Buffer.from(data, 'base64');
+        const filename = `post-${Date.now()}.${ext}`;
+        const uploadPath = path.join(__dirname, '../../public/uploads', filename);
+
+        // Ensure directory exists
+        const dir = path.dirname(uploadPath);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
+        await fs.promises.writeFile(uploadPath, buffer);
+        return `/uploads/${filename}`;
+    }
+
+    // Assume it's a URL
+    return inputData;
+}
+
 // Login Page
 exports.getLogin = (req, res) => {
     const error = req.query.error;
@@ -387,11 +418,16 @@ exports.postPost = async (req, res) => {
 
 exports.createPostApi = async (req, res) => {
     try {
-        const { title, type, date, slug, excerpt, content, status } = req.body;
+        const { title, type, date, slug, excerpt, content, status, heading_image } = req.body;
 
         let finalSlug = slug;
         if (!finalSlug && title) {
             finalSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        }
+
+        let imageUrl = null;
+        if (heading_image) {
+            imageUrl = await processImage(heading_image);
         }
 
         const newPost = await Post.create({
@@ -402,7 +438,7 @@ exports.createPostApi = async (req, res) => {
             excerpt,
             content,
             status: status || 'draft',
-            image_url: 'https://placehold.co/600x400' // Placeholder for now as image upload validation is complex via JSON without Base64 handling logic
+            image_url: imageUrl
         });
 
         res.json({ success: true, id: newPost.id });
@@ -414,16 +450,25 @@ exports.createPostApi = async (req, res) => {
 
 exports.updatePostApi = async (req, res) => {
     try {
-        const { title, type, date, slug, excerpt, content, status } = req.body;
+        const { title, type, date, slug, excerpt, content, status, heading_image } = req.body;
         const post = await Post.findByPk(req.params.id);
 
         if (!post) {
             return res.status(404).json({ success: false, error: 'Post not found' });
         }
 
-        await post.update({
+        const updateData = {
             title, type, date, slug, excerpt, content, status
-        });
+        };
+
+        if (heading_image) {
+            const imageUrl = await processImage(heading_image);
+            if (imageUrl) {
+                updateData.image_url = imageUrl;
+            }
+        }
+
+        await post.update(updateData);
 
         res.json({ success: true, id: post.id });
     } catch (error) {

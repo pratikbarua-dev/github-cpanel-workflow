@@ -1224,3 +1224,34 @@
 {"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-01-28 02:05:40"}
 {"level":"info","message":"Cron jobs stopped.","timestamp":"2026-01-28 02:05:40"}
 {"level":"info","message":"Http server closed.","timestamp":"2026-01-28 02:05:40"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"-------------------------","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-01-28 10:26:12"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:17 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:17"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:20 +0000] \"GET /admin/login HTTP/1.1\" 302 45 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:20"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:20 +0000] \"GET /admin/dashboard HTTP/1.1\" 200 52813 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:20"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:21 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:21"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:22 +0000] \"GET /admin/posts HTTP/1.1\" 200 23837 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:22"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:23 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:23"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:25 +0000] \"GET /admin/posts/new HTTP/1.1\" 200 40589 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:25"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:25 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:25"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:33 +0000] \"POST /admin/posts/api/create HTTP/1.1\" 200 23 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:33"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:34 +0000] \"GET /admin/posts HTTP/1.1\" 200 25695 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:34"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:34 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:34"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:38 +0000] \"GET /admin/posts/1/edit HTTP/1.1\" 200 40684 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:38"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:38 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:38"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:42 +0000] \"GET /admin/posts/new HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:42"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:43 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:43"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:56 +0000] \"POST /admin/posts/api/create HTTP/1.1\" 200 23 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:56"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:57 +0000] \"GET /admin/posts HTTP/1.1\" 200 28277 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:57"}
+{"level":"info","message":"::1 - - [28/Jan/2026:04:26:57 +0000] \"GET /admin/api/notifications HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-01-28 10:26:57"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-28 10:27:00"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-01-28 10:27:01"}
+{"level":"info","message":"Cron jobs stopped.","timestamp":"2026-01-28 10:27:01"}
+{"level":"info","message":"Http server closed.","timestamp":"2026-01-28 10:27:01"}
