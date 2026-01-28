@@ -37,6 +37,8 @@ router.post('/publications/:id/delete', ensureAuthenticated, checkPermission('ma
 router.get('/posts', ensureAuthenticated, checkPermission('manage_posts'), adminController.getPosts);
 router.get('/posts/new', ensureAuthenticated, checkPermission('manage_posts'), adminController.getNewPost);
 router.post('/posts', ensureAuthenticated, checkPermission('manage_posts'), upload.single('image'), adminController.postPost);
+router.get('/import-facebook', ensureAuthenticated, checkPermission('manage_posts'), adminController.getImportFacebook);
+router.get('/import-processing', ensureAuthenticated, checkPermission('manage_posts'), adminController.getImportProcessing);
 
 // API Routes for Quill
 router.post('/posts/api/create', ensureAuthenticated, checkPermission('manage_posts'), express.json(), adminController.createPostApi);

@@ -1,0 +1,79 @@
+<%- include('partials/header', { title: 'Facebook Import Tool' , path: '/import-facebook' }) %>
+
+    <main class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Facebook Post Importer</h1>
+                <p class="text-gray-600">Easily import news and posts from your Facebook page directly into MoRPH.</p>
+            </div>
+
+            <!-- Step 1: Install -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-8">
+                <div class="flex items-start gap-6">
+                    <div
+                        class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 flex-shrink-0 text-xl font-bold">
+                        1
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-gray-800 mb-3">Install the "Save to MoRPH" Button</h2>
+                        <p class="text-gray-600 mb-4">
+                            Drag the blue button below to your browser's <strong>Bookmarks Bar</strong>.
+                        </p>
+
+                        <div class="p-6 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-center">
+                            <a href="javascript:(function(){const code=function(){let postText=window.getSelection().toString();if(!postText){const candidates=document.querySelectorAll('div[data-ad-preview=\'message\'],div[role=\'article\'] div[dir=\'auto\']');let bestCand=null;let maxLen=0;for(let c of candidates){if(c.innerText.length>maxLen){maxLen=c.innerText.length;bestCand=c;}}if(bestCand){postText=bestCand.innerText;}}if(!postText||postText.length<50){return alert('Could not auto-detect the post text.\n\nPlease HIGHLIGHT (Select) the text of the post with your mouse, then click this button again.');}postText=postText.replace(/See more/g,'').replace(/All reactions:/g,'').trim();const images=Array.from(document.querySelectorAll('a[href*=\'photo\'] img,img[src*=\'fbcdn\']')).filter(img=>img.width>200&&img.height>200).map(img=>img.src);const uniqueImages=[...new Set(images)];const data={payload:{title:postText.split('\n')[0].substring(0,80)+'...',content:postText.replace(/\n/g,'<br>'),type:'News',status:'draft',heading_image:uniqueImages[0]||null,gallery_images:uniqueImages}};const dataStr=encodeURIComponent(JSON.stringify(data));const width=600;const height=600;const left=(screen.width/2)-(width/2);const top=(screen.height/2)-(height/2);const popup=window.open('<%= baseUrl %>/admin/import-processing#'+dataStr,'MorphImporter',`width=${width},height=${height},top=${top},left=${left}`);if(!popup){alert('Please allow popups for this site');}};code();})();"
+                                class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg cursor-grab active:cursor-grabbing shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1">
+                                <i class="fas fa-bookmark mr-2"></i> Save to MoRPH
+                            </a>
+                            <p class="mt-3 text-xs text-gray-400">
+                                (Drag this button to your bookmarks bar)
+                            </p>
+                        </div>
+
+                        <div class="mt-4 p-4 bg-yellow-50 text-yellow-800 text-sm rounded-lg border border-yellow-100">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            <strong>Note:</strong> If you don't see your Bookmarks Bar, press <kbd
+                                class="px-2 py-0.5 bg-white border border-gray-200 rounded text-xs">Ctrl</kbd> + <kbd
+                                class="px-2 py-0.5 bg-white border border-gray-200 rounded text-xs">Shift</kbd> + <kbd
+                                class="px-2 py-0.5 bg-white border border-gray-200 rounded text-xs">B</kbd> (Windows) or
+                            <kbd class="px-2 py-0.5 bg-white border border-gray-200 rounded text-xs">Cmd</kbd> + <kbd
+                                class="px-2 py-0.5 bg-white border border-gray-200 rounded text-xs">Shift</kbd> + <kbd
+                                class="px-2 py-0.5 bg-white border border-gray-200 rounded text-xs">B</kbd> (Mac).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Use -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                <div class="flex items-start gap-6">
+                    <div
+                        class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 flex-shrink-0 text-xl font-bold">
+                        2
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-gray-800 mb-3">How to Use</h2>
+                        <ol class="list-decimal list-inside space-y-3 text-gray-600 ml-1">
+                            <li>Go to any <strong>Facebook Post</strong> (click the time/date of the post to view it
+                                fully).</li>
+                            <li>Click the <strong>Save to MoRPH</strong> bookmark you just installed.</li>
+                            <li>Enter the admin token (default is pre-filled) if asked.</li>
+                            <li>Wait for the "Post Saved!" alert.</li>
+                            <li>Check your <a href="/admin/posts" class="text-teal-600 hover:underline">Draft Posts</a>
+                                to review and publish.</li>
+                        </ol>
+
+                        <div class="mt-6">
+                            <a href="https://www.facebook.com/MorphBangladesh" target="_blank"
+                                class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
+                                Go to Facebook Page <i class="fas fa-external-link-alt ml-2 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>

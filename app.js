@@ -4,6 +4,7 @@ const session = require('express-session');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const { spawn } = require('child_process');
+const cors = require('cors');
 
 const i18n = require('i18n');
 const cookieParser = require('cookie-parser');
@@ -66,6 +67,12 @@ i18n.configure({
 const app = express();
 
 // Middleware
+app.use(cors({
+    origin: ['https://www.facebook.com', 'https://m.facebook.com', 'https://mbasic.facebook.com', 'http://localhost:3000', 'https://morphbangladesh.org'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(helmet({
     contentSecurityPolicy: false, // Disabling CSP for development simplicity
     crossOriginEmbedderPolicy: false

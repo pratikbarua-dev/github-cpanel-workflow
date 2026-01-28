@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importing to MoRPH...</title>
+    <!-- Tailwind via CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 flex items-center justify-center h-screen font-sans">
+
+    <div id="status-card" class="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full text-center">
+        <!-- State: Waiting -->
+        <div id="state-waiting">
+            <div class="animate-spin text-blue-600 text-4xl mb-4 mx-auto block w-fit">
+                <i class="fas fa-circle-notch"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Connecting...</h2>
+            <p class="text-gray-500 text-sm">Reading data from URL...</p>
+        </div>
+
+        <!-- State: Processing -->
+        <div id="state-processing" class="hidden">
+            <div class="animate-pulse text-teal-600 text-4xl mb-4 mx-auto block w-fit">
+                <i class="fas fa-cloud-download-alt"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Importing...</h2>
+            <p class="text-gray-500 text-sm">Downloading images and saving post...</p>
+        </div>
+
+        <!-- State: Success -->
+        <div id="state-success" class="hidden">
+            <div class="text-green-500 text-5xl mb-4 mx-auto block w-fit">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Success!</h2>
+            <p class="text-gray-500 text-sm mb-6">Post imported as Draft.</p>
+            <button onclick="window.close()"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition">
+                Close Window
+            </button>
+        </div>
+
+        <!-- State: Error -->
+        <div id="state-error" class="hidden">
+            <div class="text-red-500 text-5xl mb-4 mx-auto block w-fit">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Failed</h2>
+            <p id="error-msg" class="text-red-600 text-sm mb-6 bg-red-50 p-3 rounded border border-red-100"></p>
+            <button onclick="window.close()"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition">
+                Close Window
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = '<%= baseUrl %>';
+        const statusCard = document.getElementById('status-card');
+
+        function showState(state) {
+            ['waiting', 'processing', 'success', 'error'].forEach(s => {
+                const el = document.getElementById('state-' + s);
+                if (el) el.classList.add('hidden');
+            });
+            const el = document.getElementById('state-' + state);
+            if (el) el.classList.remove('hidden');
+        }
+
+        // 1. Read Data from URL Hash (Bypasses window.opener blocking)
+        async function processHashData() {
+            try {
+                // Wait slightly to ensure hash is present if it's being set dynamically (though usually immediate)
+                const hash = window.location.hash.substring(1); // Remove #
+                if (!hash) {
+                    throw new Error("No data found in URL. Please use the bookmarklet.");
+                }
+
+                const jsonStr = decodeURIComponent(hash);
+                let postData;
+                try {
+                    postData = JSON.parse(jsonStr);
+                } catch (e) {
+                    throw new Error("Invalid data format.");
+                }
+
+                showState('processing');
+
+                // 2. Submit to API
+                const response = await fetch('/admin/posts/api/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData.payload || postData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showState('success');
+                    // Optional: Close after 3 seconds
+                    setTimeout(() => window.close(), 3000);
+                } else {
+                    throw new Error(result.error || 'Server rejected the post.');
+                }
+            } catch (err) {
+                console.error(err);
+                const errEl = document.getElementById('error-msg');
+                if (errEl) errEl.innerText = err.message;
+                showState('error');
+            }
+        }
+
+        // Run immediately
+        processHashData();
+    </script>
+</body>
+
+</html>

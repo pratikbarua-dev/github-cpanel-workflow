@@ -4,6 +4,7 @@ const { sendWelcomeEmail, sendAccountDeletedEmail } = require('../utils/emailSer
 const { Parser } = require('json2csv');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 const { generateToken } = require('../utils/jwtHelper');
 const bcrypt = require('bcryptjs');
 
@@ -34,7 +35,37 @@ async function processImage(inputData) {
         return `/uploads/${filename}`;
     }
 
-    // Assume it's a URL
+    // Check if it's a URL - Download it
+    if (inputData.startsWith('http')) {
+        return new Promise((resolve, reject) => {
+            const filename = `dl-${Date.now()}-${Math.floor(Math.random() * 1000)}.jpg`;
+            const uploadDir = path.join(__dirname, '../../public/uploads');
+
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+
+            const filepath = path.join(uploadDir, filename);
+            const file = fs.createWriteStream(filepath);
+
+            https.get(inputData, (response) => {
+                if (response.statusCode !== 200) {
+                    // Fail silently for now and return original URL
+                    resolve(inputData);
+                    return;
+                }
+                response.pipe(file);
+                file.on('finish', () => {
+                    file.close();
+                    resolve(`/uploads/${filename}`);
+                });
+            }).on('error', (err) => {
+                fs.unlink(filename, () => { }); // Delete file async
+                resolve(inputData); // Fallback to original URL
+            });
+        });
+    }
+
     return inputData;
 }
 
@@ -92,6 +123,8 @@ exports.getDashboard = async (req, res) => {
     try {
         const projectCount = await Project.count();
         const postCount = await Post.count();
+
+        const notificationCount = await FormSubmission.count({ where: { status: 'New' } }); // Approx notification count
         const publicationCount = await Publication.count();
         const formCount = await CustomForm.count();
 
@@ -418,16 +451,37 @@ exports.postPost = async (req, res) => {
 
 exports.createPostApi = async (req, res) => {
     try {
-        const { title, type, date, slug, excerpt, content, status, heading_image } = req.body;
+        const { title, type, date, slug, excerpt, content, status, heading_image, gallery_images } = req.body;
 
         let finalSlug = slug;
         if (!finalSlug && title) {
-            finalSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+            finalSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Date.now();
+        } else {
+            finalSlug = 'post-' + Date.now();
         }
 
         let imageUrl = null;
         if (heading_image) {
             imageUrl = await processImage(heading_image);
+        }
+
+        let finalContent = content;
+
+        // Handle Gallery Images
+        if (gallery_images && Array.isArray(gallery_images) && gallery_images.length > 0) {
+            const localGalleryUrls = [];
+            for (const imgUrl of gallery_images) {
+                const localUrl = await processImage(imgUrl);
+                if (localUrl) localGalleryUrls.push(localUrl);
+            }
+
+            if (localGalleryUrls.length > 0) {
+                finalContent += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 2rem;">';
+                for (const url of localGalleryUrls) {
+                    finalContent += `<img src="${url}" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />`;
+                }
+                finalContent += '</div>';
+            }
         }
 
         const newPost = await Post.create({
@@ -436,7 +490,7 @@ exports.createPostApi = async (req, res) => {
             date: date || new Date(),
             slug: finalSlug,
             excerpt,
-            content,
+            content: finalContent,
             status: status || 'draft',
             image_url: imageUrl
         });
@@ -651,6 +705,16 @@ exports.exportFormResponses = async (req, res) => {
         console.error(error);
         res.status(500).send('Error exporting CSV');
     }
+};
+
+// --- IMPORT TOOLS ---
+
+exports.getImportFacebook = (req, res) => {
+    res.render('admin/import-facebook', { user: req.user, path: '/import-facebook' });
+};
+
+exports.getImportProcessing = (req, res) => {
+    res.render('admin/import-processing', { layout: false, baseUrl: process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}` });
 };
 
 // --- TEAM CRUD ---
