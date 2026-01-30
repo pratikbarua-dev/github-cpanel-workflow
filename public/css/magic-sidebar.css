@@ -1,0 +1,209 @@
+/* Magic Curve Sidebar CSS - Final Polish */
+
+:root {
+    --sidebar-bg: #0f172a;
+    /* Slate 900 */
+    --active-bg: #f8fafc;
+    /* Slate 50 */
+    --text-idle: #94a3b8;
+    /* Slate 400 */
+    --text-active: #0f172a;
+    /* Slate 900 */
+    --curve-size: 50px;
+}
+
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 80px;
+    /* Collapsed width */
+    height: 100vh;
+    background: var(--sidebar-bg);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.5s;
+    z-index: 50;
+    scrollbar-width: none;
+    /* Added shadow for separation */
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    /* Optional: Border for sharper definition if shadow renders poorly on dark bg */
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navigation::-webkit-scrollbar {
+    display: none;
+}
+
+/* Expand on Hover */
+.navigation:hover {
+    width: 300px;
+}
+
+/* Brand Section */
+.navigation .brand {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 70px;
+    padding-left: 10px;
+    margin-bottom: 20px;
+    color: var(--text-idle);
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    z-index: 20;
+}
+
+.navigation .brand img {
+    min-width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    margin: 0 15px;
+    object-fit: cover;
+}
+
+.navigation .brand .brand-text {
+    display: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    white-space: nowrap;
+}
+
+.navigation:hover .brand .brand-text {
+    display: block;
+}
+
+/* Main List */
+.navigation ul {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.navigation ul li {
+    position: relative;
+    list-style: none;
+    width: 100%;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    margin-bottom: 5px;
+}
+
+.navigation ul li.active,
+.navigation ul li:hover {
+    background: var(--active-bg);
+    /* Keep corners rounded on the right? 
+       To make it look like a "tab" detached from content if there is a shadow.
+       If we want it to connect, we need no shadow on the active item.
+       But the user asked for a "clear divider or shadow".
+       So we will treat it as a contained shape.
+    */
+}
+
+.navigation ul li a {
+    position: relative;
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+    color: var(--text-idle);
+    align-items: center;
+    white-space: nowrap;
+}
+
+.navigation ul li.active a,
+.navigation ul li:hover a {
+    color: var(--text-active);
+}
+
+.navigation ul li a .icon {
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+
+.navigation ul li a .icon i {
+    font-size: 1.5rem;
+}
+
+.navigation ul li a .title {
+    position: relative;
+    display: block;
+    padding: 0 5px;
+    height: 60px;
+    line-height: 60px;
+    text-align: start;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.navigation:hover ul li a .title {
+    opacity: 1;
+    transition-delay: 0.2s;
+}
+
+/* Curves */
+/* If we have a shadow/border on the sidebar, the curves might look slightly detached.
+   But the curve logic uses box-shadow on pseudo-elements.
+   This draws the "inverse" curve.
+   The box-shadow color is var(--active-bg).
+   This matches the item background.
+   So the curve connects the item to the "void" of the sidebar.
+   This works perfectly inside the sidebar container.
+*/
+.navigation ul li.active a::before,
+.navigation ul li:hover a::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -50px;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: 35px 35px 0 10px var(--active-bg);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.navigation ul li.active a::after,
+.navigation ul li:hover a::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -50px;
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: 35px -35px 0 10px var(--active-bg);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Profile Section */
+.navigation .profile-wrapper {
+    margin-top: auto;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.navigation .profile-wrapper li {
+    list-style: none;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
