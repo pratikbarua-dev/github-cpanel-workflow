@@ -2200,3 +2200,4 @@
 {"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-01-31 22:20:06"}
 {"level":"info","message":"Cron jobs stopped.","timestamp":"2026-01-31 22:20:06"}
 {"level":"info","message":"Http server closed.","timestamp":"2026-01-31 22:20:06"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-01-31 22:21:00"}
