@@ -154,6 +154,35 @@ if (process.env.ENABLE_MAIL_CLIENT === 'true') {
     });
 }
 
+// --- SYSTEM MEDIA BACKUP ROUTE ---
+app.get('/system-media-backup', (req, res) => {
+    const secretKey = process.env.BACKUP_SECRET_KEY;
+    if (!secretKey) return res.status(500).send("Configuration Error");
+    if (req.query.key !== secretKey) return res.status(403).send("Access Denied");
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="media_backup.zip"');
+
+    // Zip 'public' directory recursively
+    // cwd: __dirname so that the zip structure starts with 'public/'
+    // Using 'spawn' instead of 'exec' for streaming
+    const zip = spawn('zip', ['-r', '-', 'public'], { cwd: __dirname });
+
+    zip.stdout.pipe(res);
+
+    zip.stderr.on('data', (data) => console.error(`[MEDIA BACKUP ERROR] ${data}`));
+    zip.on('close', (code) => {
+        if (code !== 0) console.error(`[MEDIA BACKUP] zip exited with code ${code}`);
+    });
+});
+
+// --- SYSTEM MEDIA RESTORE ROUTE ---
+// Note: We need 'upload' middleware which is defined later. 
+// We will define 'upload' here first or move these routes after upload definition.
+// Wait, upload is defined at line 265.
+// I should move 'upload' definition up or put these routes after 'upload' definition.
+// Better to put them after 'system-restore' since that uses upload.
+
 // --- SYSTEM BACKUP BRIDGE ROUTE ---
 app.get('/system-backup', (req, res) => {
     // 1. Get Secret from Env
@@ -434,6 +463,76 @@ app.get('/system-force-kill', (req, res) => {
         console.log(`pkill output: ${stdout}`);
         res.send("Kill command executed. Server should restart momentarily.");
     });
+});
+
+// --- SYSTEM MEDIA BACKUP ROUTE ---
+app.get('/system-media-backup', (req, res) => {
+    const secretKey = process.env.BACKUP_SECRET_KEY;
+    if (!secretKey) return res.status(500).send("Configuration Error");
+    if (req.query.key !== secretKey) return res.status(403).send("Access Denied");
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="media_backup.zip"');
+
+    // Zip 'public' directory recursively
+    // cwd: __dirname so that the zip structure starts with 'public/'
+    // Using 'spawn' instead of 'exec' for streaming
+    const zip = spawn('zip', ['-r', '-', 'public'], { cwd: __dirname });
+
+    zip.stdout.pipe(res);
+
+    zip.stderr.on('data', (data) => console.error(`[MEDIA BACKUP ERROR] ${data}`));
+    zip.on('close', (code) => {
+        if (code !== 0) console.error(`[MEDIA BACKUP] zip exited with code ${code}`);
+    });
+});
+
+// --- SYSTEM MEDIA RESTORE ROUTE ---
+app.post('/system-media-restore', upload.single('backup'), async (req, res) => {
+    const secretKey = process.env.BACKUP_SECRET_KEY;
+    if (!secretKey) return res.status(500).json({ success: false, error: "Configuration Error" });
+
+    const providedKey = req.query.key || req.headers['x-backup-key'];
+    if (providedKey !== secretKey) return res.status(403).json({ success: false, error: "Access Denied" });
+
+    if (!req.file) return res.status(400).json({ success: false, error: "No backup file provided" });
+
+    const uploadedFile = req.file.path;
+    console.log(`Media Restore request received: ${req.file.originalname} (${req.file.size} bytes)`);
+
+    try {
+        // Unzip to root directory (since zip contains 'public/...')
+        // -o: overwrite without prompting
+        const unzip = spawn('unzip', ['-o', uploadedFile, '-d', '.'], { cwd: __dirname });
+
+        let stderrOutput = '';
+        unzip.stderr.on('data', (data) => stderrOutput += data.toString());
+
+        await new Promise((resolve, reject) => {
+            unzip.on('close', (code) => {
+                // Check if file exists before unlinking inside the callback too, just in case
+                if (fs.existsSync(uploadedFile)) fs.unlinkSync(uploadedFile);
+
+                if (code !== 0) {
+                    reject(new Error(stderrOutput || `unzip exited with code ${code}`));
+                } else {
+                    resolve();
+                }
+            });
+            unzip.on('error', (err) => {
+                if (fs.existsSync(uploadedFile)) fs.unlinkSync(uploadedFile);
+                reject(err);
+            });
+        });
+
+        console.log(`[MEDIA RESTORE] Completed successfully`);
+        return res.json({ success: true, message: "Media files restored successfully" });
+
+    } catch (error) {
+        console.error(`[MEDIA RESTORE ERROR] ${error.message}`);
+        if (fs.existsSync(uploadedFile)) fs.unlinkSync(uploadedFile);
+        return res.status(500).json({ success: false, error: error.message });
+    }
 });
 
 // ========================================

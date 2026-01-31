@@ -1,0 +1,2 @@
+# Database Backup Courier Dependencies
+requests>=2.25.0

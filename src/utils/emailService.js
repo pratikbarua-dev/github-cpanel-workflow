@@ -63,6 +63,7 @@ const getAutoReplyTemplate = (name, content) => {
                     <p style="font-size: 14px; margin-bottom: 0;">Best regards,</p>
                     <p style="font-weight: bold; color: ${primaryColor}; margin-top: 5px;">The MoRPH Team</p>
                     <p style="font-size: 12px; font-style: italic; color: #999;">Moulovibari Research and Partnership Hub</p>
+                    <p style="font-size: 11px; color: #999; margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px;">This in an automated mail , do not reply</p>
                 </div>
             </div>
             <div class="footer">
