@@ -43,7 +43,7 @@ class MailSyncService {
 
             connection = await imaps.connect(imapConfig);
 
-            const boxes = ['INBOX', 'INBOX.Sent', 'INBOX.Drafts', 'INBOX.Trash', 'INBOX.Junk', 'INBOX.Archive'];
+            const boxes = ['INBOX', 'INBOX.Sent', 'INBOX.Drafts', 'INBOX.Trash', 'INBOX.Junk', 'INBOX.spam', 'INBOX.Archive'];
 
             for (const boxName of boxes) {
                 try {
