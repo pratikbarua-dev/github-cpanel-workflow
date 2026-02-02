@@ -2505,3 +2505,19 @@
 {"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-02-02 11:30:21"}
 {"level":"info","message":"Cron jobs stopped.","timestamp":"2026-02-02 11:30:21"}
 {"level":"info","message":"Http server closed.","timestamp":"2026-02-02 11:30:21"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"-------------------------","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-02-02 13:21:28"}
+{"level":"info","message":"::1 - - [02/Feb/2026:07:21:37 +0000] \"GET / HTTP/1.1\" 200 46211 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 13:21:37"}
+{"level":"info","message":"::1 - - [02/Feb/2026:07:21:48 +0000] \"GET /partner-with-us HTTP/1.1\" 200 29132 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 13:21:48"}
+{"level":"info","message":"::1 - - [02/Feb/2026:07:21:55 +0000] \"GET /partnerships HTTP/1.1\" 200 27446 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 13:21:55"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 13:22:00"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-02-02 13:22:04"}
+{"level":"info","message":"Cron jobs stopped.","timestamp":"2026-02-02 13:22:04"}
+{"level":"info","message":"Http server closed.","timestamp":"2026-02-02 13:22:04"}
