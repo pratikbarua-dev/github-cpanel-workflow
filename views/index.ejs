@@ -255,14 +255,15 @@
                     <% const partners=[ { name: "Mawlana Bhashani Science and Technology University" ,
                         img: "/images/partners/mbstu.png" , isText: false }, { name: "Daffodil International University"
                         , img: "/images/partners/diu.png" , isText: false }, {
-                        name: "Grassroots Forum for Migration Governance" ,
-                        name: "Grassroots Forum for Migration Governance" , img: "/images/partners/gfmd_logo.png" ,
-                        isText: false }, { name: "Global Forum on Migration and Development" ,
-                        img: "https://placehold.co/300x150/white/2c3e50?text=GFMD" , isText: false, isPlaceholder: true
-                        }, { name: "Bangladesh Civil Society for Migrants" , img: "/images/partners/bcsm.png" , isText:
-                        false }, { name: "Migrants Forum in Asia" , img: "/images/partners/mfa.png" , isText: false }, {
-                        name: "Government of Bangladesh" , img: "/images/partners/govt_bd.png" , isText: false }, {
-                        name: "IOM" , img: "/images/partners/iom.png" , isText: false }, { name: "UNHCR" ,
+                        name: "Grassroots Forum on Migration Governance (GFMG)" ,
+                        text: "Grassroots Forum on Migration Governance (GFMG)" , isText: true, bgColor: "#60A5FA" ,
+                        bgClass: "" , textClass: "text-white text-sm uppercase font-bold text-center leading-tight" }, {
+                        name: "Grassroots Forum for Migration & Development" , img: "/images/partners/gfmd_logo.png" ,
+                        isText: false }, { name: "Bangladesh Civil Society for Migrants" ,
+                        img: "/images/partners/bcsm.png" , isText: false }, { name: "Migrants Forum in Asia" ,
+                        img: "/images/partners/mfa.png" , isText: false }, { name: "Government of Bangladesh" ,
+                        img: "/images/partners/govt_bd.png" , isText: false }, { name: "IOM" ,
+                        img: "/images/partners/iom.png" , isText: false }, { name: "UNHCR" ,
                         img: "/images/partners/unhcr.png" , isText: false }, { name: "WHO" ,
                         img: "/images/partners/who.png" , isText: false }, { name: "WFP" ,
                         img: "/images/partners/wfp.png" , isText: false } ]; %>
@@ -270,10 +271,11 @@
                         <% partners.forEach(partner=> { %>
                             <div class="w-full md:w-1/3 flex-shrink-0 px-4">
                                 <div class="flex flex-col items-center group h-full">
-                                    <div
-                                        class="w-full h-32 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-6 hover:shadow-md transition mb-4">
+                                    <div style="<%= partner.bgColor ? `background-color: ${partner.bgColor} !important;` : '' %>"
+                                        class="w-full h-32 <%= partner.bgClass || 'bg-white' %> rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-6 hover:shadow-md transition mb-4">
                                         <% if (partner.isText) { %>
-                                            <span class="text-primary font-bold text-center leading-tight">
+                                            <span
+                                                class="<%= partner.textClass || 'text-primary' %> font-bold text-center leading-tight">
                                                 <%= partner.text %>
                                             </span>
                                             <% } else { %>

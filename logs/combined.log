@@ -2398,3 +2398,110 @@
 {"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 01:06:00"}
 {"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 01:07:00"}
 {"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 01:08:00"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"-------------------------","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-02-01 12:41:30"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:42:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:43:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:44:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:45:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:46:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:47:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:48:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:49:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:50:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:51:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:52:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:53:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:54:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:55:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:56:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:57:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:58:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 12:59:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:00:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:01:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:02:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:03:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:04:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:05:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:06:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:07:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:08:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:09:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:10:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:11:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:12:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:13:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:14:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:15:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:16:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:17:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:18:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:19:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:20:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:21:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:22:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:23:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:24:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:25:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:26:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:27:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:28:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:29:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:30:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:31:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:32:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:33:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:34:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:35:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:36:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:37:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:38:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:39:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:40:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:41:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:42:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:43:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-01 13:44:00"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-02-02 11:20:50"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-02-02 11:20:50"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-02-02 11:20:50"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-02-02 11:20:50"}
+{"level":"info","message":"-------------------------","timestamp":"2026-02-02 11:20:50"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-02-02 11:20:52"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-02-02 11:20:52"}
+{"level":"info","message":"✅ Database connected successfully","timestamp":"2026-02-02 11:20:52"}
+{"level":"info","message":"✅ Database synced","timestamp":"2026-02-02 11:20:52"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:20:54 +0000] \"GET / HTTP/1.1\" 200 46075 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:20:54"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:21:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:22:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:23:00"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:23:54 +0000] \"GET / HTTP/1.1\" 200 44881 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:23:54"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:24:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:25:00"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:25:39 +0000] \"GET / HTTP/1.1\" 200 45005 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:25:39"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:26:00"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:26:12 +0000] \"GET /partner-with-us HTTP/1.1\" 200 28491 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:26:12"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:26:26 +0000] \"GET /contact HTTP/1.1\" 200 24353 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:26:26"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:26:26 +0000] \"GET /captcha HTTP/1.1\" 200 8418 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:26:26"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:26:29 +0000] \"GET /focus-areas HTTP/1.1\" 200 24036 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:26:29"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:26:31 +0000] \"GET /about HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:26:31"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:26:36 +0000] \"GET /team HTTP/1.1\" 200 28423 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:26:36"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:26:38 +0000] \"GET /partnerships HTTP/1.1\" 200 26639 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:26:38"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:27:00"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:28:00"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:28:21 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:28:21"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:29:00"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:29:59 +0000] \"GET / HTTP/1.1\" 200 46221 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:29:59"}
+{"level":"info","message":"[MailCron] Acquired lock. Running tasks...","timestamp":"2026-02-02 11:30:00"}
+{"level":"info","message":"::1 - - [02/Feb/2026:05:30:14 +0000] \"GET /partner-with-us HTTP/1.1\" 200 29137 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-02 11:30:14"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-02-02 11:30:21"}
+{"level":"info","message":"Cron jobs stopped.","timestamp":"2026-02-02 11:30:21"}
+{"level":"info","message":"Http server closed.","timestamp":"2026-02-02 11:30:21"}
