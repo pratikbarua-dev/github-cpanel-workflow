@@ -99,15 +99,37 @@ app.use(session({
 app.use(cookieParser());
 app.use(i18n.init);
 
-// Set Locale from Query Parameter (e.g. ?lang=bn)
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+    // Sync globals - set immediately
+    res.locals.req = req;
+    res.locals.path = req.path;
+    res.locals.query = req.query;
+    res.locals.baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+    res.locals.enableMailClient = process.env.ENABLE_MAIL_CLIENT === 'true';
+
+    // Async locale and settings
     if (req.query.lang) {
         res.cookie('lang', req.query.lang);
         req.setLocale(req.query.lang);
     }
-    // Make BASE_URL available to all views
-    res.locals.baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
-    res.locals.enableMailClient = process.env.ENABLE_MAIL_CLIENT === 'true';
+
+    try {
+        const { GlobalSetting } = require('./src/models');
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        if (csrSetting) {
+            try {
+                res.locals.csrSections = JSON.parse(csrSetting.value);
+            } catch (e) {
+                // Fallback for legacy comma-separated strings
+                res.locals.csrSections = csrSetting.value.split(',').map(s => s.trim()).filter(s => s !== '');
+            }
+        } else {
+            res.locals.csrSections = [];
+        }
+    } catch (error) {
+        res.locals.csrSections = [];
+    }
+
     next();
 });
 
@@ -128,18 +150,6 @@ app.use(morgan('combined', { stream: logger.stream }));
 app.use('/', require('./src/routes/publicRoutes'));
 app.use('/admin', require('./src/routes/adminRoutes'));
 
-// Global Settings Middleware (Pass to all views)
-app.use(async (req, res, next) => {
-    try {
-        const { GlobalSetting } = require('./src/models');
-        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
-        res.locals.csrSections = csrSetting ? JSON.parse(csrSetting.value) : [];
-        next();
-    } catch (error) {
-        res.locals.csrSections = [];
-        next();
-    }
-});
 // Initialize Mail Cron Jobs and Tables
 if (process.env.ENABLE_MAIL_CLIENT === 'true') {
     app.use('/mail', require('./src/routes/mailRoutes'));

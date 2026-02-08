@@ -14,7 +14,7 @@
 
     <ul class="main-menu">
         <!-- Dashboard -->
-        <li class="list <%= path === '/admin/dashboard' || path === '/dashboard' ? 'active' : '' %>">
+        <li class="list <%= locals.path === '/admin/dashboard' || locals.path === '/dashboard' ? 'active' : '' %>">
             <a href="/admin/dashboard">
                 <span class="icon"><i class="fas fa-home"></i></span>
                 <span class="title">Dashboard</span>
@@ -22,7 +22,7 @@
         </li>
 
         <!-- Projects -->
-        <li class="list <%= path.startsWith('/projects') ? 'active' : '' %>">
+        <li class="list <%= locals.path.startsWith('/projects') ? 'active' : '' %>">
             <a href="/admin/projects">
                 <span class="icon"><i class="fas fa-project-diagram"></i></span>
                 <span class="title">Projects</span>
@@ -30,7 +30,7 @@
         </li>
 
         <!-- Publications -->
-        <li class="list <%= path.startsWith('/publications') ? 'active' : '' %>">
+        <li class="list <%= locals.path.startsWith('/publications') ? 'active' : '' %>">
             <a href="/admin/publications">
                 <span class="icon"><i class="fas fa-book"></i></span>
                 <span class="title">Publications</span>
@@ -39,7 +39,7 @@
 
         <!-- Posts & News -->
         <li
-            class="list <%= path === '/admin/posts' || (path.startsWith('/admin/posts') && !req.query.type) ? 'active' : '' %>">
+            class="list <%= locals.path === '/admin/posts' || (locals.path.startsWith('/admin/posts') && (!locals.req.query || !locals.req.query.type)) ? 'active' : '' %>">
             <a href="/admin/posts">
                 <span class="icon"><i class="fas fa-newspaper"></i></span>
                 <span class="title">Posts & News</span>
@@ -47,7 +47,7 @@
         </li>
 
         <!-- Training -->
-        <li class="list <%= req.query && req.query.type === 'Training' ? 'active' : '' %>">
+        <li class="list <%= (locals.req.query && locals.req.query.type === 'Training') ? 'active' : '' %>">
             <a href="/admin/posts?type=Training">
                 <span class="icon"><i class="fas fa-graduation-cap"></i></span>
                 <span class="title">Training</span>
@@ -55,7 +55,7 @@
         </li>
 
         <!-- CSR -->
-        <li class="list <%= req.query && req.query.type === 'CSR' ? 'active' : '' %>">
+        <li class="list <%= (locals.req.query && locals.req.query.type === 'CSR') ? 'active' : '' %>">
             <a href="/admin/posts?type=CSR">
                 <span class="icon"><i class="fas fa-hand-holding-heart"></i></span>
                 <span class="title">CSR</span>
@@ -63,7 +63,7 @@
         </li>
 
         <!-- Import Facebook -->
-        <li class="list <%= path === '/import-facebook' ? 'active' : '' %>">
+        <li class="list <%= locals.path === '/import-facebook' ? 'active' : '' %>">
             <a href="/admin/import-facebook">
                 <span class="icon"><i class="fab fa-facebook"></i></span>
                 <span class="title">Import Facebook</span>
@@ -73,7 +73,7 @@
         <li class="separator" style="height: 1px; background: #1e293b; margin: 10px 20px;"></li>
 
         <!-- Team -->
-        <li class="list <%= path.startsWith('/team') ? 'active' : '' %>">
+        <li class="list <%= locals.path.startsWith('/team') ? 'active' : '' %>">
             <a href="/admin/team">
                 <span class="icon"><i class="fas fa-users"></i></span>
                 <span class="title">Team Members</span>
@@ -81,7 +81,7 @@
         </li>
 
         <!-- Forms -->
-        <li class="list <%= path.startsWith('/forms') ? 'active' : '' %>">
+        <li class="list <%= locals.path.startsWith('/forms') ? 'active' : '' %>">
             <a href="/admin/forms">
                 <span class="icon"><i class="fas fa-clipboard-list"></i></span>
                 <span class="title">Custom Forms</span>
@@ -89,7 +89,7 @@
         </li>
 
         <!-- Comments -->
-        <li class="list <%= path.startsWith('/comments') ? 'active' : '' %>">
+        <li class="list <%= locals.path.startsWith('/comments') ? 'active' : '' %>">
             <a href="/admin/comments">
                 <span class="icon"><i class="fas fa-comments"></i></span>
                 <span class="title">Comments</span>
@@ -98,7 +98,7 @@
 
         <% if (locals.enableMailClient) { %>
             <!-- Mail -->
-            <li class="list <%= path.startsWith('/mail') ? 'active' : '' %> loading-link">
+            <li class="list <%= locals.path.startsWith('/mail') ? 'active' : '' %> loading-link">
                 <a href="/mail">
                     <span class="icon"><i class="fas fa-envelope-open-text"></i></span>
                     <span class="title">Mail Client</span>
@@ -107,7 +107,7 @@
             <% } %>
 
                 <!-- Media -->
-                <li class="list <%= path.startsWith('/media') ? 'active' : '' %>">
+                <li class="list <%= locals.path.startsWith('/media') ? 'active' : '' %>">
                     <a href="/admin/media">
                         <span class="icon"><i class="fas fa-images"></i></span>
                         <span class="title">Media Library</span>
@@ -117,16 +117,16 @@
                 <li class="separator" style="height: 1px; background: #1e293b; margin: 10px 20px;"></li>
 
                 <!-- Settings -->
-                <li class="list <%= path.startsWith('/settings') ? 'active' : '' %>">
+                <li class="list <%= locals.path.startsWith('/settings') ? 'active' : '' %>">
                     <a href="/admin/settings">
                         <span class="icon"><i class="fas fa-cog"></i></span>
                         <span class="title">Settings</span>
                     </a>
                 </li>
 
-                <% if (user && user.role==='admin' ) { %>
+                <% if (locals.user && locals.user.role==='admin' ) { %>
                     <!-- Users -->
-                    <li class="list <%= path.startsWith('/users') ? 'active' : '' %>">
+                    <li class="list <%= locals.path.startsWith('/users') ? 'active' : '' %>">
                         <a href="/admin/users">
                             <span class="icon"><i class="fas fa-user-shield"></i></span>
                             <span class="title">Users & Roles</span>

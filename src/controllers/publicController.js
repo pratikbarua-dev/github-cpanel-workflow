@@ -102,7 +102,10 @@ exports.getPostDetail = async (req, res) => {
 exports.getNews = async (req, res) => {
     try {
         const posts = await Post.findAll({
-            where: { status: 'published' },
+            where: {
+                status: 'published',
+                type: { [Sequelize.Op.in]: ['News', 'Event', 'Article'] }
+            },
             order: [['date', 'DESC']]
         });
         res.render('news', { title: 'News & Articles', posts });
@@ -243,8 +246,8 @@ exports.getCSRSection = async (req, res) => {
                 status: 'published',
                 type: 'CSR',
                 [Sequelize.Op.or]: [
-                    { sub_type: subSection },
-                    { sub_type: subSection.replace(/-/g, ' ') }
+                    Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('sub_type')), subSection.toLowerCase().replace(/-/g, ' ')),
+                    Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('sub_type')), subSection.toLowerCase())
                 ]
             },
             order: [['date', 'DESC']]

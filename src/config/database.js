@@ -5,7 +5,7 @@ let sequelize;
 
 // Check if we should use SQLite (for local development)
 const useSQLite = process.env.DB_DIALECT === 'sqlite' ||
-    process.env.NODE_ENV === 'development' && !process.env.DB_HOST;
+    (process.env.NODE_ENV === 'development' && process.env.DB_DIALECT !== 'mysql');
 
 if (useSQLite) {
     // SQLite for local development

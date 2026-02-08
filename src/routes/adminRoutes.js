@@ -90,6 +90,7 @@ router.post('/submissions/:id/delete', ensureAuthenticated, adminController.dele
 // Admin Settings
 router.get('/settings', ensureAuthenticated, adminController.getSettings);
 router.post('/settings', ensureAuthenticated, adminController.postSettings);
+router.post('/settings/csr-sections/api', ensureAuthenticated, express.json(), adminController.addCSRSectionApi);
 
 // Media Library
 router.get('/media', ensureAuthenticated, adminController.getMedia);

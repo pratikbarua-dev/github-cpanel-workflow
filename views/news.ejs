@@ -4,7 +4,7 @@
     <section class="bg-secondary text-white py-20 relative overflow-hidden">
         <div class="container mx-auto px-4 relative z-10 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
-                <%= __('header.news') %>
+                <%= locals.title || __('header.news') %>
             </h1>
             <p class="text-xl text-teal-100 max-w-2xl mx-auto">Latest updates, insights, and analysis from MoRPH.</p>
         </div>

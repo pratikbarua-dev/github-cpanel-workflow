@@ -1051,7 +1051,13 @@ exports.postSettings = async (req, res) => {
 
         // Handle Global Settings (CSR Sections)
         if (csr_sections !== undefined) {
-            const sectionsArray = csr_sections.split(',').map(s => s.trim()).filter(s => s !== '');
+            let sectionsArray = [];
+            if (Array.isArray(csr_sections)) {
+                sectionsArray = csr_sections.map(s => s.trim()).filter(s => s !== '');
+            } else {
+                sectionsArray = csr_sections.split(',').map(s => s.trim()).filter(s => s !== '');
+            }
+
             const [setting, created] = await GlobalSetting.findOrCreate({
                 where: { key: 'csr_sections' },
                 defaults: { value: JSON.stringify(sectionsArray) }
@@ -1066,6 +1072,33 @@ exports.postSettings = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.redirect('/admin/settings?error=Error+updating+settings');
+    }
+};
+
+exports.addCSRSectionApi = async (req, res) => {
+    try {
+        const { section } = req.body;
+        if (!section || section.trim() === '') {
+            return res.status(400).json({ success: false, error: 'Section name is required' });
+        }
+
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        let sections = csrSetting ? JSON.parse(csrSetting.value) : [];
+
+        const newSection = section.trim();
+        if (!sections.includes(newSection)) {
+            sections.push(newSection);
+            if (csrSetting) {
+                await csrSetting.update({ value: JSON.stringify(sections) });
+            } else {
+                await GlobalSetting.create({ key: 'csr_sections', value: JSON.stringify(sections) });
+            }
+        }
+
+        res.json({ success: true, sections });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Server Error' });
     }
 };
 

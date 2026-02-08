@@ -108,12 +108,19 @@
 
                             <!-- Sub Type (CSR Sections) -->
                             <div id="sub_type_container" class="<%= post.type === 'CSR' ? '' : 'hidden' %> mb-4">
-                                <label class="block text-sm font-medium text-gray-600 mb-1">CSR Section</label>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-sm font-medium text-gray-600">CSR Section</label>
+                                    <button type="button" onclick="quickAddSection()"
+                                        class="text-xs text-teal-600 hover:text-teal-700 font-bold flex items-center gap-1">
+                                        <i class="fas fa-plus-circle"></i> Add New
+                                    </button>
+                                </div>
                                 <select id="sub_type"
                                     class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
                                     <option value="">Select Section</option>
                                     <% csrSections.forEach(section=> { %>
-                                        <option value="<%= section %>" <%=post.sub_type===section ? 'selected' : '' %>>
+                                        <option value="<%= section %>" <%=(post.sub_type &&
+                                            post.sub_type.toLowerCase()===section.toLowerCase()) ? 'selected' : '' %>>
                                             <%= section %>
                                         </option>
                                         <% }); %>
@@ -375,6 +382,13 @@
                 status: status
             };
 
+            if (type === 'CSR' && (!sub_type || sub_type.trim() === '')) {
+                notification.textContent = "Please select a CSR Section!";
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+                return;
+            }
+
             // Determine URL (Create vs Update)
             const postId = '<%= post.id %>';
             const url = postId ? `/admin/posts/${postId}/api` : '/admin/posts/api/create';
@@ -420,6 +434,41 @@
                 container.classList.remove('hidden');
             } else {
                 container.classList.add('hidden');
+            }
+        }
+
+        async function quickAddSection() {
+            const sectionName = prompt("Enter new CSR Section name:");
+            if (!sectionName || sectionName.trim() === '') return;
+
+            try {
+                const response = await fetch('/admin/settings/csr-sections/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ section: sectionName.trim() })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    // Update dropdown
+                    const select = document.getElementById('sub_type');
+
+                    // Clear and rebuild or just add new
+                    select.innerHTML = '<option value="">Select Section</option>';
+                    result.sections.forEach(s => {
+                        const option = document.createElement('option');
+                        option.value = s;
+                        option.textContent = s;
+                        // Case-insensitive selection match
+                        if (s.toLowerCase() === sectionName.trim().toLowerCase()) option.selected = true;
+                        select.appendChild(option);
+                    });
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Server Error');
             }
         }
 
