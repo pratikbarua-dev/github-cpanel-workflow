@@ -584,11 +584,19 @@ server.on('error', (err) => {
         await sequelize.authenticate();
         logger.info('✅ Database connected successfully');
 
-        const syncOptions = { alter: !usingSQLite };
-        await sequelize.sync(syncOptions);
-        logger.info('✅ Database synced');
-
+        // 1. Run manual migrations first (vitals)
         await runMigrations(sequelize);
+
+        // 2. Attempt automatic sync
+        try {
+            const syncOptions = { alter: !usingSQLite };
+            await sequelize.sync(syncOptions);
+            logger.info('✅ Database synced');
+        } catch (syncError) {
+            logger.error(`⚠️ Automatic sync failed (this is common in some production environments): ${syncError.message}`);
+        }
+
+        // 3. Seed data
         await seedData(false);
         logger.info('✅ Database setup complete');
     } catch (err) {
