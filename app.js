@@ -565,6 +565,25 @@ sequelize.authenticate()
     })
     .then(async () => {
         logger.info('✅ Database synced');
+
+        // --- MANUAL SCHEMA FIX ---
+        // Ensure sub_type column exists in posts table (Sequelize alter can sometimes fail in production)
+        try {
+            const queryInterface = sequelize.getQueryInterface();
+            const tableInfo = await queryInterface.describeTable('posts');
+            if (!tableInfo.sub_type) {
+                logger.info('⚠️ Adding missing column: sub_type to posts table');
+                const Sequelize = require('sequelize');
+                await queryInterface.addColumn('posts', 'sub_type', {
+                    type: Sequelize.STRING,
+                    allowNull: true
+                });
+            }
+        } catch (schemaError) {
+            // Log as warning - often means it already exists or permissions are restricted
+            logger.warn('Schema sync check for posts.sub_type: ' + schemaError.message);
+        }
+
         // Auto-seed if tables are empty (safe - checks before inserting)
         await seedData(false); // false = don't force wipe, only seed if empty
     })
