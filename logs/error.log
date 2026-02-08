@@ -46,3 +46,10 @@
 {"level":"error","message":"========================================","timestamp":"2026-02-08 19:39:25"}
 {"level":"error","message":"❌ Database connection failed: Access denied for user 'root'@'172.18.0.1' (using password: NO)","timestamp":"2026-02-08 19:39:26"}
 {"level":"error","message":"The application will continue but database features will not work.","timestamp":"2026-02-08 19:39:26"}
+{"level":"error","message":"❌ Database connection failed: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:50:28"}
+{"level":"error","message":"The application will continue but database features will not work.","timestamp":"2026-02-08 19:50:28"}
+{"level":"error","message":"❌ Database connection failed: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:51:01"}
+{"level":"error","message":"The application will continue but database features will not work.","timestamp":"2026-02-08 19:51:01"}
+{"level":"error","message":"[MailCron] Locking Error: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:52:00"}
+{"level":"error","message":"[MailCron] Locking Error: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:53:00"}
+{"level":"error","message":"[MailCron] Locking Error: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:54:00"}

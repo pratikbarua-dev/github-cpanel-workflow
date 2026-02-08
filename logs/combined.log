@@ -2538,3 +2538,26 @@
 {"level":"info","message":"::1 - - [08/Feb/2026:13:39:45 +0000] \"GET / HTTP/1.1\" 500 12 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-08 19:39:45"}
 {"level":"info","message":"::1 - - [08/Feb/2026:13:39:45 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36\"","timestamp":"2026-02-08 19:39:45"}
 {"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-02-08 19:39:56"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-02-08 19:50:27"}
+{"level":"info","message":"NODE_ENV: Production","timestamp":"2026-02-08 19:50:27"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-02-08 19:50:27"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-02-08 19:50:27"}
+{"level":"info","message":"-------------------------","timestamp":"2026-02-08 19:50:27"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-02-08 19:50:28"}
+{"level":"info","message":"   Environment: Production","timestamp":"2026-02-08 19:50:28"}
+{"level":"error","message":"❌ Database connection failed: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:50:28"}
+{"level":"error","message":"The application will continue but database features will not work.","timestamp":"2026-02-08 19:50:28"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-02-08 19:50:59"}
+{"level":"info","message":"--- Environment Debug ---","timestamp":"2026-02-08 19:51:01"}
+{"level":"info","message":"NODE_ENV: development","timestamp":"2026-02-08 19:51:01"}
+{"level":"info","message":"DB_HOST: SET","timestamp":"2026-02-08 19:51:01"}
+{"level":"info","message":"RESEND_API_KEY: SET","timestamp":"2026-02-08 19:51:01"}
+{"level":"info","message":"-------------------------","timestamp":"2026-02-08 19:51:01"}
+{"level":"info","message":"🚀 Server started on port 3000","timestamp":"2026-02-08 19:51:01"}
+{"level":"info","message":"   Environment: development","timestamp":"2026-02-08 19:51:01"}
+{"level":"error","message":"❌ Database connection failed: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:51:01"}
+{"level":"error","message":"The application will continue but database features will not work.","timestamp":"2026-02-08 19:51:01"}
+{"level":"error","message":"[MailCron] Locking Error: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:52:00"}
+{"level":"error","message":"[MailCron] Locking Error: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:53:00"}
+{"level":"error","message":"[MailCron] Locking Error: Access denied for user 'morphban_morpweb_user'@'172.18.0.1' (using password: YES)","timestamp":"2026-02-08 19:54:00"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","timestamp":"2026-02-08 19:54:49"}
