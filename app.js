@@ -559,56 +559,47 @@ app.post('/system-media-restore', upload.single('backup'), async (req, res) => {
 });
 
 // ========================================
-// Database Connection (Graceful Handling)
+// Server Initialization & Database Sync
 // ========================================
 const sequelize = require('./src/config/database');
 const seedData = require('./seed');
+const { runMigrations } = require('./src/utils/migrations');
 
-sequelize.authenticate()
-    .then(() => {
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, () => {
+    console.log(`🚀 Server started on port ${PORT}`);
+    logger.info(`🚀 Server started on port ${PORT} [Mode: ${process.env.NODE_ENV || 'development'}]`);
+});
+
+server.on('error', (err) => {
+    console.error('❌ Server failed to start:', err.message);
+    if (err.code === 'EADDRINUSE') {
+        process.exit(1);
+    }
+});
+
+// Run database operations asynchronously to prevent blocking the server startup
+(async () => {
+    try {
+        await sequelize.authenticate();
         logger.info('✅ Database connected successfully');
-        // SAFE sync - alter:false in production (no destructive changes)
-        // SQLite foreign key constraints can fail during 'alter: true', so setting to false to prevent startup crashes.
-        // For MySQL (Production), we enable alter to allow schema updates (like adding new columns).
+
         const syncOptions = { alter: !usingSQLite };
-        return sequelize.sync(syncOptions);
-    })
-    .then(async () => {
+        await sequelize.sync(syncOptions);
         logger.info('✅ Database synced');
 
-        // --- AUTOMATIC SCHEMA MIGRATIONS ---
-        const { runMigrations } = require('./src/utils/migrations');
         await runMigrations(sequelize);
-
-        // Auto-seed if tables are empty (safe - checks before inserting)
-        await seedData(false); // false = don't force wipe, only seed if empty
-
-        // Start Server inside the sync chain
-        const PORT = process.env.PORT || 3000;
-        const server = app.listen(PORT, () => {
-            console.log(`🚀 Server started on port ${PORT}`);
-            logger.info(`🚀 Server started on port ${PORT}`);
-            logger.info(`   Environment: ${process.env.NODE_ENV || 'development'}`);
-        });
-
-        server.on('error', (err) => {
-            console.error('❌ Server failed to start:', err.message);
-            if (err.code === 'EADDRINUSE') {
-                console.error(`Port ${PORT} is currently in use. Please stop the other process.`);
-            }
-        });
-
-        // Register graceful shutdown with server instance
-        process.on('SIGINT', () => gracefulShutdown('SIGINT', server));
-        process.on('SIGTERM', () => gracefulShutdown('SIGTERM', server));
-    })
-    .catch(err => {
-        logger.error(`❌ Database connection or sync failed: ${err.message}`);
+        await seedData(false);
+        logger.info('✅ Database setup complete');
+    } catch (err) {
+        logger.error(`❌ Database initialization failed: ${err.message}`);
         logger.error(err.stack);
-        // In production, we might want to exit if DB is unreachable, 
-        // but keeping it running for health check visibility as per original logic.
-        logger.error('The application will continue but database features will not work.');
-    });
+    }
+})();
+
+// Graceful Shutdown Registration
+process.on('SIGINT', () => gracefulShutdown('SIGINT', server));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM', server));
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
