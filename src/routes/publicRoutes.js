@@ -21,6 +21,8 @@ router.get('/focus-areas', publicController.getFocusAreas);
 router.get('/partnerships', publicController.getPartnerships);
 router.get('/events', publicController.getEvents);
 router.get('/partner-with-us', publicController.getPartnerWithUs);
+router.get('/training', publicController.getTraining);
+router.get('/csr/:sub_section', publicController.getCSRSection);
 
 // Apply / Get Involved
 router.get('/get-involved', publicController.getGetInvolved); // "Apply" page

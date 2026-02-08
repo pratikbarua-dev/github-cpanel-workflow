@@ -94,66 +94,78 @@
                                 <h3 class="font-bold text-gray-800 mb-4">Post Settings</h3>
 
                                 <!-- Type -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-600 mb-1">Type</label>
-                                    <select id="type"
-                                        class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
-                                        <option value="News" <%=post.type==='News' ? 'selected' : '' %>>News</option>
-                                        <option value="Event" <%=post.type==='Event' ? 'selected' : '' %>>Event</option>
-                                        <option value="Article" <%=post.type==='Article' ? 'selected' : '' %>>Article
+                                <select id="type" onchange="toggleSubType()"
+                                    class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
+                                    <option value="News" <%=post.type==='News' ? 'selected' : '' %>>News</option>
+                                    <option value="Event" <%=post.type==='Event' ? 'selected' : '' %>>Event</option>
+                                    <option value="Article" <%=post.type==='Article' ? 'selected' : '' %>>Article
+                                    </option>
+                                    <option value="Training" <%=post.type==='Training' ? 'selected' : '' %>>Training
+                                    </option>
+                                    <option value="CSR" <%=post.type==='CSR' ? 'selected' : '' %>>CSR</option>
+                                </select>
+                            </div>
+
+                            <!-- Sub Type (CSR Sections) -->
+                            <div id="sub_type_container" class="<%= post.type === 'CSR' ? '' : 'hidden' %> mb-4">
+                                <label class="block text-sm font-medium text-gray-600 mb-1">CSR Section</label>
+                                <select id="sub_type"
+                                    class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
+                                    <option value="">Select Section</option>
+                                    <% csrSections.forEach(section=> { %>
+                                        <option value="<%= section %>" <%=post.sub_type===section ? 'selected' : '' %>>
+                                            <%= section %>
                                         </option>
-                                    </select>
-                                </div>
+                                        <% }); %>
+                                </select>
+                            </div>
 
-                                <!-- Date -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-600 mb-1">Date</label>
-                                    <input type="date" id="date" value="<%= post.date || '' %>"
-                                        class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
-                                </div>
+                            <!-- Date -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Date</label>
+                                <input type="date" id="date" value="<%= post.date || '' %>"
+                                    class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none">
+                            </div>
 
-                                <!-- Slug -->
-                                <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-600 mb-1">Slug (URL)</label>
-                                    <input type="text" id="slug" value="<%= post.slug || '' %>"
-                                        placeholder="Auto-generated"
-                                        class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none text-sm text-gray-500">
-                                </div>
+                            <!-- Slug -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-600 mb-1">Slug (URL)</label>
+                                <input type="text" id="slug" value="<%= post.slug || '' %>" placeholder="Auto-generated"
+                                    class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none text-sm text-gray-500">
+                            </div>
 
-                                <!-- Heading Image -->
-                                <div class="pt-3 border-t border-gray-200">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        <i class="fas fa-image mr-1 text-teal-600"></i> Heading Image
-                                    </label>
-                                    <div class="space-y-2">
-                                        <div>
-                                            <label class="block text-xs text-gray-500 mb-1">Image URL</label>
-                                            <input type="text" id="heading_image_url"
-                                                value="<%= post.image_url || '' %>"
-                                                placeholder="https://example.com/image.jpg"
-                                                onchange="previewHeadingImage()"
-                                                class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none text-sm">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-500 mb-1">Or Upload</label>
-                                            <input type="file" id="heading_image_file" accept="image/*"
-                                                onchange="handleImageUpload(this)"
-                                                class="w-full px-2 py-1 border border-gray-200 rounded-lg bg-white text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-teal-50 file:text-teal-700 file:font-medium hover:file:bg-teal-100">
-                                        </div>
+                            <!-- Heading Image -->
+                            <div class="pt-3 border-t border-gray-200">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-image mr-1 text-teal-600"></i> Heading Image
+                                </label>
+                                <div class="space-y-2">
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Image URL</label>
+                                        <input type="text" id="heading_image_url" value="<%= post.image_url || '' %>"
+                                            placeholder="https://example.com/image.jpg" onchange="previewHeadingImage()"
+                                            class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none text-sm">
                                     </div>
-                                    <div id="heading_image_preview" class="mt-2 hidden">
-                                        <p class="text-xs text-gray-500 mb-1">Preview:</p>
-                                        <img id="preview_img" src="" alt="Preview"
-                                            class="w-full max-h-32 object-cover rounded-lg border border-gray-200">
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Or Upload</label>
+                                        <input type="file" id="heading_image_file" accept="image/*"
+                                            onchange="handleImageUpload(this)"
+                                            class="w-full px-2 py-1 border border-gray-200 rounded-lg bg-white text-xs file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-teal-50 file:text-teal-700 file:font-medium hover:file:bg-teal-100">
                                     </div>
                                 </div>
-
-                                <!-- Info Alert -->
-                                <div id="notification" class="hidden p-4 rounded-lg bg-blue-50 text-blue-700 text-sm">
-                                    Saving...
+                                <div id="heading_image_preview" class="mt-2 hidden">
+                                    <p class="text-xs text-gray-500 mb-1">Preview:</p>
+                                    <img id="preview_img" src="" alt="Preview"
+                                        class="w-full max-h-32 object-cover rounded-lg border border-gray-200">
                                 </div>
                             </div>
+
+                            <!-- Info Alert -->
+                            <div id="notification" class="hidden p-4 rounded-lg bg-blue-50 text-blue-700 text-sm">
+                                Saving...
+                            </div>
                         </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -337,6 +349,7 @@
 
             const title = document.getElementById('title').value;
             const type = document.getElementById('type').value;
+            const sub_type = document.getElementById('sub_type') ? document.getElementById('sub_type').value : null;
             const date = document.getElementById('date').value;
             const slug = document.getElementById('slug').value;
             const excerpt = document.getElementById('excerpt').value;
@@ -353,6 +366,7 @@
             const data = {
                 title,
                 type,
+                sub_type,
                 date,
                 slug,
                 excerpt,
@@ -398,6 +412,16 @@
 
         // Bind function to window scope for onclick
         window.savePost = publishPost;
+
+        function toggleSubType() {
+            const type = document.getElementById('type').value;
+            const container = document.getElementById('sub_type_container');
+            if (type === 'CSR') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
 
     </script>
 

@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { Project, Post, Publication, TeamMember, FormSubmission, User, CustomForm, FormField, FormResponse, Comment } = require('../models');
+const { Project, Post, Publication, TeamMember, FormSubmission, User, CustomForm, FormField, FormResponse, Comment, GlobalSetting } = require('../models');
 const { sendWelcomeEmail, sendAccountDeletedEmail } = require('../utils/emailService');
 const { Parser } = require('json2csv');
 const fs = require('fs');
@@ -430,16 +430,40 @@ exports.deletePublication = async (req, res) => {
 
 exports.getPosts = async (req, res) => {
     try {
-        const posts = await Post.findAll({ order: [['date', 'DESC']] });
-        res.render('admin/posts/index', { posts, path: '/posts' });
+        const { type } = req.query;
+        const where = {};
+        if (type) where.type = type;
+
+        const posts = await Post.findAll({
+            where,
+            order: [['date', 'DESC']]
+        });
+        res.render('admin/posts/index', {
+            posts,
+            path: '/admin/posts',
+            displayType: type || 'Posts & News'
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
     }
 };
 
-exports.getNewPost = (req, res) => {
-    res.render('admin/posts/form', { post: {}, path: '/posts' });
+exports.getNewPost = async (req, res) => {
+    try {
+        const { type } = req.query;
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        const csrSections = csrSetting ? JSON.parse(csrSetting.value) : [];
+
+        res.render('admin/posts/form', {
+            post: { type: type || 'News' },
+            path: '/admin/posts',
+            csrSections
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
 };
 
 // Create Post (Legacy Form)
@@ -451,7 +475,7 @@ exports.postPost = async (req, res) => {
 
 exports.createPostApi = async (req, res) => {
     try {
-        const { title, type, date, slug, excerpt, content, status, heading_image, gallery_images } = req.body;
+        const { title, type, sub_type, date, slug, excerpt, content, status, heading_image, gallery_images } = req.body;
 
         let finalSlug = slug;
         if (!finalSlug && title) {
@@ -487,6 +511,7 @@ exports.createPostApi = async (req, res) => {
         const newPost = await Post.create({
             title,
             type: type || 'News',
+            sub_type: sub_type || null,
             date: date || new Date(),
             slug: finalSlug,
             excerpt,
@@ -504,7 +529,7 @@ exports.createPostApi = async (req, res) => {
 
 exports.updatePostApi = async (req, res) => {
     try {
-        const { title, type, date, slug, excerpt, content, status, heading_image } = req.body;
+        const { title, type, sub_type, date, slug, excerpt, content, status, heading_image } = req.body;
         const post = await Post.findByPk(req.params.id);
 
         if (!post) {
@@ -512,7 +537,7 @@ exports.updatePostApi = async (req, res) => {
         }
 
         const updateData = {
-            title, type, date, slug, excerpt, content, status
+            title, type, sub_type: sub_type || null, date, slug, excerpt, content, status
         };
 
         if (heading_image) {
@@ -532,11 +557,18 @@ exports.updatePostApi = async (req, res) => {
 };
 
 exports.getEditPost = async (req, res) => {
-    // ... existing getEditPost
     try {
         const post = await Post.findByPk(req.params.id);
         if (!post) return res.status(404).send('Post not found');
-        res.render('admin/posts/form', { post, path: '/posts' });
+
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        const csrSections = csrSetting ? JSON.parse(csrSetting.value) : [];
+
+        res.render('admin/posts/form', {
+            post,
+            path: '/admin/posts',
+            csrSections
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
@@ -981,39 +1013,59 @@ exports.updateTeamMemberApi = async (req, res) => {
 
 // --- SETTINGS (Profile & Security) ---
 
-exports.getSettings = (req, res) => {
-    res.render('admin/settings', { user: req.user, path: '/settings', success: req.query.success });
+exports.getSettings = async (req, res) => {
+    try {
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        const csrSections = csrSetting ? JSON.parse(csrSetting.value) : [];
+        res.render('admin/settings', {
+            user: req.user,
+            path: '/settings',
+            success: req.query.success,
+            error: req.query.error,
+            csrSections: csrSections
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
 };
 
 exports.postSettings = async (req, res) => {
     try {
-        const { email, password, new_password, confirm_password } = req.body;
+        const { email, password, new_password, confirm_password, csr_sections } = req.body;
         const user = await User.findByPk(req.user.id);
 
-        // Verify current password logic if strict, 
-        // but typically we just verify the user is logged in (which they are).
-        // However, standard practice is to ask for OLD password to change NEW password.
-
-        // Simple implementation: Just update if authenticated.
-
+        // Handle Profile Update
         const updateData = {};
         if (new_password) {
             if (new_password !== confirm_password) {
-                return res.render('admin/settings', { user: req.user, path: '/settings', error: 'Passwords do not match' });
+                return res.redirect('/admin/settings?error=Passwords+do+not+match');
             }
             const bcrypt = require('bcryptjs');
             updateData.password = await bcrypt.hash(new_password, 10);
         }
-
+        if (email && email !== user.email) {
+            updateData.email = email;
+        }
         await user.update(updateData);
-        res.redirect('/admin/settings?success=Profile updated');
+
+        // Handle Global Settings (CSR Sections)
+        if (csr_sections !== undefined) {
+            const sectionsArray = csr_sections.split(',').map(s => s.trim()).filter(s => s !== '');
+            const [setting, created] = await GlobalSetting.findOrCreate({
+                where: { key: 'csr_sections' },
+                defaults: { value: JSON.stringify(sectionsArray) }
+            });
+
+            if (!created) {
+                await setting.update({ value: JSON.stringify(sectionsArray) });
+            }
+        }
+
+        res.redirect('/admin/settings?success=Settings+updated');
     } catch (error) {
         console.error(error);
-        res.render('admin/settings', {
-            user: req.user,
-            path: '/settings',
-            error: 'Error updating settings'
-        });
+        res.redirect('/admin/settings?error=Error+updating+settings');
     }
 };
 

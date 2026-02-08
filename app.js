@@ -127,6 +127,19 @@ app.use(morgan('combined', { stream: logger.stream }));
 // Routes
 app.use('/', require('./src/routes/publicRoutes'));
 app.use('/admin', require('./src/routes/adminRoutes'));
+
+// Global Settings Middleware (Pass to all views)
+app.use(async (req, res, next) => {
+    try {
+        const { GlobalSetting } = require('./src/models');
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        res.locals.csrSections = csrSetting ? JSON.parse(csrSetting.value) : [];
+        next();
+    } catch (error) {
+        res.locals.csrSections = [];
+        next();
+    }
+});
 // Initialize Mail Cron Jobs and Tables
 if (process.env.ENABLE_MAIL_CLIENT === 'true') {
     app.use('/mail', require('./src/routes/mailRoutes'));

@@ -217,6 +217,49 @@ exports.getPartnerWithUs = (req, res) => {
     res.render('partner-with-us', { title: 'Partner With Us - MoRPH' });
 };
 
+exports.getTraining = async (req, res) => {
+    try {
+        const posts = await Post.findAll({
+            where: {
+                status: 'published',
+                type: 'Training'
+            },
+            order: [['date', 'DESC']]
+        });
+        res.render('news', { title: 'Training & Workshops', posts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getCSRSection = async (req, res) => {
+    try {
+        const subSection = req.params.sub_section;
+        // Normalize the subSection name (replace hyphens back to spaces if needed)
+        // However, we'll search by like or normalized title
+        const posts = await Post.findAll({
+            where: {
+                status: 'published',
+                type: 'CSR',
+                [Sequelize.Op.or]: [
+                    { sub_type: subSection },
+                    { sub_type: subSection.replace(/-/g, ' ') }
+                ]
+            },
+            order: [['date', 'DESC']]
+        });
+
+        // Find the actual sub-section name for the title
+        const displayTitle = subSection.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+        res.render('news', { title: `CSR: ${displayTitle}`, posts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
 exports.getEvents = async (req, res) => {
     try {
         const posts = await Post.findAll({

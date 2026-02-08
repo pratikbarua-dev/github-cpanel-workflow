@@ -106,8 +106,12 @@ const TeamMember = sequelize.define('team_member', {
 
 const Post = sequelize.define('post', {
     type: {
-        type: Sequelize.ENUM('News', 'Event', 'Article'),
+        type: Sequelize.ENUM('News', 'Event', 'Article', 'Training', 'CSR'),
         defaultValue: 'News'
+    },
+    sub_type: {
+        type: Sequelize.STRING,
+        allowNull: true
     },
     title: {
         type: Sequelize.STRING,
@@ -212,6 +216,17 @@ const Like = sequelize.define('like', {
     }
 });
 
+const GlobalSetting = sequelize.define('global_setting', {
+    key: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false
+    },
+    value: {
+        type: Sequelize.TEXT // JSON string for arrays/objects
+    }
+});
+
 // Associations
 CustomForm.hasMany(FormField, { onDelete: 'CASCADE' });
 FormField.belongsTo(CustomForm);
@@ -245,5 +260,6 @@ module.exports = {
     FormField,
     FormResponse,
     Comment,
-    Like
+    Like,
+    GlobalSetting
 };

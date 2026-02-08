@@ -38,10 +38,27 @@
         </li>
 
         <!-- Posts & News -->
-        <li class="list <%= path.startsWith('/posts') ? 'active' : '' %>">
+        <li
+            class="list <%= path === '/admin/posts' || (path.startsWith('/admin/posts') && !req.query.type) ? 'active' : '' %>">
             <a href="/admin/posts">
                 <span class="icon"><i class="fas fa-newspaper"></i></span>
                 <span class="title">Posts & News</span>
+            </a>
+        </li>
+
+        <!-- Training -->
+        <li class="list <%= req.query && req.query.type === 'Training' ? 'active' : '' %>">
+            <a href="/admin/posts?type=Training">
+                <span class="icon"><i class="fas fa-graduation-cap"></i></span>
+                <span class="title">Training</span>
+            </a>
+        </li>
+
+        <!-- CSR -->
+        <li class="list <%= req.query && req.query.type === 'CSR' ? 'active' : '' %>">
+            <a href="/admin/posts?type=CSR">
+                <span class="icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="title">CSR</span>
             </a>
         </li>
 
