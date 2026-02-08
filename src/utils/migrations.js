@@ -21,9 +21,11 @@ async function runMigrations(sequelize) {
             }
         };
 
-        // 1. Ensure 'posts' table has 'sub_type'
+        // 1. Ensure 'posts' table has 'sub_type' and correct 'type' ENUM
         if (await tableExists('posts')) {
             const postsTable = await queryInterface.describeTable('posts');
+
+            // Add sub_type if missing
             if (!postsTable.sub_type) {
                 logger.info('⚠️ Missing column "sub_type" in "posts" table. Adding it...');
                 await queryInterface.addColumn('posts', 'sub_type', {
@@ -31,6 +33,29 @@ async function runMigrations(sequelize) {
                     allowNull: true
                 });
                 logger.info('✅ Column "sub_type" added successfully.');
+            }
+
+            // Update type ENUM for MySQL (Sequelize often fails at this in production)
+            if (sequelize.options.dialect === 'mysql') {
+                logger.info('🔄 Checking "type" ENUM values in MySQL...');
+                try {
+                    // We can safely run this; it adds 'CSR' and 'Training' if they were missing
+                    await sequelize.query("ALTER TABLE posts MODIFY COLUMN type ENUM('News', 'Event', 'Article', 'Training', 'CSR') DEFAULT 'News'");
+                    logger.info('✅ Column "type" ENUM updated successfully.');
+
+                    // Fix existing posts that were saved with empty string due to ENUM mismatch
+                    const [results] = await sequelize.query("UPDATE posts SET type = 'CSR' WHERE (type = '' OR type IS NULL) AND sub_type IS NOT NULL AND sub_type != ''");
+                    if (results.affectedRows > 0) {
+                        logger.info(`✅ Repaired ${results.affectedRows} CSR posts with missing type.`);
+                    }
+
+                    const [newsResults] = await sequelize.query("UPDATE posts SET type = 'News' WHERE (type = '' OR type IS NULL) AND (sub_type IS NULL OR sub_type = '')");
+                    if (newsResults.affectedRows > 0) {
+                        logger.info(`✅ Repaired ${newsResults.affectedRows} News posts with missing type.`);
+                    }
+                } catch (err) {
+                    logger.error(`⚠️ Failed to update ENUM via raw query: ${err.message}`);
+                }
             }
         }
 
