@@ -45,35 +45,6 @@
                     <%= __('header.home') %>
                 </a>
 
-                <!-- Training -->
-                <a href="/training" class="nav-link <%= (locals.path === '/training') ? 'active' : '' %>">
-                    <%= __('header.training') %>
-                </a>
-
-                <!-- CSR Dropdown -->
-                <div class="relative group">
-                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
-                        <%= __('header.csr') %> <i
-                                class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
-                    </button>
-                    <div
-                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
-                        <% if (locals.csrSections && csrSections.length> 0) { %>
-                            <% csrSections.forEach(section=> { %>
-                                <a href="/csr/<%= section.toLowerCase().replace(/ /g, '-') %>"
-                                    class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">
-                                    <%= section %>
-                                </a>
-                                <% }); %>
-                                    <% } else { %>
-                                        <a href="/csr"
-                                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">
-                                            General
-                                        </a>
-                                        <% } %>
-                    </div>
-                </div>
-
                 <!-- About Dropdown -->
                 <div class="relative group">
                     <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
@@ -113,6 +84,35 @@
                             class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary last:rounded-b-xl border-t border-gray-50 transition-colors">
                             <%= __('header.publications') %>
                         </a>
+                    </div>
+                </div>
+
+                <!-- Training -->
+                <a href="/training" class="nav-link <%= (locals.path === '/training') ? 'active' : '' %>">
+                    <%= __('header.training') %>
+                </a>
+
+                <!-- CSR Dropdown -->
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-1 group-hover:text-primary focus:outline-none">
+                        <%= __('header.csr') %> <i
+                                class="fas fa-chevron-down text-xs opacity-75 transition-transform group-hover:rotate-180"></i>
+                    </button>
+                    <div
+                        class="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                        <% if (locals.csrSections && csrSections.length> 0) { %>
+                            <% csrSections.forEach(section=> { %>
+                                <a href="/csr/<%= section.toLowerCase().replace(/ /g, '-') %>"
+                                    class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">
+                                    <%= section %>
+                                </a>
+                                <% }); %>
+                                    <% } else { %>
+                                        <a href="/csr"
+                                            class="block px-5 py-3 text-secondary hover:bg-teal-50 hover:text-primary first:rounded-t-xl transition-colors">
+                                            General
+                                        </a>
+                                        <% } %>
                     </div>
                 </div>
 
@@ -180,36 +180,6 @@
                         <%= __('header.home') %>
                     </a>
 
-                    <!-- Training -->
-                    <a href="/training"
-                        class="block px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors">
-                        <%= __('header.training') %>
-                    </a>
-
-                    <!-- CSR Accordion -->
-                    <div class="mobile-dropdown group border-b border-gray-50">
-                        <button
-                            class="w-full flex justify-between items-center px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors mobile-dropdown-btn">
-                            <%= __('header.csr') %> <i
-                                    class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
-                        </button>
-                        <div class="hidden pl-4 space-y-1 mb-2 mobile-dropdown-content">
-                            <% if (locals.csrSections && csrSections.length> 0) { %>
-                                <% csrSections.forEach(section=> { %>
-                                    <a href="/csr/<%= section.toLowerCase().replace(/ /g, '-') %>"
-                                        class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
-                                        <%= section %>
-                                    </a>
-                                    <% }); %>
-                                        <% } else { %>
-                                            <a href="/csr"
-                                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
-                                                General
-                                            </a>
-                                            <% } %>
-                        </div>
-                    </div>
-
                     <!-- About Accordion -->
                     <div class="mobile-dropdown group border-b border-gray-50">
                         <button
@@ -249,6 +219,36 @@
                                 class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
                                 <%= __('header.publications') %>
                             </a>
+                        </div>
+                    </div>
+
+                    <!-- Training -->
+                    <a href="/training"
+                        class="block px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors">
+                        <%= __('header.training') %>
+                    </a>
+
+                    <!-- CSR Accordion -->
+                    <div class="mobile-dropdown group border-b border-gray-50">
+                        <button
+                            class="w-full flex justify-between items-center px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors mobile-dropdown-btn">
+                            <%= __('header.csr') %> <i
+                                    class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden pl-4 space-y-1 mb-2 mobile-dropdown-content">
+                            <% if (locals.csrSections && csrSections.length> 0) { %>
+                                <% csrSections.forEach(section=> { %>
+                                    <a href="/csr/<%= section.toLowerCase().replace(/ /g, '-') %>"
+                                        class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                        <%= section %>
+                                    </a>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <a href="/csr"
+                                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                                General
+                                            </a>
+                                            <% } %>
                         </div>
                     </div>
 
