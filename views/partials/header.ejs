@@ -180,6 +180,36 @@
                         <%= __('header.home') %>
                     </a>
 
+                    <!-- Training -->
+                    <a href="/training"
+                        class="block px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors">
+                        <%= __('header.training') %>
+                    </a>
+
+                    <!-- CSR Accordion -->
+                    <div class="mobile-dropdown group border-b border-gray-50">
+                        <button
+                            class="w-full flex justify-between items-center px-4 py-3 text-lg font-medium text-secondary hover:bg-gray-50 rounded-xl transition-colors mobile-dropdown-btn">
+                            <%= __('header.csr') %> <i
+                                    class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                        </button>
+                        <div class="hidden pl-4 space-y-1 mb-2 mobile-dropdown-content">
+                            <% if (locals.csrSections && csrSections.length> 0) { %>
+                                <% csrSections.forEach(section=> { %>
+                                    <a href="/csr/<%= section.toLowerCase().replace(/ /g, '-') %>"
+                                        class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                        <%= section %>
+                                    </a>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <a href="/csr"
+                                                class="block px-4 py-2 text-gray-600 hover:text-primary rounded-lg transition-colors">
+                                                General
+                                            </a>
+                                            <% } %>
+                        </div>
+                    </div>
+
                     <!-- About Accordion -->
                     <div class="mobile-dropdown group border-b border-gray-50">
                         <button
