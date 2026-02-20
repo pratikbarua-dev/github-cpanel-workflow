@@ -91,6 +91,8 @@ router.post('/submissions/:id/delete', ensureAuthenticated, adminController.dele
 router.get('/settings', ensureAuthenticated, adminController.getSettings);
 router.post('/settings', ensureAuthenticated, adminController.postSettings);
 router.post('/settings/csr-sections/api', ensureAuthenticated, express.json(), adminController.addCSRSectionApi);
+router.put('/settings/csr-sections/api', ensureAuthenticated, express.json(), adminController.updateCSRSectionApi);
+router.delete('/settings/csr-sections/api', ensureAuthenticated, express.json(), adminController.deleteCSRSectionApi);
 
 // Media Library
 router.get('/media', ensureAuthenticated, adminController.getMedia);

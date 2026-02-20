@@ -10,96 +10,340 @@
             </a>
         </div>
 
-        <!-- Posts Table -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
-                        <tr>
-                            <th class="px-6 py-3">Image</th>
-                            <th class="px-6 py-3">Title</th>
-                            <th class="px-6 py-3">Type</th>
-                            <th class="px-6 py-3">Status</th>
-                            <th class="px-6 py-3">Date</th>
-                            <th class="px-6 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <% if (posts.length> 0) { %>
-                            <% posts.forEach(function(post) { %>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4">
-                                        <img src="<%= post.image_url || 'https://placehold.co/100?text=No+Img' %>"
-                                            class="w-12 h-12 rounded object-cover border border-gray-200">
-                                    </td>
-                                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">
-                                        <%= post.title %>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <span
-                                            class="px-2 py-1 text-xs font-semibold rounded-full <%= post.type === 'Event' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' %>">
-                                            <%= post.type %>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        <%= post.date %>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <% if (post.status==='published' ) { %>
-                                            <span
-                                                class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Published</span>
-                                            <% } else if (post.status==='archived' ) { %>
-                                                <span
-                                                    class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Archived</span>
-                                                <% } else { %>
-                                                    <span
-                                                        class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">Draft</span>
-                                                    <% } %>
-                                    </td>
-                                    <td class="px-6 py-4 flex gap-3">
-                                        <!-- Quick Publish/Unpublish -->
-                                        <% if (post.status==='published' ) { %>
-                                            <form action="/admin/posts/<%= post.id %>/status" method="POST"
-                                                title="Unpublish (Set to Draft)">
-                                                <input type="hidden" name="status" value="draft">
-                                                <button type="submit" class="text-yellow-600 hover:text-yellow-800">
-                                                    <i class="fas fa-eye-slash"></i>
-                                                </button>
-                                            </form>
-                                            <% } else { %>
-                                                <form action="/admin/posts/<%= post.id %>/status" method="POST"
-                                                    title="Publish Now">
-                                                    <input type="hidden" name="status" value="published">
-                                                    <button type="submit" class="text-green-600 hover:text-green-800">
-                                                        <i class="fas fa-paper-plane"></i>
-                                                    </button>
-                                                </form>
-                                                <% } %>
-
-                                                    <a href="/admin/posts/<%= post.id %>/edit"
-                                                        class="text-blue-600 hover:text-blue-800" title="Edit">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form action="/admin/posts/<%= post.id %>/delete" method="POST"
-                                                        onsubmit="return confirm('Are you sure?');">
-                                                        <button type="submit" class="text-red-500 hover:text-red-700"
-                                                            title="Delete">
-                                                            <i class="fas fa-trash-alt"></i>
-                                                        </button>
-                                                    </form>
-                                    </td>
-                                </tr>
+        <% if (locals.displayType==='CSR' ) { %>
+            <!-- CSR Sections Management -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                <div class="flex justify-between items-center mb-4 cursor-pointer"
+                    onclick="document.getElementById('csr-sections-panel').classList.toggle('hidden')">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-layer-group text-teal-600"></i> CSR Sub-Sections
+                    </h2>
+                    <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                </div>
+                <div id="csr-sections-panel">
+                    <p class="text-sm text-gray-500 mb-4">Manage the categories appearing in the CSR dropdown on the
+                        public site.</p>
+                    <div class="space-y-2 mb-4" id="sections-list">
+                        <% if (locals.csrSections && csrSections.length> 0) { %>
+                            <% csrSections.forEach(section=> { %>
+                                <div class="flex items-center gap-2 section-item" data-section="<%= section %>">
+                                    <input type="text" value="<%= section %>" readonly
+                                        class="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm">
+                                    <button type="button" onclick="editSection(this)"
+                                        class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" onclick="deleteSection(this)"
+                                        class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
                                 <% }); %>
                                     <% } else { %>
-                                        <tr>
-                                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">No posts found.
+                                        <p class="text-sm text-gray-400 italic">No sections yet.</p>
+                                        <% } %>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="new-section-input" placeholder="e.g. Health Equity"
+                            class="flex-1 px-3 py-2 border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500 text-sm">
+                        <button type="button" onclick="addSection()"
+                            class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition text-sm">
+                            <i class="fas fa-plus mr-1"></i> Add
+                        </button>
+                    </div>
+                    <div id="csr-notification" class="hidden mt-3 p-3 rounded-lg text-sm"></div>
+                </div>
+            </div>
+            <% } %>
+
+                <!-- Posts Table -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                                <tr>
+                                    <th class="px-6 py-3">Image</th>
+                                    <th class="px-6 py-3">Title</th>
+                                    <th class="px-6 py-3">Type</th>
+                                    <th class="px-6 py-3">Status</th>
+                                    <th class="px-6 py-3">Date</th>
+                                    <th class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <% if (posts.length> 0) { %>
+                                    <% posts.forEach(function(post) { %>
+                                        <tr class="hover:bg-gray-50 transition">
+                                            <td class="px-6 py-4">
+                                                <img src="<%= post.image_url || 'https://placehold.co/100?text=No+Img' %>"
+                                                    class="w-12 h-12 rounded object-cover border border-gray-200">
+                                            </td>
+                                            <td class="px-6 py-4 text-sm font-semibold text-gray-800">
+                                                <%= post.title %>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <span
+                                                    class="px-2 py-1 text-xs font-semibold rounded-full <%= post.type === 'Event' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' %>">
+                                                    <%= post.type %>
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-600">
+                                                <%= post.date %>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <% if (post.status==='published' ) { %>
+                                                    <span
+                                                        class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Published</span>
+                                                    <% } else if (post.status==='archived' ) { %>
+                                                        <span
+                                                            class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Archived</span>
+                                                        <% } else { %>
+                                                            <span
+                                                                class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">Draft</span>
+                                                            <% } %>
+                                            </td>
+                                            <td class="px-6 py-4 flex gap-3">
+                                                <!-- Quick Publish/Unpublish -->
+                                                <% if (post.status==='published' ) { %>
+                                                    <form action="/admin/posts/<%= post.id %>/status" method="POST"
+                                                        title="Unpublish (Set to Draft)">
+                                                        <input type="hidden" name="status" value="draft">
+                                                        <button type="submit"
+                                                            class="text-yellow-600 hover:text-yellow-800">
+                                                            <i class="fas fa-eye-slash"></i>
+                                                        </button>
+                                                    </form>
+                                                    <% } else { %>
+                                                        <form action="/admin/posts/<%= post.id %>/status" method="POST"
+                                                            title="Publish Now">
+                                                            <input type="hidden" name="status" value="published">
+                                                            <button type="submit"
+                                                                class="text-green-600 hover:text-green-800">
+                                                                <i class="fas fa-paper-plane"></i>
+                                                            </button>
+                                                        </form>
+                                                        <% } %>
+
+                                                            <a href="/admin/posts/<%= post.id %>/edit"
+                                                                class="text-blue-600 hover:text-blue-800" title="Edit">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <form action="/admin/posts/<%= post.id %>/delete"
+                                                                method="POST"
+                                                                onsubmit="return confirm('Are you sure?');">
+                                                                <button type="submit"
+                                                                    class="text-red-500 hover:text-red-700"
+                                                                    title="Delete">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
+                                                            </form>
                                             </td>
                                         </tr>
-                                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">No posts
+                                                        found.
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
     </main>
 
-    <%- include('../partials/footer') %>
+    <% if (locals.displayType==='CSR' ) { %>
+
+        <!-- Edit Modal -->
+        <div id="editModal" class="fixed inset-0 z-50 hidden">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-modal">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-edit text-blue-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Rename Section</h3>
+                </div>
+                <p class="text-sm text-gray-500 mb-4">Enter a new name for <strong id="editModalOldName"></strong></p>
+                <input type="text" id="editModalInput"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-sm mb-6"
+                    placeholder="New section name">
+                <div class="flex justify-end gap-3">
+                    <button onclick="closeEditModal()"
+                        class="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-semibold transition">Cancel</button>
+                    <button onclick="confirmEdit()"
+                        class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Rename</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirm Modal -->
+        <div id="deleteModal" class="fixed inset-0 z-50 hidden">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-modal">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Delete Section</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">Are you sure you want to delete <strong
+                        id="deleteModalName"></strong>?</p>
+                <p class="text-xs text-red-500 mb-6"><i class="fas fa-info-circle mr-1"></i>All posts under this section
+                    will also be deleted.</p>
+                <div class="flex justify-end gap-3">
+                    <button onclick="closeDeleteModal()"
+                        class="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-semibold transition">Cancel</button>
+                    <button onclick="confirmDelete()"
+                        class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            @keyframes modalIn {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.95);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+
+            .animate-modal {
+                animation: modalIn 0.2s ease-out;
+            }
+        </style>
+
+        <script>
+            let _editOldName = '';
+            let _deleteSectionName = '';
+
+            function showCSRNotification(message, type) {
+                const el = document.getElementById('csr-notification');
+                el.className = 'mt-3 p-3 rounded-lg text-sm';
+                el.classList.add(type === 'success' ? 'bg-green-100' : 'bg-red-100');
+                el.classList.add(type === 'success' ? 'text-green-700' : 'text-red-700');
+                el.textContent = message;
+                el.classList.remove('hidden');
+                setTimeout(() => el.classList.add('hidden'), 3000);
+            }
+
+            async function addSection() {
+                const input = document.getElementById('new-section-input');
+                const value = input.value.trim();
+                if (!value) return;
+                try {
+                    const response = await fetch('/admin/settings/csr-sections/api', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ section: value })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        rebuildSectionsList(result.sections);
+                        input.value = '';
+                        showCSRNotification('Section added!', 'success');
+                    } else {
+                        showCSRNotification('Error: ' + result.error, 'error');
+                    }
+                } catch (e) { showCSRNotification('Server error', 'error'); }
+            }
+
+            // --- Edit Modal ---
+            function editSection(btn) {
+                const item = btn.closest('.section-item');
+                _editOldName = item.dataset.section;
+                document.getElementById('editModalOldName').textContent = '"' + _editOldName + '"';
+                document.getElementById('editModalInput').value = _editOldName;
+                document.getElementById('editModal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('editModalInput').select(), 100);
+            }
+            function closeEditModal() {
+                document.getElementById('editModal').classList.add('hidden');
+            }
+            async function confirmEdit() {
+                const newName = document.getElementById('editModalInput').value.trim();
+                if (!newName || newName === _editOldName) { closeEditModal(); return; }
+                try {
+                    const response = await fetch('/admin/settings/csr-sections/api', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ oldName: _editOldName, newName })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        rebuildSectionsList(result.sections);
+                        showCSRNotification('Section renamed!', 'success');
+                    } else {
+                        showCSRNotification('Error: ' + result.error, 'error');
+                    }
+                } catch (e) { showCSRNotification('Server error', 'error'); }
+                closeEditModal();
+            }
+
+            // --- Delete Modal ---
+            function deleteSection(btn) {
+                const item = btn.closest('.section-item');
+                _deleteSectionName = item.dataset.section;
+                document.getElementById('deleteModalName').textContent = '"' + _deleteSectionName + '"';
+                document.getElementById('deleteModal').classList.remove('hidden');
+            }
+            function closeDeleteModal() {
+                document.getElementById('deleteModal').classList.add('hidden');
+            }
+            async function confirmDelete() {
+                try {
+                    const response = await fetch('/admin/settings/csr-sections/api', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ section: _deleteSectionName })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        rebuildSectionsList(result.sections);
+                        showCSRNotification('Section deleted!', 'success');
+                        // Reload the page to update post list
+                        setTimeout(() => window.location.reload(), 800);
+                    } else {
+                        showCSRNotification('Error: ' + result.error, 'error');
+                    }
+                } catch (e) { showCSRNotification('Server error', 'error'); }
+                closeDeleteModal();
+            }
+
+            function rebuildSectionsList(sections) {
+                const container = document.getElementById('sections-list');
+                container.innerHTML = '';
+                if (sections.length === 0) {
+                    container.innerHTML = '<p class="text-sm text-gray-400 italic">No sections yet.</p>';
+                    return;
+                }
+                sections.forEach(s => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center gap-2 section-item';
+                    div.dataset.section = s;
+                    div.innerHTML = `
+                    <input type="text" value="${s}" readonly class="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm">
+                    <button type="button" onclick="editSection(this)" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button type="button" onclick="deleteSection(this)" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                `;
+                    container.appendChild(div);
+                });
+            }
+
+            // Close modals on Escape key
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') { closeEditModal(); closeDeleteModal(); }
+                if (e.key === 'Enter' && !document.getElementById('editModal').classList.contains('hidden')) confirmEdit();
+            });
+        </script>
+        <% } %>
+
+            <%- include('../partials/footer') %>

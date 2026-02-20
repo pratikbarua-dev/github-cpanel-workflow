@@ -62,62 +62,228 @@
                                 <p class="text-sm text-gray-500 mb-6">Manage the categories appearing in the CSR
                                     dropdown on the public site and in the post editor.</p>
 
-                                <form action="/admin/settings" method="POST" id="csr-settings-form">
-                                    <div class="space-y-4 mb-6" id="sections-list">
-                                        <% csrSections.forEach((section, index)=> { %>
-                                            <div class="flex items-center gap-2 section-item">
-                                                <input type="text" name="csr_sections[]" value="<%= section %>"
-                                                    class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 bg-gray-50">
-                                                <button type="button" onclick="this.parentElement.remove()"
-                                                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
-                                                    title="Remove">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </div>
-                                            <% }); %>
-                                    </div>
+                                <div class="space-y-3 mb-6" id="sections-list">
+                                    <% csrSections.forEach((section, index)=> { %>
+                                        <div class="flex items-center gap-2 section-item" data-section="<%= section %>">
+                                            <input type="text" value="<%= section %>" readonly
+                                                class="section-name-input flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 bg-gray-50">
+                                            <button type="button" onclick="editSection(this)"
+                                                class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition"
+                                                title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" onclick="deleteSection(this)"
+                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
+                                                title="Delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <% }); %>
+                                </div>
 
-                                    <div class="flex gap-2 mb-8">
-                                        <input type="text" id="new-section-input" placeholder="e.g. Health Equity"
-                                            class="flex-1 px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500">
-                                        <button type="button" onclick="addSection()"
-                                            class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition">
-                                            <i class="fas fa-plus mr-1"></i> Add
-                                        </button>
-                                    </div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="new-section-input" placeholder="e.g. Health Equity"
+                                        class="flex-1 px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500">
+                                    <button type="button" onclick="addSection()"
+                                        class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition">
+                                        <i class="fas fa-plus mr-1"></i> Add
+                                    </button>
+                                </div>
 
-                                    <div class="flex justify-end pt-4 border-t border-gray-50">
-                                        <button type="submit"
-                                            class="bg-teal-600 text-white px-8 py-2.5 rounded-lg font-bold hover:bg-teal-700 transition shadow-md">
-                                            Save All Sections
-                                        </button>
-                                    </div>
-                                </form>
+                                <div id="csr-notification" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
                             </div>
                         </div>
 
+
                         <script>
-                            function addSection() {
+                            let _settingsEditOldName = '';
+                            let _settingsDeleteSection = '';
+
+                            function showCSRNotification(message, type) {
+                                const el = document.getElementById('csr-notification');
+                                el.className = 'mt-4 p-3 rounded-lg text-sm';
+                                el.classList.add(type === 'success' ? 'bg-green-100' : 'bg-red-100');
+                                el.classList.add(type === 'success' ? 'text-green-700' : 'text-red-700');
+                                el.textContent = message;
+                                el.classList.remove('hidden');
+                                setTimeout(() => el.classList.add('hidden'), 3000);
+                            }
+
+                            async function addSection() {
                                 const input = document.getElementById('new-section-input');
                                 const value = input.value.trim();
                                 if (!value) return;
-
-                                const container = document.getElementById('sections-list');
-                                const div = document.createElement('div');
-                                div.className = 'flex items-center gap-2 section-item';
-                                div.innerHTML = `
-                                    <input type="text" name="csr_sections[]" value="${value}" 
-                                        class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 bg-gray-50">
-                                    <button type="button" onclick="this.parentElement.remove()" 
-                                        class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Remove">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                `;
-                                container.appendChild(div);
-                                input.value = '';
-                                input.focus();
+                                try {
+                                    const response = await fetch('/admin/settings/csr-sections/api', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ section: value })
+                                    });
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        rebuildSectionsList(result.sections);
+                                        input.value = '';
+                                        showCSRNotification('Section added successfully!', 'success');
+                                    } else {
+                                        showCSRNotification('Error: ' + result.error, 'error');
+                                    }
+                                } catch (error) {
+                                    showCSRNotification('Server error', 'error');
+                                }
                             }
+
+                            function editSection(btn) {
+                                const item = btn.closest('.section-item');
+                                _settingsEditOldName = item.dataset.section;
+                                document.getElementById('settingsEditOldName').textContent = '"' + _settingsEditOldName + '"';
+                                document.getElementById('settingsEditInput').value = _settingsEditOldName;
+                                document.getElementById('settingsEditModal').classList.remove('hidden');
+                                setTimeout(() => document.getElementById('settingsEditInput').select(), 100);
+                            }
+                            function closeSettingsEditModal() { document.getElementById('settingsEditModal').classList.add('hidden'); }
+                            async function confirmSettingsEdit() {
+                                const newName = document.getElementById('settingsEditInput').value.trim();
+                                if (!newName || newName === _settingsEditOldName) { closeSettingsEditModal(); return; }
+                                try {
+                                    const response = await fetch('/admin/settings/csr-sections/api', {
+                                        method: 'PUT',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ oldName: _settingsEditOldName, newName })
+                                    });
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        rebuildSectionsList(result.sections);
+                                        showCSRNotification('Section renamed successfully!', 'success');
+                                    } else {
+                                        showCSRNotification('Error: ' + result.error, 'error');
+                                    }
+                                } catch (error) {
+                                    showCSRNotification('Server error', 'error');
+                                }
+                                closeSettingsEditModal();
+                            }
+
+                            function deleteSection(btn) {
+                                const item = btn.closest('.section-item');
+                                _settingsDeleteSection = item.dataset.section;
+                                document.getElementById('settingsDeleteName').textContent = '"' + _settingsDeleteSection + '"';
+                                document.getElementById('settingsDeleteModal').classList.remove('hidden');
+                            }
+                            function closeSettingsDeleteModal() { document.getElementById('settingsDeleteModal').classList.add('hidden'); }
+                            async function confirmSettingsDelete() {
+                                try {
+                                    const response = await fetch('/admin/settings/csr-sections/api', {
+                                        method: 'DELETE',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ section: _settingsDeleteSection })
+                                    });
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        rebuildSectionsList(result.sections);
+                                        showCSRNotification('Section deleted successfully!', 'success');
+                                    } else {
+                                        showCSRNotification('Error: ' + result.error, 'error');
+                                    }
+                                } catch (error) {
+                                    showCSRNotification('Server error', 'error');
+                                }
+                                closeSettingsDeleteModal();
+                            }
+
+                            function rebuildSectionsList(sections) {
+                                const container = document.getElementById('sections-list');
+                                container.innerHTML = '';
+                                sections.forEach(section => {
+                                    const div = document.createElement('div');
+                                    div.className = 'flex items-center gap-2 section-item';
+                                    div.dataset.section = section;
+                                    div.innerHTML = `
+                                        <input type="text" value="${section}" readonly
+                                            class="section-name-input flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 bg-gray-50">
+                                        <button type="button" onclick="editSection(this)"
+                                            class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" onclick="deleteSection(this)"
+                                            class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    `;
+                                    container.appendChild(div);
+                                });
+                            }
+
+                            document.addEventListener('keydown', e => {
+                                if (e.key === 'Escape') { closeSettingsEditModal(); closeSettingsDeleteModal(); }
+                                if (e.key === 'Enter' && !document.getElementById('settingsEditModal').classList.contains('hidden')) confirmSettingsEdit();
+                            });
                         </script>
+
+                        <!-- Settings Edit Modal -->
+                        <div id="settingsEditModal" class="fixed inset-0 z-50 hidden">
+                            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                                onclick="closeSettingsEditModal()"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
+                                style="animation: modalIn 0.2s ease-out">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-edit text-blue-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800">Rename Section</h3>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-4">Enter a new name for <strong
+                                        id="settingsEditOldName"></strong></p>
+                                <input type="text" id="settingsEditInput"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-sm mb-6"
+                                    placeholder="New section name">
+                                <div class="flex justify-end gap-3">
+                                    <button onclick="closeSettingsEditModal()"
+                                        class="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-semibold transition">Cancel</button>
+                                    <button onclick="confirmSettingsEdit()"
+                                        class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Rename</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings Delete Modal -->
+                        <div id="settingsDeleteModal" class="fixed inset-0 z-50 hidden">
+                            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                                onclick="closeSettingsDeleteModal()"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
+                                style="animation: modalIn 0.2s ease-out">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800">Delete Section</h3>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">Are you sure you want to delete <strong
+                                        id="settingsDeleteName"></strong>?</p>
+                                <p class="text-xs text-red-500 mb-6"><i class="fas fa-info-circle mr-1"></i>All posts
+                                    under this section will also be deleted.</p>
+                                <div class="flex justify-end gap-3">
+                                    <button onclick="closeSettingsDeleteModal()"
+                                        class="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-semibold transition">Cancel</button>
+                                    <button onclick="confirmSettingsDelete()"
+                                        class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <style>
+                            @keyframes modalIn {
+                                from {
+                                    opacity: 0;
+                                    transform: translate(-50%, -50%) scale(0.95);
+                                }
+
+                                to {
+                                    opacity: 1;
+                                    transform: translate(-50%, -50%) scale(1);
+                                }
+                            }
+                        </style>
+
     </main>
 
-    <%- include('../partials/footer') %>
+    <%- include('partials/footer') %>

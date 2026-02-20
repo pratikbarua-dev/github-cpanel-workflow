@@ -239,8 +239,23 @@ exports.getTraining = async (req, res) => {
 exports.getCSRSection = async (req, res) => {
     try {
         const subSection = req.params.sub_section;
+
+        // Check if this section slug has been renamed — redirect if so
+        const { GlobalSetting } = require('../models');
+        const redirectSetting = await GlobalSetting.findOne({ where: { key: 'csr_section_redirects' } });
+        if (redirectSetting) {
+            const redirects = JSON.parse(redirectSetting.value);
+            let target = subSection.toLowerCase();
+            // Follow redirect chain (in case of multiple renames)
+            while (redirects[target]) {
+                target = redirects[target];
+            }
+            if (target !== subSection.toLowerCase()) {
+                return res.redirect(301, `/csr/${target}`);
+            }
+        }
+
         // Normalize the subSection name (replace hyphens back to spaces if needed)
-        // However, we'll search by like or normalized title
         const posts = await Post.findAll({
             where: {
                 status: 'published',

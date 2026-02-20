@@ -597,8 +597,10 @@ exports.updatePost = async (req, res) => {
 
 exports.deletePost = async (req, res) => {
     try {
+        const post = await Post.findByPk(req.params.id);
+        const type = post ? post.type : null;
         await Post.destroy({ where: { id: req.params.id } });
-        res.redirect('/admin/posts');
+        res.redirect(type ? `/admin/posts?type=${type}` : '/admin/posts');
     } catch (error) {
         console.error(error);
         res.status(500).send('Error deleting post');
@@ -1101,6 +1103,86 @@ exports.addCSRSectionApi = async (req, res) => {
         res.status(500).json({ success: false, error: 'Server Error' });
     }
 };
+
+exports.updateCSRSectionApi = async (req, res) => {
+    try {
+        const { oldName, newName } = req.body;
+        if (!oldName || !newName || oldName.trim() === '' || newName.trim() === '') {
+            return res.status(400).json({ success: false, error: 'Both old and new section names are required' });
+        }
+
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        if (!csrSetting) {
+            return res.status(404).json({ success: false, error: 'No CSR sections found' });
+        }
+
+        let sections = JSON.parse(csrSetting.value);
+        const index = sections.indexOf(oldName.trim());
+        if (index === -1) {
+            return res.status(404).json({ success: false, error: 'Section not found' });
+        }
+
+        sections[index] = newName.trim();
+        await csrSetting.update({ value: JSON.stringify(sections) });
+
+        // Also update all posts that belong to the old section name
+        await Post.update(
+            { sub_type: newName.trim() },
+            { where: { type: 'CSR', sub_type: oldName.trim() } }
+        );
+
+        // Store redirect mapping so old URLs point to the new section
+        const oldSlug = oldName.trim().toLowerCase().replace(/\s+/g, '-');
+        const newSlug = newName.trim().toLowerCase().replace(/\s+/g, '-');
+        if (oldSlug !== newSlug) {
+            const redirectSetting = await GlobalSetting.findOne({ where: { key: 'csr_section_redirects' } });
+            let redirects = redirectSetting ? JSON.parse(redirectSetting.value) : {};
+            redirects[oldSlug] = newSlug;
+            if (redirectSetting) {
+                await redirectSetting.update({ value: JSON.stringify(redirects) });
+            } else {
+                await GlobalSetting.create({ key: 'csr_section_redirects', value: JSON.stringify(redirects) });
+            }
+        }
+
+        res.json({ success: true, sections });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Server Error' });
+    }
+};
+
+exports.deleteCSRSectionApi = async (req, res) => {
+    try {
+        const { section } = req.body;
+        if (!section || section.trim() === '') {
+            return res.status(400).json({ success: false, error: 'Section name is required' });
+        }
+
+        const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
+        if (!csrSetting) {
+            return res.status(404).json({ success: false, error: 'No CSR sections found' });
+        }
+
+        let sections = JSON.parse(csrSetting.value);
+        const index = sections.indexOf(section.trim());
+        if (index === -1) {
+            return res.status(404).json({ success: false, error: 'Section not found' });
+        }
+
+        sections.splice(index, 1);
+        await csrSetting.update({ value: JSON.stringify(sections) });
+
+        // Also delete all posts belonging to this CSR section
+        await Post.destroy({ where: { type: 'CSR', sub_type: section.trim() } });
+
+        res.json({ success: true, sections });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Server Error' });
+    }
+};
+
 
 // --- MEDIA LIBRARY ---
 
