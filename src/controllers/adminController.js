@@ -790,7 +790,7 @@ exports.getNewTeamMember = (req, res) => {
 
 exports.postTeamMember = async (req, res) => {
     try {
-        const { name, role, bio, display_order } = req.body;
+        const { name, role, bio, display_order, email, linkedin } = req.body;
         const imageData = req.file ? `/uploads/${req.file.filename}` : null;
 
         await TeamMember.create({
@@ -798,6 +798,8 @@ exports.postTeamMember = async (req, res) => {
             role,
             bio,
             display_order: display_order || 0,
+            email,
+            linkedin,
             image_url: imageData || 'https://placehold.co/150'
         });
 
@@ -821,12 +823,12 @@ exports.getEditTeamMember = async (req, res) => {
 
 exports.updateTeamMember = async (req, res) => {
     try {
-        const { name, role, bio, display_order } = req.body;
+        const { name, role, bio, display_order, email, linkedin } = req.body;
         const member = await TeamMember.findByPk(req.params.id);
 
         if (!member) return res.status(404).send('Member not found');
 
-        const updateData = { name, role, bio, display_order };
+        const updateData = { name, role, bio, display_order, email, linkedin };
         if (req.file) {
             updateData.image_url = `/uploads/${req.file.filename}`;
         }

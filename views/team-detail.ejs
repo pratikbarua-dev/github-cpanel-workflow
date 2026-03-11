@@ -60,14 +60,13 @@
 
                                     <!-- Social Links -->
                                     <div class="flex gap-4 mt-auto pt-6 border-t border-gray-100">
-                                        <a href="#"
-                                            class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all">
-                                            <i class="fas fa-envelope"></i>
-                                        </a>
-                                        <a href="#"
-                                            class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-blue-600 hover:text-white transition-all">
-                                            <i class="fab fa-linkedin-in"></i>
-                                        </a>
+                                        <% if (member.email) { %>
+                                            <a href="mailto:<%= member.email %>"
+                                                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all"
+                                                title="<%= member.email %>">
+                                                <i class="fas fa-envelope"></i>
+                                            </a>
+                                            <% } %>
                                     </div>
                         </div>
                     </div>

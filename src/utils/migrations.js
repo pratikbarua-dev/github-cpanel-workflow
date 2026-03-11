@@ -88,6 +88,29 @@ async function runMigrations(sequelize) {
             logger.info('✅ Table "global_settings" created successfully.');
         }
 
+        // 3. Ensure 'team_members' table has 'email' and 'linkedin' columns
+        if (await tableExists('team_members')) {
+            const teamTable = await queryInterface.describeTable('team_members');
+
+            if (!teamTable.email) {
+                logger.info('⚠️ Missing column "email" in "team_members" table. Adding it...');
+                await queryInterface.addColumn('team_members', 'email', {
+                    type: DataTypes.STRING,
+                    allowNull: true
+                });
+                logger.info('✅ Column "email" added successfully.');
+            }
+
+            if (!teamTable.linkedin) {
+                logger.info('⚠️ Missing column "linkedin" in "team_members" table. Adding it...');
+                await queryInterface.addColumn('team_members', 'linkedin', {
+                    type: DataTypes.STRING,
+                    allowNull: true
+                });
+                logger.info('✅ Column "linkedin" added successfully.');
+            }
+        }
+
         logger.info('✅ Database schema check complete.');
     } catch (error) {
         logger.error(`❌ Migration process encountered an error: ${error.message}`);

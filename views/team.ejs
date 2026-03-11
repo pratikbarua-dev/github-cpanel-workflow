@@ -46,12 +46,22 @@
                                     <h3 class="text-xl font-bold text-secondary mb-1">
                                         <%= member.name %>
                                     </h3>
-                                    <p class="text-primary font-medium text-sm mb-4 uppercase tracking-wide">
+                                    <p class="text-primary font-medium text-sm mb-2 uppercase tracking-wide">
                                         <%= member.role %>
                                     </p>
 
+                                    <!-- Social Links -->
+                                    <div class="flex justify-center gap-3 mb-4">
+                                        <% if (member.email) { %>
+                                            <span class="text-teal-600 hover:text-teal-700 transition-colors"
+                                                title="<%= member.email %>">
+                                                <i class="fas fa-envelope"></i>
+                                            </span>
+                                            <% } %>
+                                    </div>
+
                                     <% if (member.bio) { %>
-                                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-4 mt-auto">
+                                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mt-auto">
                                             <%- member.bio %>
                                         </p>
                                         <% } %>

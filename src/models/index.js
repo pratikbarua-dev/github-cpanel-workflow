@@ -98,6 +98,12 @@ const TeamMember = sequelize.define('team_member', {
     education: {
         type: Sequelize.TEXT('long')
     },
+    email: {
+        type: Sequelize.STRING
+    },
+    linkedin: {
+        type: Sequelize.STRING
+    },
     display_order: {
         type: Sequelize.INTEGER,
         defaultValue: 0
