@@ -111,6 +111,27 @@ async function runMigrations(sequelize) {
             }
         }
 
+        // 4. Ensure 'image_url' columns are LONGTEXT for all relevant tables
+        const tablesToUpdate = ['posts', 'team_members', 'projects', 'publications'];
+        for (const tableName of tablesToUpdate) {
+            if (await tableExists(tableName)) {
+                const tableInfo = await queryInterface.describeTable(tableName);
+                if (tableInfo.image_url) {
+                    // For MySQL, we want to ensure it's LONGTEXT. 
+                    // describeTable for MySQL returns 'longtext' if it's LONGTEXT.
+                    const currentType = tableInfo.image_url.type.toLowerCase();
+                    if (!currentType.includes('text') && !currentType.includes('longtext')) {
+                        logger.info(`🔄 Updating "image_url" in "${tableName}" to LONGTEXT...`);
+                        await queryInterface.changeColumn(tableName, 'image_url', {
+                            type: DataTypes.TEXT('long'),
+                            allowNull: true
+                        });
+                        logger.info(`✅ Table "${tableName}" image_url updated successfully.`);
+                    }
+                }
+            }
+        }
+
         logger.info('✅ Database schema check complete.');
     } catch (error) {
         logger.error(`❌ Migration process encountered an error: ${error.message}`);

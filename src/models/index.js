@@ -48,7 +48,7 @@ const Project = sequelize.define('project', {
         type: Sequelize.TEXT('long')
     },
     image_url: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long')
     }
 });
 
@@ -74,7 +74,7 @@ const Publication = sequelize.define('publication', {
         defaultValue: false
     },
     image_url: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long')
     },
     heading_image: {
         type: Sequelize.TEXT('long') // Can store base64 or URL
@@ -93,7 +93,7 @@ const TeamMember = sequelize.define('team_member', {
         type: Sequelize.TEXT('long')
     },
     image_url: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long')
     },
     education: {
         type: Sequelize.TEXT('long')
@@ -144,7 +144,7 @@ const Post = sequelize.define('post', {
         defaultValue: 'draft'
     },
     image_url: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long')
     }
 });
 
