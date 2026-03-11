@@ -53,11 +53,19 @@
                                     <!-- Social Links -->
                                     <div class="flex justify-center gap-3 mb-4">
                                         <% if (member.email) { %>
-                                            <span class="text-teal-600 hover:text-teal-700 transition-colors"
+                                            <a href="mailto:<%= member.email %>"
+                                                class="text-teal-600 hover:text-teal-700 transition-colors"
                                                 title="<%= member.email %>">
                                                 <i class="fas fa-envelope"></i>
-                                            </span>
+                                            </a>
                                             <% } %>
+                                                <% if (member.linkedin) { %>
+                                                    <a href="<%= member.linkedin %>" target="_blank"
+                                                        class="text-blue-600 hover:text-blue-700 transition-colors"
+                                                        title="LinkedIn Profile">
+                                                        <i class="fab fa-linkedin-in"></i>
+                                                    </a>
+                                                    <% } %>
                                     </div>
 
                                     <% if (member.bio) { %>
