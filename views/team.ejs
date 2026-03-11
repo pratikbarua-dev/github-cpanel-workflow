@@ -61,9 +61,10 @@
                                     </div>
 
                                     <% if (member.bio) { %>
-                                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mt-auto">
+                                        <div class="text-gray-600 text-sm leading-relaxed overflow-hidden mt-auto"
+                                            style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">
                                             <%- member.bio %>
-                                        </p>
+                                        </div>
                                         <% } %>
                                 </div>
                             </a>
