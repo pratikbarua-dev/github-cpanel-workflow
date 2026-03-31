@@ -44,14 +44,20 @@ async function runTasks() {
 
     // B. Process Scheduled Emails
     try {
+        // 1. Mark as processing to prevent other instances from picking it up
+        // Note: In SQLite/MySQL, we can do this atomically or just trust the leader election.
+        // But adding a 'processing' status is safer.
         const rows = await db.query("SELECT * FROM scheduled_emails WHERE status='pending' AND scheduled_time <= ?", [Date.now()]);
 
         if (rows && rows.length > 0) {
             for (const row of rows) {
                 try {
+                    // Update to 'processing' first
+                    await db.query("UPDATE scheduled_emails SET status='processing' WHERE id=?", [row.id]);
+
                     let transporter = nodemailer.createTransport({
                         host: HOST,
-                        port: 465, // Assume secure for now
+                        port: 465,
                         secure: true,
                         auth: { user: EMAIL_USER, pass: EMAIL_PASS },
                         tls: { rejectUnauthorized: false }
@@ -70,6 +76,8 @@ async function runTasks() {
 
                 } catch (e) {
                     logger.error(`[MailCron] Failed to send scheduled email ${row.id}: ${e.message}`);
+                    // If it failed, we can set it back to pending for retry, but the user wants to STOP everything.
+                    // So we'll set it to 'failed' to prevent infinite loops.
                     await db.query("UPDATE scheduled_emails SET status='failed' WHERE id=?", [row.id]);
                 }
             }

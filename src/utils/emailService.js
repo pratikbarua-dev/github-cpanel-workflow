@@ -3,7 +3,12 @@ const { Resend } = require('resend');
 // Initialize Resend safely
 let resend;
 try {
-    if (process.env.RESEND_API_KEY) {
+    // GLOBAL KILL SWITCH: Stop all emails immediately as requested by user
+    const DISABLE_ALL_EMAILS = true;
+
+    if (DISABLE_ALL_EMAILS) {
+        console.warn('CRITICAL: All email systems have been SHUT DOWN by global kill switch.');
+    } else if (process.env.RESEND_API_KEY) {
         resend = new Resend(process.env.RESEND_API_KEY);
     } else {
         console.warn('WARNING: RESEND_API_KEY is missing. Email service will not work.');
@@ -80,7 +85,7 @@ const getAutoReplyTemplate = (name, content) => {
 
 exports.sendEmail = async (to, subject, html) => {
     if (!resend) {
-        console.error('Cannot send email: Resend client not initialized (Missing API Key)');
+        console.warn('[EmailSystem] Email blocked: System is currently SHUT DOWN.');
         return;
     }
 

@@ -66,6 +66,20 @@ i18n.configure({
 
 const app = express();
 
+// Maintenance Mode Middleware
+app.use((req, res, next) => {
+    if (process.env.MAINTENANCE_MODE === 'true') {
+        // Allow health check even in maintenance
+        if (req.path === '/ping') return next();
+
+        return res.status(503).render('maintenance', {
+            title: 'System Maintenance',
+            message: 'MoRPH is currently undergoing maintenance. We will be back shortly.'
+        });
+    }
+    next();
+});
+
 // Middleware
 app.use(cors({
     origin: ['https://www.facebook.com', 'https://m.facebook.com', 'https://mbasic.facebook.com', 'http://localhost:3000', 'https://morphbangladesh.org'],
@@ -151,7 +165,8 @@ app.use('/', require('./src/routes/publicRoutes'));
 app.use('/admin', require('./src/routes/adminRoutes'));
 
 // Initialize Mail Cron Jobs and Tables
-if (process.env.ENABLE_MAIL_CLIENT === 'true') {
+// FORCE DISABLED BY ADMIN REQUEST
+if (process.env.ENABLE_MAIL_CLIENT === 'true' && false) {
     app.use('/mail', require('./src/routes/mailRoutes'));
 
     const mailCron = require('./src/services/mailCron');
