@@ -3469,16 +3469,19 @@ video {
 
 /* Quill alignment classes to support editor-aligned content on public pages */
 
-.ql-align-center {
-  text-align: center;
+.ql-align-center,
+.prose .ql-align-center {
+  text-align: center !important;
 }
 
-.ql-align-right {
-  text-align: right;
+.ql-align-right,
+.prose .ql-align-right {
+  text-align: right !important;
 }
 
-.ql-align-justify {
-  text-align: justify;
+.ql-align-justify,
+.prose .ql-align-justify {
+  text-align: justify !important;
 }
 
 .selection\:text-white *::-moz-selection {
