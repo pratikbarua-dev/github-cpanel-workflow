@@ -3470,17 +3470,23 @@ video {
 /* Quill alignment classes to support editor-aligned content on public pages */
 
 .ql-align-center,
-.prose .ql-align-center {
+.prose .ql-align-center,
+.prose p.ql-align-center,
+[class*="ql-align-center"] {
   text-align: center !important;
 }
 
 .ql-align-right,
-.prose .ql-align-right {
+.prose .ql-align-right,
+.prose p.ql-align-right,
+[class*="ql-align-right"] {
   text-align: right !important;
 }
 
 .ql-align-justify,
-.prose .ql-align-justify {
+.prose .ql-align-justify,
+.prose p.ql-align-justify,
+[class*="ql-align-justify"] {
   text-align: justify !important;
 }
 
