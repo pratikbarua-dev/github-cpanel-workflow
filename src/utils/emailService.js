@@ -90,7 +90,15 @@ exports.sendEmail = async (to, subject, html, attachments = []) => {
     }
 
     // Get from address from env or use default
-    const fromAddress = process.env.EMAIL_FROM || 'MoRPH <info@morphbangladesh.org>';
+    let fromAddress = process.env.EMAIL_FROM || 'MoRPH';
+    const emailUser = process.env.EMAIL_USER || 'info@morphbangladesh.org';
+
+    // If EMAIL_FROM is just a name (no @), combine it with EMAIL_USER
+    if (fromAddress && !fromAddress.includes('@')) {
+        fromAddress = `${fromAddress} <${emailUser}>`;
+    } else if (!fromAddress) {
+        fromAddress = `MoRPH <${emailUser}>`;
+    }
 
     console.log(`Attempting to send email via Resend to: ${to}`);
     try {
