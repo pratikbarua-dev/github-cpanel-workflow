@@ -3,8 +3,8 @@ const { Resend } = require('resend');
 // Initialize Resend safely
 let resend;
 try {
-    // GLOBAL KILL SWITCH: Stop all emails immediately as requested by user
-    const DISABLE_ALL_EMAILS = true;
+    // GLOBAL KILL SWITCH: Disable this to allow emails
+    const DISABLE_ALL_EMAILS = false;
 
     if (DISABLE_ALL_EMAILS) {
         console.warn('CRITICAL: All email systems have been SHUT DOWN by global kill switch.');
@@ -83,7 +83,7 @@ const getAutoReplyTemplate = (name, content) => {
     `;
 };
 
-exports.sendEmail = async (to, subject, html) => {
+exports.sendEmail = async (to, subject, html, attachments = []) => {
     if (!resend) {
         console.warn('[EmailSystem] Email blocked: System is currently SHUT DOWN.');
         return;
@@ -94,12 +94,18 @@ exports.sendEmail = async (to, subject, html) => {
 
     console.log(`Attempting to send email via Resend to: ${to}`);
     try {
-        const { data, error } = await resend.emails.send({
+        const mailOptions = {
             from: fromAddress,
             to: [to],
             subject: subject,
             html: html
-        });
+        };
+
+        if (attachments && attachments.length > 0) {
+            mailOptions.attachments = attachments;
+        }
+
+        const { data, error } = await resend.emails.send(mailOptions);
 
         if (error) {
             console.error('Resend API Error:', error);
