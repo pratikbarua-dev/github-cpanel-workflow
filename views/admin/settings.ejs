@@ -101,7 +101,7 @@
                                 <p class="text-sm text-gray-500 mb-6">Manage the options appearing in the "Application Type" dropdown on the public /apply form.</p>
 
                                 <div class="space-y-3 mb-6" id="app-types-list">
-                                    <% applicationTypes.forEach((type, index)=> { %>
+                                    <% (locals.applicationTypes || ['Volunteer', 'Internship', 'Partnership', 'Researcher']).forEach((type, index)=> { %>
                                         <div class="flex items-center gap-2 app-type-item" data-type="<%= type %>">
                                             <input type="text" value="<%= type %>" readonly
                                                 class="type-name-input flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 bg-gray-50">
