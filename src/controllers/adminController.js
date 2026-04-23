@@ -1023,7 +1023,7 @@ exports.getSettings = async (req, res) => {
         const csrSections = csrSetting ? JSON.parse(csrSetting.value) : [];
 
         const appTypesSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
-        const applicationTypes = appTypesSetting ? JSON.parse(appTypesSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'];
+        const applicationTypes = appTypesSetting ? JSON.parse(appTypesSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher'];
 
         res.render('admin/settings', {
             user: req.user,
@@ -1200,7 +1200,7 @@ exports.addApplicationTypeApi = async (req, res) => {
         }
 
         const appSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
-        let types = appSetting ? JSON.parse(appSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'];
+        let types = appSetting ? JSON.parse(appSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher'];
 
         const newType = type.trim();
         if (!types.includes(newType)) {
@@ -1227,7 +1227,7 @@ exports.updateApplicationTypeApi = async (req, res) => {
         }
 
         const appSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
-        let types = appSetting ? JSON.parse(appSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'];
+        let types = appSetting ? JSON.parse(appSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher'];
 
         const index = types.indexOf(oldName.trim());
         if (index === -1) {
