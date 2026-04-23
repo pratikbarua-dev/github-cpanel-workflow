@@ -299,9 +299,17 @@ exports.getGetInvolved = (req, res) => {
     res.render('get-involved', { title: 'Get Involved' });
 };
 
-exports.getApply = (req, res) => {
-    // Dedicated form page
-    res.render('apply', { title: 'Apply - MoRPH' });
+exports.getApply = async (req, res) => {
+    try {
+        const { GlobalSetting } = require('../models');
+        const appTypesSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
+        const applicationTypes = appTypesSetting ? JSON.parse(appTypesSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'];
+
+        res.render('apply', { title: 'Apply - MoRPH', applicationTypes });
+    } catch (error) {
+        console.error(error);
+        res.render('apply', { title: 'Apply - MoRPH', applicationTypes: ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'] });
+    }
 };
 
 exports.postApply = async (req, res) => {

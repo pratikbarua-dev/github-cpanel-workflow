@@ -94,6 +94,10 @@ router.post('/settings/csr-sections/api', ensureAuthenticated, express.json(), a
 router.put('/settings/csr-sections/api', ensureAuthenticated, express.json(), adminController.updateCSRSectionApi);
 router.delete('/settings/csr-sections/api', ensureAuthenticated, express.json(), adminController.deleteCSRSectionApi);
 
+router.post('/settings/application-types/api', ensureAuthenticated, express.json(), adminController.addApplicationTypeApi);
+router.put('/settings/application-types/api', ensureAuthenticated, express.json(), adminController.updateApplicationTypeApi);
+router.delete('/settings/application-types/api', ensureAuthenticated, express.json(), adminController.deleteApplicationTypeApi);
+
 // Media Library
 router.get('/media', ensureAuthenticated, adminController.getMedia);
 router.post('/media', ensureAuthenticated, upload.single('image'), adminController.postMedia);

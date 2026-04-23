@@ -1021,12 +1021,17 @@ exports.getSettings = async (req, res) => {
     try {
         const csrSetting = await GlobalSetting.findOne({ where: { key: 'csr_sections' } });
         const csrSections = csrSetting ? JSON.parse(csrSetting.value) : [];
+
+        const appTypesSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
+        const applicationTypes = appTypesSetting ? JSON.parse(appTypesSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'];
+
         res.render('admin/settings', {
             user: req.user,
             path: '/settings',
             success: req.query.success,
             error: req.query.error,
-            csrSections: csrSections
+            csrSections: csrSections,
+            applicationTypes: applicationTypes
         });
     } catch (error) {
         console.error(error);
@@ -1179,6 +1184,92 @@ exports.deleteCSRSectionApi = async (req, res) => {
         await Post.destroy({ where: { type: 'CSR', sub_type: section.trim() } });
 
         res.json({ success: true, sections });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Server Error' });
+    }
+};
+
+// --- APPLICATION TYPES API ---
+
+exports.addApplicationTypeApi = async (req, res) => {
+    try {
+        const { type } = req.body;
+        if (!type || type.trim() === '') {
+            return res.status(400).json({ success: false, error: 'Type name is required' });
+        }
+
+        const appSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
+        let types = appSetting ? JSON.parse(appSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'];
+
+        const newType = type.trim();
+        if (!types.includes(newType)) {
+            types.push(newType);
+            if (appSetting) {
+                await appSetting.update({ value: JSON.stringify(types) });
+            } else {
+                await GlobalSetting.create({ key: 'application_types', value: JSON.stringify(types) });
+            }
+        }
+
+        res.json({ success: true, types });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Server Error' });
+    }
+};
+
+exports.updateApplicationTypeApi = async (req, res) => {
+    try {
+        const { oldName, newName } = req.body;
+        if (!oldName || !newName || oldName.trim() === '' || newName.trim() === '') {
+            return res.status(400).json({ success: false, error: 'Both old and new names are required' });
+        }
+
+        const appSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
+        let types = appSetting ? JSON.parse(appSetting.value) : ['Volunteer', 'Internship', 'Partnership', 'Researcher', 'Job Application'];
+
+        const index = types.indexOf(oldName.trim());
+        if (index === -1) {
+            return res.status(404).json({ success: false, error: 'Type not found' });
+        }
+
+        types[index] = newName.trim();
+        if (appSetting) {
+            await appSetting.update({ value: JSON.stringify(types) });
+        } else {
+            await GlobalSetting.create({ key: 'application_types', value: JSON.stringify(types) });
+        }
+
+        res.json({ success: true, types });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Server Error' });
+    }
+};
+
+exports.deleteApplicationTypeApi = async (req, res) => {
+    try {
+        const { type } = req.body;
+        if (!type || type.trim() === '') {
+            return res.status(400).json({ success: false, error: 'Type name is required' });
+        }
+
+        const appSetting = await GlobalSetting.findOne({ where: { key: 'application_types' } });
+        if (!appSetting) {
+            return res.status(404).json({ success: false, error: 'No types found' });
+        }
+
+        let types = JSON.parse(appSetting.value);
+        const index = types.indexOf(type.trim());
+        if (index === -1) {
+            return res.status(404).json({ success: false, error: 'Type not found' });
+        }
+
+        types.splice(index, 1);
+        await appSetting.update({ value: JSON.stringify(types) });
+
+        res.json({ success: true, types });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: 'Server Error' });

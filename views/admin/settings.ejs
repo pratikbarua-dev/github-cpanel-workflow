@@ -54,7 +54,7 @@
                                 </form>
                             </div>
 
-                            <!-- Global System Settings -->
+                            <!-- CSR Sub-Sections -->
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                                 <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                                     <i class="fas fa-globe text-teal-600"></i> CSR Sub-Sections
@@ -91,6 +91,44 @@
                                 </div>
 
                                 <div id="csr-notification" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
+                            </div>
+
+                            <!-- Application Types -->
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <i class="fas fa-file-signature text-teal-600"></i> Application Types
+                                </h2>
+                                <p class="text-sm text-gray-500 mb-6">Manage the options appearing in the "Application Type" dropdown on the public /apply form.</p>
+
+                                <div class="space-y-3 mb-6" id="app-types-list">
+                                    <% applicationTypes.forEach((type, index)=> { %>
+                                        <div class="flex items-center gap-2 app-type-item" data-type="<%= type %>">
+                                            <input type="text" value="<%= type %>" readonly
+                                                class="type-name-input flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 bg-gray-50">
+                                            <button type="button" onclick="editAppType(this)"
+                                                class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition"
+                                                title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" onclick="deleteAppType(this)"
+                                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
+                                                title="Delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                        <% }); %>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <input type="text" id="new-app-type-input" placeholder="e.g. Fellow"
+                                        class="flex-1 px-4 py-2 border border-blue-200 rounded-lg focus:outline-none focus:border-blue-500">
+                                    <button type="button" onclick="addAppType()"
+                                        class="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-blue-100 transition">
+                                        <i class="fas fa-plus mr-1"></i> Add
+                                    </button>
+                                </div>
+
+                                <div id="app-type-notification" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
                             </div>
                         </div>
 
@@ -213,9 +251,135 @@
                                 });
                             }
 
+                            // --- Application Types JS ---
+                            let _appTypeEditOldName = '';
+                            let _appTypeDeleteName = '';
+
+                            function showAppTypeNotification(message, type) {
+                                const el = document.getElementById('app-type-notification');
+                                el.className = 'mt-4 p-3 rounded-lg text-sm';
+                                el.classList.add(type === 'success' ? 'bg-green-100' : 'bg-red-100');
+                                el.classList.add(type === 'success' ? 'text-green-700' : 'text-red-700');
+                                el.textContent = message;
+                                el.classList.remove('hidden');
+                                setTimeout(() => el.classList.add('hidden'), 3000);
+                            }
+
+                            async function addAppType() {
+                                const input = document.getElementById('new-app-type-input');
+                                const value = input.value.trim();
+                                if (!value) return;
+                                try {
+                                    const response = await fetch('/admin/settings/application-types/api', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ type: value })
+                                    });
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        rebuildAppTypeList(result.types);
+                                        input.value = '';
+                                        showAppTypeNotification('Type added successfully!', 'success');
+                                    } else {
+                                        showAppTypeNotification('Error: ' + result.error, 'error');
+                                    }
+                                } catch (error) {
+                                    showAppTypeNotification('Server error', 'error');
+                                }
+                            }
+
+                            function editAppType(btn) {
+                                const item = btn.closest('.app-type-item');
+                                _appTypeEditOldName = item.dataset.type;
+                                document.getElementById('appTypeEditOldNameDisplay').textContent = '"' + _appTypeEditOldName + '"';
+                                document.getElementById('appTypeEditInput').value = _appTypeEditOldName;
+                                document.getElementById('appTypeEditModal').classList.remove('hidden');
+                                setTimeout(() => document.getElementById('appTypeEditInput').select(), 100);
+                            }
+                            function closeAppTypeEditModal() { document.getElementById('appTypeEditModal').classList.add('hidden'); }
+                            async function confirmAppTypeEdit() {
+                                const newName = document.getElementById('appTypeEditInput').value.trim();
+                                if (!newName || newName === _appTypeEditOldName) { closeAppTypeEditModal(); return; }
+                                try {
+                                    const response = await fetch('/admin/settings/application-types/api', {
+                                        method: 'PUT',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ oldName: _appTypeEditOldName, newName })
+                                    });
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        rebuildAppTypeList(result.types);
+                                        showAppTypeNotification('Type renamed successfully!', 'success');
+                                    } else {
+                                        showAppTypeNotification('Error: ' + result.error, 'error');
+                                    }
+                                } catch (error) {
+                                    showAppTypeNotification('Server error', 'error');
+                                }
+                                closeAppTypeEditModal();
+                            }
+
+                            function deleteAppType(btn) {
+                                const item = btn.closest('.app-type-item');
+                                _appTypeDeleteName = item.dataset.type;
+                                document.getElementById('appTypeDeleteNameDisplay').textContent = '"' + _appTypeDeleteName + '"';
+                                document.getElementById('appTypeDeleteModal').classList.remove('hidden');
+                            }
+                            function closeAppTypeDeleteModal() { document.getElementById('appTypeDeleteModal').classList.add('hidden'); }
+                            async function confirmAppTypeDelete() {
+                                try {
+                                    const response = await fetch('/admin/settings/application-types/api', {
+                                        method: 'DELETE',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ type: _appTypeDeleteName })
+                                    });
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        rebuildAppTypeList(result.types);
+                                        showAppTypeNotification('Type deleted successfully!', 'success');
+                                    } else {
+                                        showAppTypeNotification('Error: ' + result.error, 'error');
+                                    }
+                                } catch (error) {
+                                    showAppTypeNotification('Server error', 'error');
+                                }
+                                closeAppTypeDeleteModal();
+                            }
+
+                            function rebuildAppTypeList(types) {
+                                const container = document.getElementById('app-types-list');
+                                container.innerHTML = '';
+                                types.forEach(type => {
+                                    const div = document.createElement('div');
+                                    div.className = 'flex items-center gap-2 app-type-item';
+                                    div.dataset.type = type;
+                                    div.innerHTML = `
+                                        <input type="text" value="${type}" readonly
+                                            class="type-name-input flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 bg-gray-50">
+                                        <button type="button" onclick="editAppType(this)"
+                                            class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" onclick="deleteAppType(this)"
+                                            class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    `;
+                                    container.appendChild(div);
+                                });
+                            }
+
                             document.addEventListener('keydown', e => {
-                                if (e.key === 'Escape') { closeSettingsEditModal(); closeSettingsDeleteModal(); }
-                                if (e.key === 'Enter' && !document.getElementById('settingsEditModal').classList.contains('hidden')) confirmSettingsEdit();
+                                if (e.key === 'Escape') { 
+                                    closeSettingsEditModal(); 
+                                    closeSettingsDeleteModal(); 
+                                    closeAppTypeEditModal();
+                                    closeAppTypeDeleteModal();
+                                }
+                                if (e.key === 'Enter') {
+                                    if (!document.getElementById('settingsEditModal').classList.contains('hidden')) confirmSettingsEdit();
+                                    if (!document.getElementById('appTypeEditModal').classList.contains('hidden')) confirmAppTypeEdit();
+                                }
                             });
                         </script>
 
@@ -265,6 +429,55 @@
                                     <button onclick="closeSettingsDeleteModal()"
                                         class="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-semibold transition">Cancel</button>
                                     <button onclick="confirmSettingsDelete()"
+                                        class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Application Type Edit Modal -->
+                        <div id="appTypeEditModal" class="fixed inset-0 z-50 hidden">
+                            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                                onclick="closeAppTypeEditModal()"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
+                                style="animation: modalIn 0.2s ease-out">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-edit text-blue-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800">Rename Type</h3>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-4">Enter a new name for <strong
+                                        id="appTypeEditOldNameDisplay"></strong></p>
+                                <input type="text" id="appTypeEditInput"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-sm mb-6"
+                                    placeholder="New type name">
+                                <div class="flex justify-end gap-3">
+                                    <button onclick="closeAppTypeEditModal()"
+                                        class="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-semibold transition">Cancel</button>
+                                    <button onclick="confirmAppTypeEdit()"
+                                        class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Rename</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Application Type Delete Modal -->
+                        <div id="appTypeDeleteModal" class="fixed inset-0 z-50 hidden">
+                            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                                onclick="closeAppTypeDeleteModal()"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-full max-w-md p-6"
+                                style="animation: modalIn 0.2s ease-out">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800">Delete Type</h3>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-6">Are you sure you want to delete <strong
+                                        id="appTypeDeleteNameDisplay"></strong>? Existing applications with this type will remain in the database but the option will be removed from the public form.</p>
+                                <div class="flex justify-end gap-3">
+                                    <button onclick="closeAppTypeDeleteModal()"
+                                        class="px-5 py-2.5 text-gray-600 hover:bg-gray-100 rounded-xl text-sm font-semibold transition">Cancel</button>
+                                    <button onclick="confirmAppTypeDelete()"
                                         class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Delete</button>
                                 </div>
                             </div>
