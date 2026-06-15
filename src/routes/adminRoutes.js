@@ -57,6 +57,18 @@ router.get('/team/:id/edit', ensureAuthenticated, checkPermission('manage_team')
 router.post('/team/:id', ensureAuthenticated, checkPermission('manage_team'), upload.single('image'), adminController.updateTeamMember);
 router.post('/team/:id/delete', ensureAuthenticated, checkPermission('manage_team'), adminController.deleteTeamMember);
 
+// Partners
+router.get('/partners', ensureAuthenticated, checkPermission('manage_partners'), adminController.getPartners);
+router.get('/partners/new', ensureAuthenticated, checkPermission('manage_partners'), adminController.getNewPartner);
+router.post('/partners', ensureAuthenticated, checkPermission('manage_partners'), upload.single('logo'), adminController.postPartner);
+router.get('/partners/:id/edit', ensureAuthenticated, checkPermission('manage_partners'), adminController.getEditPartner);
+router.post('/partners/:id', ensureAuthenticated, checkPermission('manage_partners'), upload.single('logo'), adminController.updatePartner);
+router.post('/partners/:id/delete', ensureAuthenticated, checkPermission('manage_partners'), adminController.deletePartner);
+
+// API Routes for Partners
+router.post('/partners/api/create', ensureAuthenticated, checkPermission('manage_partners'), express.json(), adminController.createPartnerApi);
+router.post('/partners/:id/api', ensureAuthenticated, checkPermission('manage_partners'), express.json(), adminController.updatePartnerApi);
+
 // Users / Moderators (Admin Only)
 // 'manage_users' is not assignable to moderators, so only Admins (via role bypass) can access this.
 router.get('/users', ensureAuthenticated, checkPermission('manage_users'), adminController.getUsers);

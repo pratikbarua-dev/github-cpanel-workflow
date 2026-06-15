@@ -233,6 +233,25 @@ const GlobalSetting = sequelize.define('global_setting', {
     }
 });
 
+const Partner = sequelize.define('partner', {
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    category: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    logo_url: {
+        type: Sequelize.TEXT('long'),
+        allowNull: true
+    },
+    display_order: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    }
+});
+
 // Associations
 CustomForm.hasMany(FormField, { onDelete: 'CASCADE' });
 FormField.belongsTo(CustomForm);
@@ -267,5 +286,6 @@ module.exports = {
     FormResponse,
     Comment,
     Like,
-    GlobalSetting
+    GlobalSetting,
+    Partner
 };

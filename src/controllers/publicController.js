@@ -1,4 +1,4 @@
-const { Project, Post, TeamMember, Publication, FormSubmission, CustomForm, FormField, FormResponse, Like, Comment } = require('../models');
+const { Project, Post, TeamMember, Publication, FormSubmission, CustomForm, FormField, FormResponse, Like, Comment, Partner } = require('../models');
 const emailService = require('../utils/emailService');
 const Sequelize = require('sequelize');
 const svgCaptcha = require('svg-captcha');
@@ -212,8 +212,14 @@ exports.getFocusAreas = (req, res) => {
     res.render('focus-areas', { title: 'Focus Areas - MoRPH' });
 };
 
-exports.getPartnerships = (req, res) => {
-    res.render('partnerships', { title: 'Partnerships - MoRPH' });
+exports.getPartnerships = async (req, res) => {
+    try {
+        const partners = await Partner.findAll({ order: [['display_order', 'ASC']] });
+        res.render('partnerships', { title: 'Partnerships - MoRPH', partners });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
 };
 
 exports.getPartnerWithUs = (req, res) => {

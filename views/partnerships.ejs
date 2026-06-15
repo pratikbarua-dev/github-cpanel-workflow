@@ -27,135 +27,86 @@
                     & Networks</h2>
 
                 <!-- Academic Partners -->
+                <% const academicPartners = partners.filter(p => p.category === 'academic'); %>
+                <% if (academicPartners.length > 0) { %>
                 <div class="mb-16">
                     <h3
                         class="text-xl font-bold text-secondary text-center mb-8 border-b border-gray-100 pb-4 mx-auto max-w-xs">
                         Academic Partners</h3>
                     <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+                        <% academicPartners.forEach(function(partner) { %>
                         <div class="flex flex-col items-center group w-48">
                             <div
                                 class="w-48 h-32 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/mbstu.png" alt="MBSTU"
+                                <% if (partner.logo_url) { %>
+                                <img src="<%= partner.logo_url %>" alt="<%= partner.name %>"
                                     class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
+                                <% } else { %>
+                                <span class="text-secondary font-bold text-center leading-tight text-xs uppercase"><%= partner.name %></span>
+                                <% } %>
                             </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">Mawlana Bhashani
-                                Science and Technology University</span>
+                            <span class="text-sm text-gray-600 text-center font-medium leading-tight"><%= partner.name %></span>
                         </div>
-                        <div class="flex flex-col items-center group w-48">
-                            <div
-                                class="w-48 h-32 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/diu.png" alt="Daffodil International University"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
-                            </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">Daffodil
-                                International University</span>
-                        </div>
+                        <% }); %>
                     </div>
                 </div>
+                <% } %>
 
                 <!-- Global & National Networks -->
+                <% const networkPartners = partners.filter(p => p.category === 'network'); %>
+                <% if (networkPartners.length > 0) { %>
                 <div class="mb-16">
                     <h3
                         class="text-xl font-bold text-secondary text-center mb-8 border-b border-gray-100 pb-4 mx-auto max-w-xs">
                         Networks & Forums</h3>
                     <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+                        <% networkPartners.forEach(function(partner) { %>
                         <div class="flex flex-col items-center group w-48">
+                            <% if (!partner.logo_url || partner.name.includes('Grassroots Forum on Migration')) { %>
+                            <!-- Grassroots Forum styled box fallback if logo not available -->
                             <div style="background-color: #60A5FA !important;"
                                 class="w-48 h-28 rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
                                 <span
-                                    class="text-white font-bold text-center leading-tight text-xs uppercase">Grassroots
-                                    Forum on Migration Governance (GFMG)</span>
+                                    class="text-white font-bold text-center leading-tight text-xs uppercase"><%= partner.name %></span>
                             </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">Grassroots Forum
-                                on Migration Governance (GFMG)</span>
-                        </div>
-
-                        <div class="flex flex-col items-center group w-48">
+                            <% } else { %>
                             <div
                                 class="w-48 h-28 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/gfmd_logo.png"
-                                    alt="Global Forum on Migration & Development (GFMD)"
+                                <img src="<%= partner.logo_url %>" alt="<%= partner.name %>"
                                     class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
                             </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">Global Forum
-                                on
-                                Migration & Development (GFMD)</span>
+                            <% } %>
+                            <span class="text-sm text-gray-600 text-center font-medium leading-tight"><%= partner.name %></span>
                         </div>
-
-                        <div class="flex flex-col items-center group w-48">
-                            <div
-                                class="w-48 h-28 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/bcsm.png" alt="BCSM"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
-                            </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">Bangladesh Civil
-                                Society for Migrants</span>
-                        </div>
-
-                        <div class="flex flex-col items-center group w-48">
-                            <div
-                                class="w-48 h-28 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/mfa.png" alt="To MFA"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
-                            </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">Migrants Forum in
-                                Asia</span>
-                        </div>
+                        <% }); %>
                     </div>
                 </div>
+                <% } %>
 
                 <!-- UN & Government -->
+                <% const unGovPartners = partners.filter(p => p.category === 'un_gov'); %>
+                <% if (unGovPartners.length > 0) { %>
                 <div class="mb-12">
                     <h2 class="text-2xl font-bold text-center text-gray-400 mb-10 uppercase tracking-widest">Liaison
                         with UN & Government</h2>
                     <div class="flex flex-wrap justify-center gap-8 md:gap-14">
+                        <% unGovPartners.forEach(function(partner) { %>
                         <div class="flex flex-col items-center group w-32">
                             <div
                                 class="w-32 h-32 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/govt_bd.png" alt="Govt. of Bangladesh"
+                                <% if (partner.logo_url) { %>
+                                <img src="<%= partner.logo_url %>" alt="<%= partner.name %>"
                                     class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
+                                <% } else { %>
+                                <span class="text-secondary font-bold text-center leading-tight text-xs uppercase"><%= partner.name %></span>
+                                <% } %>
                             </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">Government of
-                                Bangladesh</span>
+                            <span class="text-sm text-gray-600 text-center font-medium leading-tight"><%= partner.name %></span>
                         </div>
-
-                        <div class="flex flex-col items-center group w-32">
-                            <div
-                                class="w-32 h-32 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/iom.png" alt="IOM"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
-                            </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">IOM</span>
-                        </div>
-
-                        <div class="flex flex-col items-center group w-32">
-                            <div
-                                class="w-32 h-32 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/unhcr.png" alt="UNHCR"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
-                            </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">UNHCR</span>
-                        </div>
-
-                        <div class="flex flex-col items-center group w-32">
-                            <div
-                                class="w-32 h-32 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/who.png" alt="WHO"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
-                            </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">WHO</span>
-                        </div>
-
-                        <div class="flex flex-col items-center group w-32">
-                            <div
-                                class="w-32 h-32 bg-white rounded-full shadow-sm border border-gray-100 flex items-center justify-center p-4 hover:shadow-md transition mb-3">
-                                <img src="/images/partners/wfp.png" alt="WFP"
-                                    class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
-                            </div>
-                            <span class="text-sm text-gray-600 text-center font-medium leading-tight">WFP</span>
-                        </div>
+                        <% }); %>
                     </div>
                 </div>
+                <% } %>
             </div>
         </section>
 

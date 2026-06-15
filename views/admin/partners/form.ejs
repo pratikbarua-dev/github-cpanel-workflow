@@ -1,0 +1,186 @@
+<%- include('../partials/header', { title: partner.id ? 'Edit Partner' : 'New Partner' , path: '/partners' }) %>
+
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+
+    <main class="flex-grow overflow-y-auto p-6">
+        <div class="max-w-3xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <a href="/admin/partners"
+                        class="text-gray-500 hover:text-teal-600 text-sm flex items-center gap-1 mb-1">
+                        <i class="fas fa-arrow-left"></i> Back to Partners
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        <%= partner.id ? 'Edit Partner' : 'Add New Partner' %>
+                    </h1>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="savePartner()"
+                        class="bg-teal-600 text-white hover:bg-teal-700 px-6 py-2.5 rounded-lg font-bold shadow-sm transition transform active:scale-95">
+                        Save Partner
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+                <form id="partnerForm" class="space-y-6">
+                    <!-- Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Partner Name</label>
+                        <input type="text" id="name" value="<%= partner.name || '' %>" required placeholder="e.g. Mawlana Bhashani Science and Technology University"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <select id="category" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none bg-white">
+                                <option value="" disabled <%= !partner.category ? 'selected' : '' %>>Select Category</option>
+                                <option value="academic" <%= partner.category === 'academic' ? 'selected' : '' %>>Academic Partner</option>
+                                <option value="network" <%= partner.category === 'network' ? 'selected' : '' %>>Network & Forum</option>
+                                <option value="un_gov" <%= partner.category === 'un_gov' ? 'selected' : '' %>>UN & Government</option>
+                            </select>
+                        </div>
+
+                        <!-- Display Order -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                            <input type="number" id="display_order" value="<%= partner.display_order || 0 %>"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none">
+                            <p class="text-xs text-gray-400 mt-1">Lower numbers appear first.</p>
+                        </div>
+                    </div>
+
+                    <!-- Logo Upload Section -->
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-image mr-1 text-teal-600"></i> Partner Logo
+                        </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Logo Image URL</label>
+                                <input type="text" id="logo_url" value="<%= partner.logo_url || '' %>"
+                                    placeholder="/images/partners/logo.png" onchange="previewLogoImage()"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Or Upload Logo File</label>
+                                <input type="file" id="logo_file" accept="image/*"
+                                    onchange="handleImageUpload(this)"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-teal-50 file:text-teal-700 file:font-medium hover:file:bg-teal-100">
+                            </div>
+                        </div>
+                        <div id="logo_preview" class="mt-4 hidden">
+                            <p class="text-xs text-gray-500 mb-2">Preview:</p>
+                            <div class="inline-block p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+                                <img id="preview_img" src="" alt="Preview"
+                                    class="max-h-24 max-w-xs object-contain">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification -->
+                    <div id="notification" class="hidden p-4 rounded-lg bg-blue-50 text-blue-700 text-sm">Saving...</div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Logo preview from URL
+        function previewLogoImage() {
+            const url = document.getElementById('logo_url').value;
+            const previewContainer = document.getElementById('logo_preview');
+            const previewImg = document.getElementById('preview_img');
+
+            if (url) {
+                previewImg.src = url;
+                previewContainer.classList.remove('hidden');
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        }
+
+        // Handle file upload and convert to base64
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64 = e.target.result;
+                    document.getElementById('logo_url').value = base64;
+                    document.getElementById('preview_img').src = base64;
+                    document.getElementById('logo_preview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Initialize preview on load if there's an existing image
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingUrl = document.getElementById('logo_url').value;
+            if (existingUrl) {
+                previewLogoImage();
+            }
+        });
+
+        async function savePartner() {
+            const notification = document.getElementById('notification');
+            notification.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            notification.classList.add('bg-blue-100', 'text-blue-700');
+            notification.textContent = 'Saving...';
+            notification.classList.remove('hidden');
+
+            const name = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            const display_order = document.getElementById('display_order').value;
+            const logo_url = document.getElementById('logo_url').value;
+
+            if (!name.trim()) {
+                notification.textContent = "Partner name is required!";
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+                return;
+            }
+
+            if (!category) {
+                notification.textContent = "Please select a category!";
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+                return;
+            }
+
+            const data = { name, category, display_order, logo_url };
+
+            const partnerId = '<%= partner.id %>';
+            const url = partnerId ? `/admin/partners/${partnerId}/api` : '/admin/partners/api/create';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    notification.textContent = 'Partner saved successfully! Redirecting...';
+                    notification.classList.replace('bg-blue-100', 'bg-green-100');
+                    notification.classList.replace('text-blue-700', 'text-green-700');
+                    setTimeout(() => window.location.href = '/admin/partners', 1000);
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                notification.textContent = 'Error: ' + error.message;
+                notification.classList.replace('bg-blue-100', 'bg-red-100');
+                notification.classList.replace('text-blue-700', 'text-red-700');
+            }
+        }
+    </script>
+
+    <%- include('../partials/footer') %>

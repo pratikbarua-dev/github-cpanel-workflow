@@ -1,6 +1,6 @@
 require('dotenv').config();
 const sequelize = require('./src/config/database');
-const { Project, Post, TeamMember, Publication, User } = require('./src/models');
+const { Project, Post, TeamMember, Publication, User, Partner } = require('./src/models');
 const bcrypt = require('bcryptjs');
 
 const seedData = async (force = false) => {
@@ -111,6 +111,82 @@ const seedData = async (force = false) => {
                 }
             ]);
             console.log('Team seeded.');
+        }
+
+        const partnerCount = await Partner.count();
+        if (partnerCount === 0) {
+            await Partner.bulkCreate([
+                // Academic Partners
+                {
+                    name: 'Mawlana Bhashani Science and Technology University',
+                    category: 'academic',
+                    logo_url: '/images/partners/mbstu.png',
+                    display_order: 1
+                },
+                {
+                    name: 'Daffodil International University',
+                    category: 'academic',
+                    logo_url: '/images/partners/diu.png',
+                    display_order: 2
+                },
+                // Networks & Forums
+                {
+                    name: 'Grassroots Forum on Migration Governance (GFMG)',
+                    category: 'network',
+                    logo_url: '/images/partners/gfmg.png',
+                    display_order: 3
+                },
+                {
+                    name: 'Global Forum on Migration & Development (GFMD)',
+                    category: 'network',
+                    logo_url: '/images/partners/gfmd_logo.png',
+                    display_order: 4
+                },
+                {
+                    name: 'Bangladesh Civil Society for Migrants',
+                    category: 'network',
+                    logo_url: '/images/partners/bcsm.png',
+                    display_order: 5
+                },
+                {
+                    name: 'Migrants Forum in Asia',
+                    category: 'network',
+                    logo_url: '/images/partners/mfa.png',
+                    display_order: 6
+                },
+                // Liaison with UN & Government
+                {
+                    name: 'Government of Bangladesh',
+                    category: 'un_gov',
+                    logo_url: '/images/partners/govt_bd.png',
+                    display_order: 7
+                },
+                {
+                    name: 'IOM',
+                    category: 'un_gov',
+                    logo_url: '/images/partners/iom.png',
+                    display_order: 8
+                },
+                {
+                    name: 'UNHCR',
+                    category: 'un_gov',
+                    logo_url: '/images/partners/unhcr.png',
+                    display_order: 9
+                },
+                {
+                    name: 'WHO',
+                    category: 'un_gov',
+                    logo_url: '/images/partners/who.png',
+                    display_order: 10
+                },
+                {
+                    name: 'WFP',
+                    category: 'un_gov',
+                    logo_url: '/images/partners/wfp.png',
+                    display_order: 11
+                }
+            ]);
+            console.log('Partners seeded.');
         }
 
         console.log('Seed check complete.');

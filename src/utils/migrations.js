@@ -132,6 +132,43 @@ async function runMigrations(sequelize) {
             }
         }
 
+        // 5. Ensure 'partners' table exists
+        if (!(await tableExists('partners'))) {
+            logger.info('⚠️ Table "partners" missing. Creating manually...');
+            await queryInterface.createTable('partners', {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    autoIncrement: true
+                },
+                name: {
+                    type: DataTypes.STRING,
+                    allowNull: false
+                },
+                category: {
+                    type: DataTypes.STRING,
+                    allowNull: false
+                },
+                logo_url: {
+                    type: DataTypes.TEXT('long'),
+                    allowNull: true
+                },
+                display_order: {
+                    type: DataTypes.INTEGER,
+                    defaultValue: 0
+                },
+                createdAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false
+                },
+                updatedAt: {
+                    type: DataTypes.DATE,
+                    allowNull: false
+                }
+            });
+            logger.info('✅ Table "partners" created successfully.');
+        }
+
         logger.info('✅ Database schema check complete.');
     } catch (error) {
         logger.error(`❌ Migration process encountered an error: ${error.message}`);

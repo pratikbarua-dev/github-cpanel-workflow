@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { Project, Post, Publication, TeamMember, FormSubmission, User, CustomForm, FormField, FormResponse, Comment, GlobalSetting } = require('../models');
+const { Project, Post, Publication, TeamMember, FormSubmission, User, CustomForm, FormField, FormResponse, Comment, GlobalSetting, Partner } = require('../models');
 const { sendWelcomeEmail, sendAccountDeletedEmail } = require('../utils/emailService');
 const { Parser } = require('json2csv');
 const fs = require('fs');
@@ -848,6 +848,118 @@ exports.deleteTeamMember = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('Error deleting team member');
+    }
+};
+
+// --- PARTNERS CRUD ---
+
+exports.getPartners = async (req, res) => {
+    try {
+        const partners = await Partner.findAll({ order: [['display_order', 'ASC']] });
+        res.render('admin/partners/index', { partners, path: '/partners' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getNewPartner = (req, res) => {
+    res.render('admin/partners/form', { partner: {}, path: '/partners' });
+};
+
+exports.postPartner = async (req, res) => {
+    try {
+        const { name, category, display_order } = req.body;
+        const logoData = req.file ? `/uploads/${req.file.filename}` : null;
+
+        await Partner.create({
+            name,
+            category,
+            display_order: display_order || 0,
+            logo_url: logoData || 'https://placehold.co/150'
+        });
+
+        res.redirect('/admin/partners');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error creating partner');
+    }
+};
+
+exports.getEditPartner = async (req, res) => {
+    try {
+        const partner = await Partner.findByPk(req.params.id);
+        if (!partner) return res.status(404).send('Partner not found');
+        res.render('admin/partners/form', { partner, path: '/partners' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.updatePartner = async (req, res) => {
+    try {
+        const { name, category, display_order } = req.body;
+        const partner = await Partner.findByPk(req.params.id);
+
+        if (!partner) return res.status(404).send('Partner not found');
+
+        const updateData = { name, category, display_order };
+        if (req.file) {
+            updateData.logo_url = `/uploads/${req.file.filename}`;
+        }
+
+        await partner.update(updateData);
+        res.redirect('/admin/partners');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error updating partner');
+    }
+};
+
+exports.deletePartner = async (req, res) => {
+    try {
+        await Partner.destroy({ where: { id: req.params.id } });
+        res.redirect('/admin/partners');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error deleting partner');
+    }
+};
+
+exports.createPartnerApi = async (req, res) => {
+    try {
+        const { name, category, logo_url, display_order } = req.body;
+        const processedLogo = await processImage(logo_url);
+        const partner = await Partner.create({
+            name,
+            category,
+            logo_url: processedLogo || 'https://placehold.co/150',
+            display_order: display_order || 0
+        });
+        res.json({ success: true, id: partner.id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'DB Error' });
+    }
+};
+
+exports.updatePartnerApi = async (req, res) => {
+    try {
+        const { name, category, logo_url, display_order } = req.body;
+        const partner = await Partner.findByPk(req.params.id);
+        if (!partner) return res.status(404).json({ success: false, error: 'Not Found' });
+
+        const updateData = { name, category, display_order };
+        if (logo_url) {
+            updateData.logo_url = await processImage(logo_url);
+        }
+
+        await partner.update(updateData);
+        res.json({ success: true, id: partner.id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'DB Error' });
     }
 };
 
