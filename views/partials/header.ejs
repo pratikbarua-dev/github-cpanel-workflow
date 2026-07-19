@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <%= title || 'MoRPH - Advancing Research & Innovation' %>
+        <%= typeof title !== 'undefined' && title ? title + ' | MoRPH' : 'MoRPH - Advancing Research & Innovation' %>
     </title>
     <meta name="description"
-        content="MoRPH - Advancing Research & Innovation. An independent think tank based in Bangladesh working across public health, migration, refugee studies, environment, and ICT.">
+        content="<%= typeof description !== 'undefined' && description ? description : 'MoRPH - Advancing Research & Innovation. An independent think tank based in Bangladesh working across public health, migration, refugee studies, environment, and ICT.' %>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" type="image/jpeg" href="/images/logo.jpg">

@@ -4,6 +4,8 @@ const publicController = require('../controllers/publicController');
 const upload = require('../middleware/upload');
 
 router.get('/', publicController.getHome);
+router.get('/sitemap.xml', publicController.getSitemap);
+router.get('/robots.txt', publicController.getRobotsTxt);
 router.get('/projects', publicController.getProjects);
 router.get('/projects/:slug', publicController.getProjectDetail);
 router.get('/news', publicController.getNews);

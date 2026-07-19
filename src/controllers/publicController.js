@@ -597,3 +597,59 @@ exports.getCaptcha = (req, res) => {
     res.type('svg');
     res.status(200).send(captcha.data);
 };
+
+exports.getSitemap = async (req, res) => {
+    try {
+        const baseUrl = process.env.BASE_URL || `https://${req.get('host')}`;
+        
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+        const addUrl = (path) => {
+            xml += `  <url>\n    <loc>${baseUrl}${path}</loc>\n  </url>\n`;
+        };
+
+        // Static routes
+        const staticRoutes = [
+            '/', '/projects', '/news', '/publications', '/team', '/contact', 
+            '/about', '/focus-areas', '/partnerships', '/events', '/partner-with-us', 
+            '/training', '/get-involved', '/apply'
+        ];
+        staticRoutes.forEach(addUrl);
+
+        // Dynamic Routes - Projects
+        const projects = await Project.findAll({ where: { status: { [Sequelize.Op.ne]: 'Archived' } } });
+        projects.forEach(p => addUrl(`/projects/${p.slug}`));
+
+        // Dynamic Routes - Posts
+        const posts = await Post.findAll({ where: { status: 'published' } });
+        posts.forEach(p => addUrl(`/news/${p.slug}`));
+
+        // Dynamic Routes - Publications
+        const publications = await Publication.findAll({ where: { is_archived: false } });
+        publications.forEach(p => addUrl(`/publications/${p.id}`));
+
+        // Dynamic Routes - Team
+        const team = await TeamMember.findAll();
+        team.forEach(t => addUrl(`/team/${t.id}`));
+
+        // Dynamic Routes - Forms
+        const forms = await CustomForm.findAll({ where: { status: 'Active' } });
+        forms.forEach(f => addUrl(`/forms/${f.slug}`));
+
+        xml += '</urlset>';
+
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server Error generating sitemap');
+    }
+};
+
+exports.getRobotsTxt = (req, res) => {
+    const baseUrl = process.env.BASE_URL || `https://${req.get('host')}`;
+    const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`;
+    res.type('text/plain');
+    res.send(robotsTxt);
+};
