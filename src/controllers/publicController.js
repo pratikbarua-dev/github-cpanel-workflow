@@ -605,8 +605,28 @@ exports.getSitemap = async (req, res) => {
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
         xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-        const addUrl = (path) => {
-            xml += `  <url>\n    <loc>${baseUrl}${path}</loc>\n  </url>\n`;
+        const escapeXml = (unsafe) => {
+            return unsafe.replace(/[<>&'"]/g, (c) => {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case '\\'': return '&apos;';
+                    case '"': return '&quot;';
+                }
+            });
+        };
+
+        const addUrl = (path, updatedAt = null) => {
+            const loc = escapeXml(`${baseUrl}${path}`);
+            xml += `  <url>\n    <loc>${loc}</loc>\n`;
+            if (updatedAt) {
+                try {
+                    const dateStr = new Date(updatedAt).toISOString().split('T')[0];
+                    xml += `    <lastmod>${dateStr}</lastmod>\n`;
+                } catch(e) {}
+            }
+            xml += `  </url>\n`;
         };
 
         // Static routes
@@ -615,27 +635,27 @@ exports.getSitemap = async (req, res) => {
             '/about', '/focus-areas', '/partnerships', '/events', '/partner-with-us', 
             '/training', '/get-involved', '/apply'
         ];
-        staticRoutes.forEach(addUrl);
+        staticRoutes.forEach(route => addUrl(route));
 
         // Dynamic Routes - Projects
         const projects = await Project.findAll({ where: { status: { [Sequelize.Op.ne]: 'Archived' } } });
-        projects.forEach(p => addUrl(`/projects/${p.slug}`));
+        projects.forEach(p => { if (p.slug) addUrl(`/projects/${p.slug}`, p.updatedAt); });
 
         // Dynamic Routes - Posts
         const posts = await Post.findAll({ where: { status: 'published' } });
-        posts.forEach(p => addUrl(`/news/${p.slug}`));
+        posts.forEach(p => { if (p.slug) addUrl(`/news/${p.slug}`, p.updatedAt); });
 
         // Dynamic Routes - Publications
         const publications = await Publication.findAll({ where: { is_archived: false } });
-        publications.forEach(p => addUrl(`/publications/${p.id}`));
+        publications.forEach(p => { if (p.id) addUrl(`/publications/${p.id}`, p.updatedAt); });
 
         // Dynamic Routes - Team
         const team = await TeamMember.findAll();
-        team.forEach(t => addUrl(`/team/${t.id}`));
+        team.forEach(t => { if (t.id) addUrl(`/team/${t.id}`, t.updatedAt); });
 
         // Dynamic Routes - Forms
         const forms = await CustomForm.findAll({ where: { status: 'Active' } });
-        forms.forEach(f => addUrl(`/forms/${f.slug}`));
+        forms.forEach(f => { if (f.slug) addUrl(`/forms/${f.slug}`, f.updatedAt); });
 
         xml += '</urlset>';
 
