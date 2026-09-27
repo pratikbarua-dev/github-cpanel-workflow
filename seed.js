@@ -13,7 +13,7 @@ const seedData = async (force = false) => {
         // Admin User
         const hashedPassword = await bcrypt.hash('admin123', 10);
         await User.findOrCreate({
-            where: { email: 'admin@morph.org' },
+            where: { email: 'moulovibari.bd@gmail.com' },
             defaults: {
                 password: hashedPassword,
                 role: 'admin'

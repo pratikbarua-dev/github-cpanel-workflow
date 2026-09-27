@@ -91,7 +91,7 @@ exports.sendEmail = async (to, subject, html, attachments = []) => {
 
     // Get from address from env or use default
     let fromAddress = process.env.EMAIL_FROM || 'MoRPH';
-    const emailUser = process.env.EMAIL_USER || 'info@morphbangladesh.org';
+    const emailUser = process.env.EMAIL_USER || 'moulovibari.bd@gmail.com';
 
     // If EMAIL_FROM is just a name (no @), combine it with EMAIL_USER
     if (fromAddress && !fromAddress.includes('@')) {

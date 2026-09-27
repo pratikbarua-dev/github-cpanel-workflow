@@ -110,7 +110,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // --- CONFIGURATION ---
-const EMAIL_USER = 'admin@morphbangladesh.org';
+const EMAIL_USER = 'moulovibari.bd@gmail.com';
 const EMAIL_PASS = 'Dm6:7tPZis56';
 const HOST = 's1.sitechai.com';
 

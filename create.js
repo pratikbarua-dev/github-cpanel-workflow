@@ -17,8 +17,8 @@ async function sendInvite() {
 
   // 2. Define the Email
   const mailOptions = {
-    from: '"Pathshala Admin" <no-reply@pathshala.com>', // You can customize this name!
-    to: "morph@morphbangladesh.org", // CHANGE THIS to your real email to test
+    from: '"Pathshala Admin" <moulovibari.bd@gmail.com>', // You can customize this name!
+    to: "moulovibari.bd@gmail.com", // CHANGE THIS to your real email to test
     subject: "Welcome to Pathshala",
     html: `
       <div style="font-family: Arial, sans-serif; padding: 20px;">
