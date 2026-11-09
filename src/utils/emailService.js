@@ -74,7 +74,7 @@ const getAutoReplyTemplate = (name, content) => {
             <div class="footer">
                 <p>&copy; ${new Date().getFullYear()} MoRPH. All rights reserved.</p>
                 <p style="margin: 10px 0;">Head Office: Holding No 6034, Village: Panchtikry, Tangail<br>
-                Liaison Office: SEL Centre (6th Floor), 29 West Panthapath, Dhaka-1205</p>
+                Liaison Office</p>
                 <p><a href="${baseUrl}">Visit our Website</a></p>
             </div>
         </div>

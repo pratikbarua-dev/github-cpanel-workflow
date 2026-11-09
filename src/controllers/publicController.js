@@ -15,20 +15,17 @@ exports.getHome = async (req, res) => {
                 status: 'published',
                 type: ['News', 'Event']
             },
-            limit: 3,
+            limit: 6,
             order: [['date', 'DESC']]
         });
 
-        const articlePosts = await Post.findAll({
-            where: {
-                status: 'published',
-                type: 'Article'
-            },
+        const publications = await Publication.findAll({
+            where: { is_archived: false },
             limit: 3,
-            order: [['date', 'DESC']]
+            order: [['published_date', 'DESC']]
         });
 
-        res.render('index', { title: 'Home', projects, newsPosts, articlePosts });
+        res.render('index', { title: 'Home', projects, newsPosts, publications });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
@@ -104,11 +101,11 @@ exports.getNews = async (req, res) => {
         const posts = await Post.findAll({
             where: {
                 status: 'published',
-                type: { [Sequelize.Op.in]: ['News', 'Event', 'Article'] }
+                type: { [Sequelize.Op.in]: ['News', 'Event'] }
             },
             order: [['date', 'DESC']]
         });
-        res.render('news', { title: 'News & Articles', posts });
+        res.render('news', { title: 'News & Events', posts });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');

@@ -11,7 +11,7 @@
                     Bridging Research, <br><span class="text-primary">Policy & Practice</span>
                 </h1>
                 <p class="text-lg text-gray-600 leading-relaxed max-w-xl">
-                    An independent think tank based in Bangladesh working across public health, migration,
+                    A grassroots think tank based in Bangladesh working across public health, migration,
                     refugee
                     studies,
                     environment, and ICT. We believe local voices and grassroots perspectives are essential for
@@ -167,38 +167,49 @@
         </div>
     </section>
 
-    <!-- Featured Articles -->
+    <!-- Latest Publications -->
     <section class="reveal py-12">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-end mb-12">
-                <h2 class="text-3xl font-bold text-secondary">Featured Articles</h2>
-                <a href="/news" class="btn-secondary text-sm">Browse articles</a>
+                <h2 class="text-3xl font-bold text-secondary">Latest Publications</h2>
+                <a href="/publications" class="btn-secondary text-sm">Browse articles</a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <% if (articlePosts.length> 0) { %>
-                    <% articlePosts.forEach(function(post) { %>
-                        <a href="/news/<%= post.slug %>" class="block group">
+                <% if (typeof publications !== 'undefined' && publications && publications.length > 0) { %>
+                    <% publications.forEach(function(pub) { %>
+                        <a href="/publications/<%= pub.id %>" class="block group">
                             <div
-                                class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-                                <div class="h-48 overflow-hidden relative">
-                                    <img src="<%= post.image_url %>" alt="<%= post.title %>"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                                class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+                                <% if (pub.heading_image || pub.image_url) { %>
+                                    <div class="h-48 overflow-hidden relative">
+                                        <img src="<%= pub.heading_image || pub.image_url %>" alt="<%= pub.title %>"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                                        </div>
+                                        <% if (pub.category) { %>
+                                            <span
+                                                class="absolute bottom-4 left-4 text-white text-xs font-bold bg-primary/90 px-2 py-1 rounded"><%= pub.category %></span>
+                                        <% } %>
                                     </div>
-                                    <span
-                                        class="absolute bottom-4 left-4 text-white text-xs font-bold bg-primary/90 px-2 py-1 rounded">Article</span>
-                                </div>
-                                <div class="p-6">
+                                <% } %>
+                                <div class="p-6 flex-1 flex flex-col">
                                     <h3
                                         class="text-xl font-bold text-gray-800 mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                                        <%= post.title %>
+                                        <%= pub.title %>
                                     </h3>
-                                    <p class="text-gray-500 text-sm line-clamp-3 mb-4">
-                                        <%= post.excerpt || 'Read the full article to learn more...' %>
-                                    </p>
-                                    <span class="text-primary font-semibold text-sm flex items-center gap-2">
-                                        Read Article <i class="fas fa-arrow-right"></i>
+                                    <% if (pub.published_date) { %>
+                                        <span class="text-xs text-gray-500 block mb-3">
+                                            <%= pub.published_date %>
+                                        </span>
+                                    <% } %>
+                                    <% if (pub.description) { %>
+                                        <p class="text-gray-500 text-sm line-clamp-3 mb-4 flex-1">
+                                            <%= pub.description.replace(/<[^>]*>?/gm, '').substring(0, 160) %>...
+                                        </p>
+                                    <% } %>
+                                    <span class="text-primary font-semibold text-sm flex items-center gap-2 mt-auto">
+                                        Read More <i class="fas fa-arrow-right"></i>
                                     </span>
                                 </div>
                             </div>
