@@ -254,6 +254,21 @@
     </section>
 
     <!-- Partners Slider -->
+    <% 
+        const partnersList = (typeof partners !== 'undefined' && partners && partners.length > 0) ? partners : [
+            { name: "Mawlana Bhashani Science and Technology University", logo_url: "/images/partners/mbstu.png" },
+            { name: "Daffodil International University", logo_url: "/images/partners/diu.png" },
+            { name: "Grassroots Forum on Migration Governance (GFMG)", logo_url: "/images/partners/gfmg.png" },
+            { name: "Global Forum on Migration & Development (GFMD)", logo_url: "/images/partners/gfmd_logo.png" },
+            { name: "Bangladesh Civil Society for Migrants", logo_url: "/images/partners/bcsm.png" },
+            { name: "Migrants Forum in Asia", logo_url: "/images/partners/mfa.png" },
+            { name: "Government of Bangladesh", logo_url: "/images/partners/govt_bd.png" },
+            { name: "IOM", logo_url: "/images/partners/iom.png" },
+            { name: "UNHCR", logo_url: "/images/partners/unhcr.png" },
+            { name: "WHO", logo_url: "/images/partners/who.png" },
+            { name: "WFP", logo_url: "/images/partners/wfp.png" }
+        ];
+    %>
     <section class="reveal py-12 border-t border-gray-200/50">
         <div class="container mx-auto px-4">
             <h2 class="text-2xl font-bold text-center text-gray-400 mb-12 uppercase tracking-widest">Our Partners
@@ -262,47 +277,38 @@
             <div class="relative max-w-5xl mx-auto overflow-hidden" id="partners-slider">
                 <!-- Slider Track -->
                 <div class="flex transition-transform duration-700 ease-in-out" id="partners-track">
-                    <!-- Partners Data -->
-                    <% const partners=[ { name: "Mawlana Bhashani Science and Technology University" ,
-                        img: "/images/partners/mbstu.png" , isText: false }, { name: "Daffodil International University"
-                        , img: "/images/partners/diu.png" , isText: false }, {
-                        name: "Grassroots Forum on Migration Governance (GFMG)" ,
-                        text: "Grassroots Forum on Migration Governance (GFMG)" , isText: true, bgColor: "#60A5FA" ,
-                        bgClass: "" , textClass: "text-white text-sm uppercase font-bold text-center leading-tight" }, {
-                        name: "Global Forum on Migration & Development (GFMD)" , img: "/images/partners/gfmd_logo.png" ,
-                        isText: false }, { name: "Bangladesh Civil Society for Migrants" ,
-                        img: "/images/partners/bcsm.png" , isText: false }, { name: "Migrants Forum in Asia" ,
-                        img: "/images/partners/mfa.png" , isText: false }, { name: "Government of Bangladesh" ,
-                        img: "/images/partners/govt_bd.png" , isText: false }, { name: "IOM" ,
-                        img: "/images/partners/iom.png" , isText: false }, { name: "UNHCR" ,
-                        img: "/images/partners/unhcr.png" , isText: false }, { name: "WHO" ,
-                        img: "/images/partners/who.png" , isText: false }, { name: "WFP" ,
-                        img: "/images/partners/wfp.png" , isText: false } ]; %>
-
-                        <% partners.forEach(partner=> { %>
-                            <div class="w-full md:w-1/3 flex-shrink-0 px-4">
-                                <div class="flex flex-col items-center group h-full">
-                                    <div style="<%= partner.bgColor ? `background-color: ${partner.bgColor} !important;` : '' %>"
-                                        class="w-full h-32 <%= partner.bgClass || 'bg-white' %> rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-6 hover:shadow-md transition mb-4">
-                                        <% if (partner.isText) { %>
-                                            <span
-                                                class="<%= partner.textClass || 'text-primary' %> font-bold text-center leading-tight">
-                                                <%= partner.text %>
-                                            </span>
-                                            <% } else { %>
-                                                <img src="<%= partner.img %>" alt="<%= partner.name %>"
-                                                    class="max-h-full max-w-full object-contain <%= partner.isPlaceholder ? 'grayscale opacity-70' : 'group-hover:scale-105 transition-transform' %>">
-                                                <% } %>
+                    <% partnersList.forEach(partner => { %>
+                        <div class="w-full md:w-1/3 flex-shrink-0 px-4">
+                            <div class="flex flex-col items-center group h-full">
+                                <% if (!partner.logo_url && partner.name && partner.name.includes('Grassroots Forum on Migration')) { %>
+                                    <div style="background-color: #60A5FA !important;"
+                                        class="w-full h-32 rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-6 hover:shadow-md transition mb-4">
+                                        <span class="text-white text-sm uppercase font-bold text-center leading-tight">
+                                            <%= partner.name %>
+                                        </span>
                                     </div>
-                                    <span
-                                        class="text-sm text-gray-600 text-center font-medium leading-tight max-w-[200px]">
-                                        <%= partner.name %>
-                                    </span>
-                                </div>
+                                <% } else if (partner.logo_url) { %>
+                                    <div
+                                        class="w-full h-32 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-6 hover:shadow-md transition mb-4">
+                                        <img src="<%= partner.logo_url %>" alt="<%= partner.name %>"
+                                            class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform">
+                                    </div>
+                                <% } else { %>
+                                    <div
+                                        class="w-full h-32 bg-white rounded-lg shadow-sm border border-gray-100 flex items-center justify-center p-6 hover:shadow-md transition mb-4">
+                                        <span class="text-primary font-bold text-center leading-tight text-xs uppercase">
+                                            <%= partner.name %>
+                                        </span>
+                                    </div>
+                                <% } %>
+                                <span
+                                    class="text-sm text-gray-600 text-center font-medium leading-tight max-w-[200px]">
+                                    <%= partner.name %>
+                                </span>
                             </div>
-                            <% }); %>
+                        </div>
+                    <% }); %>
                 </div>
-
                 <!-- Dots/Indicators (Optional) -->
                 <div class="flex justify-center mt-8 gap-2" id="slider-dots"></div>
             </div>

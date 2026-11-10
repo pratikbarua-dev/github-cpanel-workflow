@@ -25,7 +25,11 @@ exports.getHome = async (req, res) => {
             order: [['published_date', 'DESC']]
         });
 
-        res.render('index', { title: 'Home', projects, newsPosts, publications });
+        const partners = await Partner.findAll({
+            order: [['display_order', 'ASC']]
+        });
+
+        res.render('index', { title: 'Home', projects, newsPosts, publications, partners });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
