@@ -56,6 +56,33 @@ async function runMigrations(sequelize) {
                 } catch (err) {
                     logger.error(`⚠️ Failed to update ENUM via raw query: ${err.message}`);
                 }
+
+                // Ensure MySQL tables and text columns support utf8mb4 (Bengali and unicode characters)
+                try {
+                    logger.info('🔄 Ensuring utf8mb4 encoding on MySQL tables...');
+                    const tablesToConvert = [
+                        'posts',
+                        'projects',
+                        'publications',
+                        'team_members',
+                        'comments',
+                        'custom_forms',
+                        'form_fields',
+                        'form_responses',
+                        'form_submissions',
+                        'partners',
+                        'global_settings'
+                    ];
+
+                    for (const tbl of tablesToConvert) {
+                        if (await tableExists(tbl)) {
+                            await sequelize.query(`ALTER TABLE \`${tbl}\` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+                        }
+                    }
+                    logger.info('✅ Tables successfully converted to utf8mb4_unicode_ci.');
+                } catch (err) {
+                    logger.error(`⚠️ Failed to convert tables to utf8mb4: ${err.message}`);
+                }
             }
         }
 

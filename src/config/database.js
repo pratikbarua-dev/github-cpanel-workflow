@@ -34,6 +34,13 @@ if (useSQLite) {
             host: process.env.DB_HOST || 'localhost',
             dialect: 'mysql',
             logging: false,
+            dialectOptions: {
+                charset: 'utf8mb4'
+            },
+            define: {
+                charset: 'utf8mb4',
+                collate: 'utf8mb4_unicode_ci'
+            },
             pool: {
                 max: 2, // Reduced for cPanel optimization
                 min: 0,
